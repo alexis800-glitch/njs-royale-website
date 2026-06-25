@@ -41,9 +41,11 @@ export default function BookCTA() {
           Whether you are seeking a luxury coastal retreat at our Beach Resort or coordinating your next signature event at our Event &amp; Conference Center, NJS Royale is preparing to welcome you. Register your interest for priority updates and early reservation access.
         </p>
 
-        {/* Dual brand logos */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 mb-14">
-          <div className="flex flex-col items-center gap-3">
+        {/* Dual brand columns — logo + label + button per brand */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-0 mb-16">
+
+          {/* Beach Resort */}
+          <div className="flex flex-col items-center gap-5 md:pr-12 md:border-r md:border-gold/20">
             <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
               <div className="relative w-[96px] h-[96px]">
                 <Image
@@ -57,12 +59,16 @@ export default function BookCTA() {
             <p className="text-white/35 text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
               Beach Resort
             </p>
+            <a
+              href="#"
+              className="w-full text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            >
+              Enquire About the Resort
+            </a>
           </div>
 
-          <div className="hidden sm:block w-px h-24 bg-gold/20" />
-          <div className="sm:hidden h-px w-16 bg-gold/20" />
-
-          <div className="flex flex-col items-center gap-3">
+          {/* Event & Conference Center */}
+          <div className="flex flex-col items-center gap-5 md:pl-12">
             <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
               <div className="relative w-[96px] h-[96px]">
                 <Image
@@ -76,22 +82,14 @@ export default function BookCTA() {
             <p className="text-white/35 text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
               Event &amp; Conference Center
             </p>
+            <a
+              href="#"
+              className="w-full text-center border border-white text-white px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            >
+              Plan an Event
+            </a>
           </div>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <a
-            href="#"
-            className="w-full sm:w-auto text-center bg-gold text-navy px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
-          >
-            Enquire About the Resort
-          </a>
-          <a
-            href="#"
-            className="w-full sm:w-auto text-center border border-white text-white px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
-          >
-            Plan an Event
-          </a>
         </div>
 
         <div className="border-t border-white/7 pt-12 grid md:grid-cols-3 gap-8">
