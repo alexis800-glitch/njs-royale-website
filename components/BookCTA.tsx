@@ -44,8 +44,8 @@ export default function BookCTA() {
         {/* Dual brand logos */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 mb-14">
           <div className="flex flex-col items-center gap-3">
-            <div className="bg-white p-3 shadow-md">
-              <div className="relative w-[72px] h-[72px]">
+            <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
+              <div className="relative w-[96px] h-[96px]">
                 <Image
                   src="/njs-logos/njs-royale-beach-resort-logo-gold.png"
                   alt="NJS Royale Beach Resort"
@@ -59,12 +59,12 @@ export default function BookCTA() {
             </p>
           </div>
 
-          <div className="hidden sm:block w-px h-20 bg-gold/20" />
+          <div className="hidden sm:block w-px h-24 bg-gold/20" />
           <div className="sm:hidden h-px w-16 bg-gold/20" />
 
           <div className="flex flex-col items-center gap-3">
-            <div className="bg-white p-3 shadow-md">
-              <div className="relative w-[72px] h-[72px]">
+            <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
+              <div className="relative w-[96px] h-[96px]">
                 <Image
                   src="/njs-logos/njs-royale-event-conference-center-logo-gold.png"
                   alt="NJS Royale Event & Conference Center"
