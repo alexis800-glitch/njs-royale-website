@@ -41,11 +41,11 @@ export default function BookCTA() {
           Whether you are seeking a luxury coastal retreat at our Beach Resort or coordinating your next signature event at our Event &amp; Conference Center, NJS Royale is preparing to welcome you. Register your interest for priority updates and early reservation access.
         </p>
 
-        {/* Dual brand columns — logo + label + button per brand */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-0 mb-16">
+        {/* Dual brand columns — logo + label + button, each brand self-contained */}
+        <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-gold/20 gap-10 md:gap-0 mb-16">
 
           {/* Beach Resort */}
-          <div className="flex flex-col items-center gap-5 md:pr-12 md:border-r md:border-gold/20">
+          <div className="flex flex-col items-center gap-5 md:px-10">
             <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
               <div className="relative w-[96px] h-[96px]">
                 <Image
@@ -61,14 +61,14 @@ export default function BookCTA() {
             </p>
             <a
               href="#"
-              className="w-full text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Enquire About the Resort
             </a>
           </div>
 
           {/* Event & Conference Center */}
-          <div className="flex flex-col items-center gap-5 md:pl-12">
+          <div className="flex flex-col items-center gap-5 md:px-10">
             <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
               <div className="relative w-[96px] h-[96px]">
                 <Image
@@ -84,7 +84,7 @@ export default function BookCTA() {
             </p>
             <a
               href="#"
-              className="w-full text-center border border-white text-white px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="w-full max-w-[320px] text-center border border-white text-white px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Plan an Event
             </a>
