@@ -23,7 +23,7 @@ export default function Navbar() {
       }`}
     >
       <a href="#" className="flex items-center gap-3">
-        <div className="relative w-10 h-10 flex-shrink-0 rounded-sm overflow-hidden">
+        <div className="relative w-10 h-10 md:w-14 md:h-14 flex-shrink-0 rounded-sm overflow-hidden">
           <Image
             src="/njs-logos/njs-royale-logo-gold-dark.jpg"
             alt="NJS Royale"
