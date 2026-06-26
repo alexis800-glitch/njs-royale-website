@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
-const links = ['About', 'Rooms', 'Amenities', 'Gallery']
+const links = ['About', 'Rooms', 'Amenities', 'Gallery', 'Events']
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
