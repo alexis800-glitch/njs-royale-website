@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 const stats = [
-  { number: '300', label: 'Atlantic-Facing Rooms' },
+  { number: 'Coastal', label: 'Resort Suites' },
   { number: '5★', label: 'Five-Star Standard' },
   { number: '4', label: 'Signature Restaurants' },
   { number: '∞', label: 'Horizon Views' },
