@@ -64,7 +64,7 @@ export default function Hero() {
         </h1>
 
         <p className="text-white/65 text-lg font-light leading-relaxed max-w-lg mb-10 font-[family-name:var(--font-inter)]">
-          300 ocean-facing rooms perched above Nigeria's Atlantic coast — where the horizon belongs to you.
+          A private coastal escape where refined hospitality meets the Atlantic.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-none sm:w-auto">
