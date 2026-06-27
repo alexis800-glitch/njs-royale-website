@@ -58,7 +58,7 @@ export default function Navbar() {
         href="#enquire"
         className="bg-gold text-navy text-[10px] uppercase tracking-wider font-semibold px-4 py-2.5 md:px-6 md:py-3 md:tracking-widest hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap"
       >
-        Enquire Now
+        Book Now
       </a>
     </nav>
   )

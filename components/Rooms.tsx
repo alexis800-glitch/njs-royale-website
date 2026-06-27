@@ -118,7 +118,7 @@ export default function Rooms() {
                   href="#enquire"
                   className="flex items-center justify-between text-gold text-[11px] uppercase tracking-[2px] hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)] pt-1"
                 >
-                  Enquire About This Room
+                  Book This Room
                   <ArrowRight size={13} strokeWidth={1.5} />
                 </a>
               </div>

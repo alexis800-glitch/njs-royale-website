@@ -25,14 +25,14 @@ export default function BookCTA() {
         className="max-w-[760px] mx-auto text-center"
       >
         <p className="text-gold text-[10px] uppercase tracking-[4px] mb-5 font-[family-name:var(--font-inter)]">
-          Get in Touch
+          Make a Reservation
         </p>
 
         <h2
           className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-6"
           style={{ fontSize: 'clamp(36px, 5vw, 60px)' }}
         >
-          Plan Your
+          Book Your
           <br />
           <em className="text-gold italic">NJS Royale Experience</em>
         </h2>
@@ -63,7 +63,7 @@ export default function BookCTA() {
               href="#"
               className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Enquire About the Resort
+              Book Your Stay
             </a>
           </div>
 
@@ -91,6 +91,11 @@ export default function BookCTA() {
           </div>
 
         </div>
+
+        <p className="text-white/30 text-[11px] text-center leading-relaxed font-[family-name:var(--font-inter)] mb-12 italic">
+          Full reservation processing and online payment will be activated in Phase Two —
+          our reservations team is available now to assist with priority bookings.
+        </p>
 
         <div className="border-t border-white/7 pt-12 grid md:grid-cols-3 gap-8">
           {info.map(({ Icon, label, value }) => (
