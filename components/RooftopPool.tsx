@@ -42,7 +42,7 @@ export default function RooftopPool() {
 
         {/* Heading overlaid on image */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <p className="text-gold text-[9px] uppercase tracking-[5px] mb-4 font-[family-name:var(--font-inter)]">
+          <p className="text-gold text-[10px] uppercase tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
             Rooftop Experience
           </p>
           <h2
@@ -94,7 +94,7 @@ export default function RooftopPool() {
           variants={fadeUp(0.15)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="text-center text-white/30 text-sm leading-loose max-w-xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
+          className="text-center text-white/40 text-sm leading-loose max-w-xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
         >
           Poolside recliners, attentive attendant service, and direct access to the rooftop international kitchen — every element conceived for unhurried luxury above the Atlantic.
         </motion.p>
@@ -121,7 +121,7 @@ export default function RooftopPool() {
               <div className="font-[family-name:var(--font-cormorant)] text-gold text-3xl font-light mb-1 leading-none">
                 {stat}
               </div>
-              <div className="text-white/30 text-[9px] uppercase tracking-[3px] mt-2 font-[family-name:var(--font-inter)]">
+              <div className="text-white/45 text-[10px] uppercase tracking-[2px] mt-2 font-[family-name:var(--font-inter)]">
                 {label}
               </div>
             </div>

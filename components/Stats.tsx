@@ -38,7 +38,7 @@ export default function Stats() {
             <div className="font-[family-name:var(--font-cormorant)] text-gold text-5xl font-light mb-2">
               {stat.number}
             </div>
-            <div className="text-white/35 text-[10px] tracking-[3px] uppercase font-[family-name:var(--font-inter)]">
+            <div className="text-white/50 text-[10px] tracking-[3px] uppercase font-[family-name:var(--font-inter)]">
               {stat.label}
             </div>
           </motion.div>

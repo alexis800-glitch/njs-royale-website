@@ -56,7 +56,7 @@ export default function BookCTA() {
                 />
               </div>
             </div>
-            <p className="text-white/35 text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+            <p className="text-white/50 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
               Beach Resort
             </p>
             <a
@@ -79,7 +79,7 @@ export default function BookCTA() {
                 />
               </div>
             </div>
-            <p className="text-white/35 text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+            <p className="text-white/50 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
               Event &amp; Conference Center
             </p>
             <a
@@ -98,7 +98,7 @@ export default function BookCTA() {
               <div className="flex justify-center mb-3">
                 <Icon size={18} strokeWidth={1.25} className="text-gold/60" />
               </div>
-              <div className="text-white/30 text-[9px] uppercase tracking-[3px] mb-1 font-[family-name:var(--font-inter)]">
+              <div className="text-white/45 text-[10px] uppercase tracking-[2px] mb-1 font-[family-name:var(--font-inter)]">
                 {label}
               </div>
               <div className="text-white/55 text-sm font-[family-name:var(--font-inter)]">

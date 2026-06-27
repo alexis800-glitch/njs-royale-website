@@ -13,25 +13,25 @@ export default function Footer() {
               className="object-cover"
             />
           </div>
-          <span className="font-[family-name:var(--font-cormorant)] text-white/40 text-lg">
+          <span className="font-[family-name:var(--font-cormorant)] text-white/55 text-lg">
             NJS Royale
           </span>
         </div>
 
-        <p className="text-white/25 text-[11px] font-[family-name:var(--font-inter)] text-center">
+        <p className="text-white/40 text-[11px] font-[family-name:var(--font-inter)] text-center">
           © {new Date().getFullYear()} NJS Royale Beach Resort. All rights reserved.
         </p>
 
         <div className="flex gap-6">
           <a
             href="#"
-            className="text-white/30 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            className="text-white/45 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
             Privacy
           </a>
           <a
             href="#"
-            className="text-white/30 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            className="text-white/45 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
             Terms
           </a>

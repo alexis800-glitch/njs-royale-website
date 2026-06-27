@@ -61,7 +61,7 @@ export default function EventCenter() {
             </div>
           </div>
 
-          <p className="text-gold text-[10px] uppercase tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
+          <p className="text-gold text-[10px] uppercase tracking-[2px] md:tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
             NJS Royale Event &amp; Conference Center
           </p>
 
@@ -74,7 +74,7 @@ export default function EventCenter() {
             <em className="text-gold italic">Atlantic Setting</em>
           </h2>
 
-          <p className="text-white/40 text-base font-[family-name:var(--font-inter)] max-w-xl mx-auto">
+          <p className="text-white/50 text-base font-[family-name:var(--font-inter)] max-w-xl mx-auto">
             From intimate private celebrations to large-scale international conferences, NJS Royale Event &amp; Conference Center provides Nigeria's premier coastal event destination.
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function EventCenter() {
               <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl mb-3 leading-snug">
                 {title}
               </h3>
-              <p className="text-white/40 text-sm leading-relaxed font-[family-name:var(--font-inter)]">
+              <p className="text-white/50 text-sm leading-relaxed font-[family-name:var(--font-inter)]">
                 {desc}
               </p>
             </motion.div>
@@ -120,7 +120,7 @@ export default function EventCenter() {
           </a>
           <a
             href="#enquire"
-            className="w-full sm:w-auto text-center border border-gold/40 text-gold px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            className="w-full sm:w-auto text-center border border-gold/60 text-gold px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
             Request a Proposal
           </a>

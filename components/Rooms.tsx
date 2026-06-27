@@ -63,7 +63,7 @@ export default function Rooms() {
           >
             Rooms &amp; Suites
           </h2>
-          <p className="text-white/35 text-base font-[family-name:var(--font-inter)] max-w-md mx-auto">
+          <p className="text-white/50 text-base font-[family-name:var(--font-inter)] max-w-md mx-auto">
             Every room and suite at NJS Royale is positioned to frame the Atlantic. Reservations opening soon.
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function Rooms() {
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                 />
                 <div className="absolute top-4 left-4 bg-[#0A1628]/80 backdrop-blur-sm px-3 py-1">
-                  <span className="text-gold text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+                  <span className="text-gold text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
                     {room.category}
                   </span>
                 </div>
@@ -101,12 +101,12 @@ export default function Rooms() {
                 <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl leading-tight">
                   {room.name}
                 </h3>
-                <p className="text-white/40 text-sm leading-relaxed font-[family-name:var(--font-inter)] flex-1">
+                <p className="text-white/50 text-sm leading-relaxed font-[family-name:var(--font-inter)] flex-1">
                   {room.description}
                 </p>
 
                 {/* Meta */}
-                <div className="flex items-center gap-3 pt-2 border-t border-gold/10 text-white/30 text-[10px] font-[family-name:var(--font-inter)]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-2 border-t border-gold/10 text-white/45 text-[10px] font-[family-name:var(--font-inter)]">
                   <span>{room.bed}</span>
                   <span className="text-gold/25">·</span>
                   <Users size={11} strokeWidth={1.5} className="text-gold/50 shrink-0" />
@@ -116,7 +116,7 @@ export default function Rooms() {
                 {/* CTA */}
                 <a
                   href="#enquire"
-                  className="flex items-center justify-between text-gold text-[10px] uppercase tracking-[3px] hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)] pt-1"
+                  className="flex items-center justify-between text-gold text-[11px] uppercase tracking-[2px] hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)] pt-1"
                 >
                   Enquire About This Room
                   <ArrowRight size={13} strokeWidth={1.5} />
@@ -127,7 +127,7 @@ export default function Rooms() {
         </motion.div>
 
         <div className="text-center mt-12">
-          <p className="text-white/20 text-[9px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+          <p className="text-white/30 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
             Full room catalogue available upon request
           </p>
         </div>
