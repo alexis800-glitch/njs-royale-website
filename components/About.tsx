@@ -96,17 +96,16 @@ export default function About() {
         >
           <div className="flex flex-col sm:flex-row items-center gap-10 max-w-3xl mx-auto">
 
-            {/* Portrait — multiply blend dissolves the white bg into the cream section */}
-            <div
-              className="relative w-44 h-52 sm:w-48 sm:h-56 flex-shrink-0 overflow-hidden"
-              style={{ mixBlendMode: 'multiply' }}
-            >
-              <Image
-                src="/images/njs-reference/nicole-shuler-founder.png"
-                alt="Nicole Shuler — Founder, NJS Royale"
-                fill
-                className="object-cover object-top"
-              />
+            {/* Portrait card — white ground, gold border, shadow */}
+            <div className="w-44 sm:w-52 mx-auto sm:mx-0 flex-shrink-0 bg-white border border-gold/25 shadow-md rounded-sm p-2.5">
+              <div className="relative w-full h-52 sm:h-60 overflow-hidden">
+                <Image
+                  src="/images/njs-reference/nicole-shuler-founder.png"
+                  alt="Nicole Shuler — Founder, NJS Royale"
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </div>
 
             {/* Text */}
