@@ -6,10 +6,12 @@ import About from '@/components/About'
 import Rooms from '@/components/Rooms'
 import RooftopPool from '@/components/RooftopPool'
 import Amenities from '@/components/Amenities'
+import ResortExperiences from '@/components/ResortExperiences'
 import Gallery from '@/components/Gallery'
 import Quote from '@/components/Quote'
 import EventCenter from '@/components/EventCenter'
 import Testimonials from '@/components/Testimonials'
+import DigitalPlatform from '@/components/DigitalPlatform'
 import BookCTA from '@/components/BookCTA'
 import Footer from '@/components/Footer'
 
@@ -24,10 +26,12 @@ export default function Home() {
       <Rooms />
       <RooftopPool />
       <Amenities />
+      <ResortExperiences />
       <Gallery />
       <Quote />
       <EventCenter />
       <Testimonials />
+      <DigitalPlatform />
       <BookCTA />
       <Footer />
     </main>
