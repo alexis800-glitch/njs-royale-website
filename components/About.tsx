@@ -14,7 +14,7 @@ export default function About() {
   const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
 
   return (
-    <section id="about" className="bg-[#F5F0E8] pt-32 pb-20 px-8" ref={ref}>
+    <section id="about" className="bg-[#F5F0E8] pt-32 pb-10 px-8" ref={ref}>
       <div className="max-w-6xl mx-auto">
 
         {/* Main 2-col layout */}

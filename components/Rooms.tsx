@@ -50,7 +50,7 @@ export default function Rooms() {
   const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
 
   return (
-    <section id="rooms" className="bg-[#0A1628] py-32 px-8">
+    <section id="rooms" className="bg-[#0A1628] pt-16 pb-32 px-8">
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-16">
