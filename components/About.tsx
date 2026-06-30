@@ -14,7 +14,7 @@ export default function About() {
   const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
 
   return (
-    <section id="about" className="bg-[#F5F0E8] py-32 px-8" ref={ref}>
+    <section id="about" className="bg-[#F5F0E8] pt-32 pb-20 px-8" ref={ref}>
       <div className="max-w-6xl mx-auto">
 
         {/* Main 2-col layout */}
@@ -92,9 +92,9 @@ export default function About() {
           variants={fadeUp(0.3)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="mt-20 pt-16 border-t border-gold/20"
+          className="mt-10 pt-8 border-t border-gold/20"
         >
-          <div className="flex flex-col sm:flex-row items-center gap-10 max-w-3xl">
+          <div className="flex flex-col sm:flex-row items-center gap-10 max-w-3xl mx-auto">
 
             {/* Portrait — multiply blend dissolves the white bg into the cream section */}
             <div
