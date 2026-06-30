@@ -94,15 +94,18 @@ export default function About() {
           animate={isInView ? 'visible' : 'hidden'}
           className="mt-20 pt-16 border-t border-gold/20"
         >
-          <div className="flex flex-col sm:flex-row items-start gap-7 max-w-2xl">
+          <div className="flex flex-col sm:flex-row items-center gap-10 max-w-3xl">
 
-            {/* Portrait */}
-            <div className="relative w-[88px] h-[104px] flex-shrink-0 overflow-hidden border border-gold/15">
+            {/* Portrait — multiply blend dissolves the white bg into the cream section */}
+            <div
+              className="relative w-44 h-52 sm:w-48 sm:h-56 flex-shrink-0 overflow-hidden"
+              style={{ mixBlendMode: 'multiply' }}
+            >
               <Image
                 src="/images/njs-reference/nicole-shuler-founder.png"
                 alt="Nicole Shuler — Founder, NJS Royale"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
 
@@ -111,7 +114,7 @@ export default function About() {
               <p className="text-gold text-[10px] uppercase tracking-[3px] mb-2 font-[family-name:var(--font-inter)]">
                 Founder&apos;s Vision
               </p>
-              <p className="font-[family-name:var(--font-cormorant)] text-navy text-xl italic mb-4 leading-snug">
+              <p className="font-[family-name:var(--font-cormorant)] text-navy text-2xl italic mb-4 leading-snug">
                 Nicole Shuler
               </p>
               <p className="text-navy/55 text-base leading-relaxed font-[family-name:var(--font-inter)]">
