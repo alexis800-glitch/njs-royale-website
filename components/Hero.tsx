@@ -63,6 +63,10 @@ export default function Hero() {
           <em className="text-gold not-italic italic">Beach Resort</em>
         </h1>
 
+        <p className="font-[family-name:var(--font-cormorant)] text-gold/80 italic text-2xl sm:text-3xl font-light mb-6">
+          Where Paradise Meets Prestige
+        </p>
+
         <p className="text-white/65 text-lg font-light leading-relaxed max-w-lg mb-10 font-[family-name:var(--font-inter)]">
           A private coastal escape where refined hospitality meets the Atlantic.
         </p>

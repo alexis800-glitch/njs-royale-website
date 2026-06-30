@@ -3,12 +3,12 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
-import { MapPin, CalendarDays, Mail } from 'lucide-react'
+import { MapPin, Phone, Mail } from 'lucide-react'
 
 const info = [
-  { Icon: MapPin,       label: 'Location',     value: 'Atlantic Coastline, Nigeria' },
-  { Icon: CalendarDays, label: 'Reservations', value: 'Opening soon' },
-  { Icon: Mail,         label: 'Enquiries',    value: 'Contact details to be confirmed' },
+  { Icon: MapPin, label: 'Location',  value: 'Richland Garden Estate, Ibeju-Lekki, Lagos' },
+  { Icon: Phone,  label: 'Telephone', value: '07075334158' },
+  { Icon: Mail,   label: 'Enquiries', value: 'info@njsroyale.com.ng' },
 ]
 
 export default function BookCTA() {

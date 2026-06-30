@@ -9,29 +9,29 @@ const rooms = [
   {
     name: 'Deluxe Ocean View',
     category: 'Deluxe',
-    image: '/images/room-deluxe.jpg',
+    image: '/images/njs-reference/njs-suite-render.png',
     description:
-      'A refined Atlantic-facing room with a private balcony, king bed, and curated amenities positioned for the finest coastal experience.',
+      'A refined Atlantic-facing suite with a private balcony, king bed, and curated amenities designed for the finest coastal experience.',
     bed: 'King Bed',
     occupancy: 'Up to 2 guests',
   },
   {
     name: 'Junior Suite',
     category: 'Suite',
-    image: '/images/room-suite.jpg',
+    image: '/images/njs-reference/njs-presidential-suite-render.webp',
     description:
       'A generously appointed suite with a separate living area, spa-inspired en-suite bathroom, and sweeping panoramic sea views from every angle.',
     bed: 'King Bed',
     occupancy: 'Up to 2 guests',
   },
   {
-    name: 'Penthouse Suite',
-    category: 'Penthouse',
-    image: '/images/room-penthouse.jpg',
+    name: 'Presidential 4-Bedroom Suite',
+    category: 'Presidential',
+    image: '/images/njs-reference/njs-presidential-suite-alt.png',
     description:
-      'The pinnacle of NJS Royale. A private full-floor suite with wraparound Atlantic terraces, dedicated butler service, and a personal plunge pool.',
-    bed: 'King Bed · Private Plunge Pool',
-    occupancy: 'Up to 4 guests',
+      'Four lavishly appointed king-bed rooms, each with a private en-suite. Features a gourmet kitchen, formal dining, home theater, private rooftop terrace with infinity pool, and dedicated butler service.',
+    bed: 'Four King Beds · Private Rooftop Infinity Pool',
+    occupancy: 'Up to 4 adults',
   },
 ]
 
