@@ -5,6 +5,7 @@ import Stats from '@/components/Stats'
 import About from '@/components/About'
 import Rooms from '@/components/Rooms'
 import RooftopPool from '@/components/RooftopPool'
+import ConceptVideo from '@/components/ConceptVideo'
 import Amenities from '@/components/Amenities'
 import ResortExperiences from '@/components/ResortExperiences'
 import Gallery from '@/components/Gallery'
@@ -25,6 +26,7 @@ export default function Home() {
       <About />
       <Rooms />
       <RooftopPool />
+      <ConceptVideo />
       <Amenities />
       <ResortExperiences />
       <Gallery />
