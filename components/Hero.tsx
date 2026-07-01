@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 const slides = [
-  '/images/exterior-entrance-facade-01.png',
   '/images/grand-entrance-hall-01.png',
   '/images/hero-3.jpg',
   '/images/hero-4.jpg',

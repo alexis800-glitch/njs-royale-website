@@ -15,11 +15,9 @@ const itemVariants = {
 }
 
 const images = [
-  { src: '/images/grand-entrance-hall-01.png',        alt: 'NJS Royale grand entrance hall',    span: 'large' },
-  { src: '/images/exterior-entrance-facade-01.png',   alt: 'NJS Royale entrance facade',        span: 'small' },
-  { src: '/images/double-height-grand-lounge-01.png', alt: 'NJS Royale grand lounge interior',  span: 'small' },
-  { src: '/images/ground-floor-bar-01.png',           alt: 'NJS Royale ground floor bar',       span: 'half' },
-  { src: '/images/gallery-7.jpg',                     alt: 'NJS Royale hotel corridor',         span: 'half' },
+  { src: '/images/grand-entrance-hall-01.png',        alt: 'NJS Royale grand entrance hall'   },
+  { src: '/images/double-height-grand-lounge-01.png', alt: 'NJS Royale grand lounge interior' },
+  { src: '/images/ground-floor-bar-01.png',           alt: 'NJS Royale ground floor bar'      },
 ]
 
 export default function Gallery() {
@@ -47,29 +45,20 @@ export default function Gallery() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          {/* Desktop editorial mosaic */}
+          {/* Desktop editorial mosaic — large feature left, two stacked right */}
           <div className="hidden md:block">
             <div
               className="grid gap-2"
-              style={{ gridTemplateColumns: '1fr 1fr 1fr', gridTemplateRows: '300px 300px' }}
+              style={{ gridTemplateColumns: '3fr 2fr', gridTemplateRows: '300px 300px' }}
             >
               <motion.div
                 variants={itemVariants}
                 className="relative overflow-hidden group"
-                style={{ gridColumn: '1 / 3', gridRow: '1 / 3' }}
+                style={{ gridRow: '1 / 3' }}
               >
                 <Image
                   src="/images/grand-entrance-hall-01.png"
                   alt="NJS Royale grand entrance hall"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
-                />
-              </motion.div>
-
-              <motion.div variants={itemVariants} className="relative overflow-hidden group">
-                <Image
-                  src="/images/exterior-entrance-facade-01.png"
-                  alt="NJS Royale entrance facade"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
                 />
@@ -83,21 +72,11 @@ export default function Gallery() {
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
                 />
               </motion.div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-2 mt-2" style={{ height: '260px' }}>
               <motion.div variants={itemVariants} className="relative overflow-hidden group">
                 <Image
                   src="/images/ground-floor-bar-01.png"
                   alt="NJS Royale ground floor bar"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
-                />
-              </motion.div>
-              <motion.div variants={itemVariants} className="relative overflow-hidden group">
-                <Image
-                  src="/images/gallery-7.jpg"
-                  alt="NJS Royale hotel corridor"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
                 />
