@@ -50,37 +50,34 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
-        <p className="text-gold text-xs uppercase tracking-[4px] sm:tracking-[6px] mb-6 font-[family-name:var(--font-inter)]">
-          Atlantic Oceanfront • Nigeria
+        <p className="text-gold/80 text-[10px] uppercase tracking-[6px] mb-7 font-[family-name:var(--font-inter)]">
+          Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
         </p>
 
         <h1
-          className="font-[family-name:var(--font-cormorant)] text-white leading-none mb-8"
-          style={{ fontSize: 'clamp(48px, 9vw, 100px)' }}
+          className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-8"
+          style={{ fontSize: 'clamp(38px, 7vw, 88px)' }}
         >
-          NJS Royale
+          A Private Oceanfront Escape,
           <br />
-          <em className="text-gold not-italic italic">Beach Resort</em>
+          <em className="text-gold italic">Crafted for Prestige</em>
         </h1>
 
-        <p className="font-[family-name:var(--font-cormorant)] text-gold/80 italic text-2xl sm:text-3xl font-light mb-6">
-          Where Paradise Meets Prestige
-        </p>
-
-        <p className="text-white/65 text-lg font-light leading-relaxed max-w-lg mb-10 font-[family-name:var(--font-inter)]">
-          A private coastal escape where refined hospitality meets the Atlantic.
+        <p className="text-white/55 text-base sm:text-lg font-light leading-relaxed max-w-2xl mb-12 font-[family-name:var(--font-inter)]">
+          NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
+          hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-none sm:w-auto">
           <a
-            href="#rooms"
-            className="w-full sm:w-auto text-center bg-gold text-navy px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            href="#about"
+            className="w-full sm:w-auto text-center bg-gold text-navy px-10 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
-            Explore the Resort →
+            Explore the Resort
           </a>
           <a
             href="#enquire"
-            className="w-full sm:w-auto text-center border border-white text-white px-8 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            className="w-full sm:w-auto text-center border border-white/50 text-white px-10 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
             Register Interest
           </a>

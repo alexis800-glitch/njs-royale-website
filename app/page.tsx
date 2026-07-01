@@ -1,16 +1,13 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
-import BookingBar from '@/components/BookingBar'
-import Stats from '@/components/Stats'
 import About from '@/components/About'
 import Rooms from '@/components/Rooms'
+import ResortExperiences from '@/components/ResortExperiences'
 import RooftopPool from '@/components/RooftopPool'
 import ConceptVideo from '@/components/ConceptVideo'
 import Amenities from '@/components/Amenities'
-import ResortExperiences from '@/components/ResortExperiences'
-import Gallery from '@/components/Gallery'
-import Quote from '@/components/Quote'
 import EventCenter from '@/components/EventCenter'
+import Gallery from '@/components/Gallery'
 import Testimonials from '@/components/Testimonials'
 import DigitalPlatform from '@/components/DigitalPlatform'
 import BookCTA from '@/components/BookCTA'
@@ -21,17 +18,14 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
-      <BookingBar />
-      <Stats />
       <About />
       <Rooms />
+      <ResortExperiences />
       <RooftopPool />
       <ConceptVideo />
       <Amenities />
-      <ResortExperiences />
-      <Gallery />
-      <Quote />
       <EventCenter />
+      <Gallery />
       <Testimonials />
       <DigitalPlatform />
       <BookCTA />

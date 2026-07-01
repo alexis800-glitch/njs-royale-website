@@ -25,16 +25,16 @@ export default function BookCTA() {
         className="max-w-[760px] mx-auto text-center"
       >
         <p className="text-gold text-[10px] uppercase tracking-[4px] mb-5 font-[family-name:var(--font-inter)]">
-          Make a Reservation
+          Register Your Interest
         </p>
 
         <h2
           className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-6"
           style={{ fontSize: 'clamp(36px, 5vw, 60px)' }}
         >
-          Book Your
+          Begin Your
           <br />
-          <em className="text-gold italic">NJS Royale Experience</em>
+          <em className="text-gold italic">NJS Royale Journey</em>
         </h2>
 
         <p className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]" style={{ marginBottom: '3rem' }}>
@@ -63,7 +63,7 @@ export default function BookCTA() {
               href="#"
               className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Book Your Stay
+              Register Interest
             </a>
           </div>
 
