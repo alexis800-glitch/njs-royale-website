@@ -12,8 +12,10 @@ const slides = [
 ]
 
 export default function Hero() {
-  const [active, setActive] = useState(0)
+  const [active, setActive]         = useState(0)
+  const [videoError, setVideoError] = useState(false)
 
+  // Slideshow timer runs in background — activates instantly if video fails
   useEffect(() => {
     const id = setInterval(() => {
       setActive((prev) => (prev + 1) % slides.length)
@@ -23,7 +25,23 @@ export default function Hero() {
 
   return (
     <section className="relative h-screen overflow-hidden">
-      {slides.map((src, i) => (
+
+      {/* ── Primary background: cinematic hero video ── */}
+      {!videoError && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={() => setVideoError(true)}
+        >
+          <source src="/images/njs-oceanfront-hero.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* ── Fallback: image slideshow (shown if video cannot load) ── */}
+      {videoError && slides.map((src, i) => (
         <div
           key={src}
           className="absolute inset-0 transition-opacity duration-[1500ms] ease-in-out"
@@ -39,16 +57,16 @@ export default function Hero() {
         </div>
       ))}
 
-      {/* Gradient overlay */}
+      {/* Dark luxury overlay */}
       <div
         className="absolute inset-0 z-10"
         style={{
           background:
-            'linear-gradient(135deg, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.30) 50%, rgba(10,22,40,0.75) 100%)',
+            'linear-gradient(to bottom, rgba(6,14,26,0.45) 0%, rgba(6,14,26,0.20) 45%, rgba(6,14,26,0.70) 100%)',
         }}
       />
 
-      {/* Content */}
+      {/* Hero content */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
         <p className="text-gold/80 text-[10px] uppercase tracking-[6px] mb-7 font-[family-name:var(--font-inter)]">
           Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
@@ -84,21 +102,23 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Slide dots */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            className="h-[3px] rounded-full transition-all duration-500"
-            style={{
-              width: i === active ? '24px' : '8px',
-              background: i === active ? '#C9A84C' : 'rgba(255,255,255,0.3)',
-            }}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {/* Slide dots — only visible in slideshow fallback mode */}
+      {videoError && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className="h-[3px] rounded-full transition-all duration-500"
+              style={{
+                width: i === active ? '24px' : '8px',
+                background: i === active ? '#C9A84C' : 'rgba(255,255,255,0.3)',
+              }}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Scroll indicator */}
       <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
@@ -107,6 +127,7 @@ export default function Hero() {
         </span>
         <span className="text-gold animate-bounce text-lg">↓</span>
       </div>
+
     </section>
   )
 }
