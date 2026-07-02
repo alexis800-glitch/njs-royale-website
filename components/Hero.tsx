@@ -31,7 +31,7 @@ export default function Hero() {
           loop
           muted
           playsInline
-          poster="/images/grand-entrance-hall-01.png"
+          poster="/images/njs-hero-branded-poster.png"
           className="absolute inset-0 w-full h-full object-cover"
           onError={() => setVideoError(true)}
         >
