@@ -34,17 +34,47 @@ All concept imagery and generated visuals of the main hotel building must commun
 
 ## 3. Architectural Reference Direction
 
-The approved visual reference (shared 2026-07-01) shows:
+**The authoritative building reference is the client's actual building render:**
+`public/images/njs-reference/njs-real-building-reference-01.png`
+(secondary angle: `njs-real-building-reference-02.png`)
 
-- Modern multi-storey hotel structure
-- Glass curtain walls and floor-to-ceiling glazing
-- Tiered balconies on upper floors
-- Stone and concrete cladding — refined, not cold
-- Tropical landscaping at ground level (palms, manicured planting)
-- Warm internal lighting visible through glazing at dusk/evening
-- Clean, contemporary lines with a premium hospitality feel
+All AI-generated building visuals must preserve from this reference:
 
-Use this as the template for any AI-generated building image or video.
+- The overall massing and proportions — same building, not a lookalike
+- The long horizontal accommodation wing
+- The rhythmic rows of recessed balconies
+- The tall glass side tower / vertical circulation feature
+- Refined stone and concrete cladding panels
+- The large glazed double-height podium base with warm interior lighting
+- Clean, contemporary architectural lines
+
+What generated media may change: the *setting* (Atlantic beachfront, tropical
+landscaping, lighting mood) — never the building itself.
+
+### Logo / signage placement
+
+- The NJS logo/signage sits at the **top of the building** — upper façade /
+  rooftop level of the main block
+- It must NOT sit on the lower side wall or podium
+- Style: premium hotel identity mark — clearly visible, elegant, large,
+  classy and believable; never flashy or oversized
+
+**On-building signage is a post-production / final architectural render item.**
+AI video generation must NOT force signage or lettering onto the building:
+tested 2026-07-02, signage prompts consistently trigger platform moderation
+("nsfw" false positives) and AI-rendered text is unreliable regardless.
+For Phase 1, the website branding, navbar logo, and hero copy carry the
+brand identity — no generated signage required.
+
+### Pool rule — rooftop only
+
+- The **rooftop infinity pool is the resort's only signature pool experience**
+- NO separate ground-level swimming pool at the base or front of the building
+  in any generated visual
+- Ground level must read as landscaped arrival: tropical gardens, palms,
+  lit walkways, beachfront greenery, elegant frontage, access paths to shore
+- If a pool appears in a hero visual, it is the rooftop pool — subtle and
+  integrated into the top of the building, never competing at ground level
 
 ---
 
@@ -136,9 +166,19 @@ stone and concrete cladding, tropical landscaping, Atlantic Ocean waterfront,
 commanding premium resort presence, cinematic dusk lighting
 ```
 
+Always pass `njs-real-building-reference-01.png` as the reference image and
+instruct the model to preserve the exact building architecture (see Section 3).
+
+Additionally always include:
+- Elegant NJS signage at the top of the building (upper façade / rooftop level)
+- Rooftop infinity pool subtly integrated into the top of the building
+- Explicitly: "no ground-level swimming pool anywhere in the scene"
+- Ground level: landscaped arrival, gardens, palms, lit paths to the shoreline
+
 Do not include:
 - "boutique", "intimate", "villa", "bungalow", "low-rise", "small hotel"
 - Anything that implies a smaller-than-9-floor structure for the main building
+- Any separate pool, pool deck, or water feature at the base of the building
 
 ---
 

@@ -35,7 +35,13 @@ export default function Hero() {
           className="absolute inset-0 w-full h-full object-cover"
           onError={() => setVideoError(true)}
         >
-          <source src="/images/njs-oceanfront-hero-v2.mp4" type="video/mp4" />
+          <source src="/images/njs-oceanfront-hero-v4.mp4" type="video/mp4" />
+          {/* Backup video if v4 fails; slideshow takes over if both fail */}
+          <source
+            src="/images/njs-oceanfront-hero-v2.mp4"
+            type="video/mp4"
+            onError={() => setVideoError(true)}
+          />
         </video>
       )}
 
