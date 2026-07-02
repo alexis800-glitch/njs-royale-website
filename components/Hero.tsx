@@ -73,20 +73,20 @@ export default function Hero() {
 
       {/* Hero content */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
-        <p className="text-gold/80 text-[10px] uppercase tracking-[4px] sm:tracking-[6px] leading-relaxed mb-9 sm:mb-7 font-[family-name:var(--font-inter)]">
+        <p className="text-gold/80 text-[9px] sm:text-[10px] uppercase tracking-[3px] sm:tracking-[6px] leading-relaxed mb-10 sm:mb-7 font-[family-name:var(--font-inter)]">
           Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
         </p>
 
         <h1
-          className="font-[family-name:var(--font-cormorant)] text-white leading-[1.28] sm:leading-tight mb-8"
-          style={{ fontSize: 'clamp(34px, 7vw, 88px)' }}
+          className="font-[family-name:var(--font-cormorant)] text-white leading-[1.3] sm:leading-tight mb-9 sm:mb-8"
+          style={{ fontSize: 'clamp(30px, 7vw, 88px)' }}
         >
           A Private Oceanfront Escape,
           <br className="hidden sm:block" />
-          <em className="text-gold italic block sm:inline mt-3 sm:mt-0">Crafted for Prestige</em>
+          <em className="text-gold italic block sm:inline mt-4 sm:mt-0">Crafted for Prestige</em>
         </h1>
 
-        <p className="text-white/55 text-base sm:text-lg font-light leading-relaxed max-w-2xl mb-12 font-[family-name:var(--font-inter)]">
+        <p className="text-white/55 text-[15px] sm:text-lg font-light leading-[1.6] sm:leading-relaxed max-w-xs sm:max-w-2xl mb-12 font-[family-name:var(--font-inter)]">
           NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
           hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
         </p>
