@@ -94,22 +94,24 @@ export default function About() {
           animate={isInView ? 'visible' : 'hidden'}
           className="mt-10 pt-8 border-t border-gold/20"
         >
-          <div className="flex flex-col sm:flex-row items-center gap-10 max-w-3xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-10 max-w-3xl mx-auto">
 
-            {/* Portrait card — white ground, gold border, shadow */}
+            {/* Portrait card — white ground, gold border, shadow.
+                Box aspect matches the photo (575x666) so it fills edge-to-edge
+                with no letterbox bands inside the card. */}
             <div className="w-44 sm:w-52 mx-auto sm:mx-0 flex-shrink-0 bg-white border border-gold/25 shadow-md rounded-sm p-2.5">
-              <div className="relative w-full h-52 sm:h-60 overflow-hidden">
+              <div className="relative w-full aspect-[575/666] overflow-hidden">
                 <Image
                   src="/images/njs-reference/nicole-shuler-founder.png"
                   alt="Nicole Shuler — Founder, NJS Royale"
                   fill
-                  className="object-contain"
+                  className="object-cover"
                 />
               </div>
             </div>
 
-            {/* Text */}
-            <div>
+            {/* Text — centered under the centered portrait on mobile */}
+            <div className="text-center sm:text-left">
               <p className="text-gold text-[10px] uppercase tracking-[3px] mb-2 font-[family-name:var(--font-inter)]">
                 Founder&apos;s Vision
               </p>
