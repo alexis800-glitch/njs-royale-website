@@ -73,17 +73,17 @@ export default function Hero() {
 
       {/* Hero content */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
-        <p className="text-gold/80 text-[10px] uppercase tracking-[6px] mb-7 font-[family-name:var(--font-inter)]">
+        <p className="text-gold/80 text-[10px] uppercase tracking-[4px] sm:tracking-[6px] leading-relaxed mb-9 sm:mb-7 font-[family-name:var(--font-inter)]">
           Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
         </p>
 
         <h1
-          className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-8"
-          style={{ fontSize: 'clamp(38px, 7vw, 88px)' }}
+          className="font-[family-name:var(--font-cormorant)] text-white leading-[1.28] sm:leading-tight mb-8"
+          style={{ fontSize: 'clamp(34px, 7vw, 88px)' }}
         >
           A Private Oceanfront Escape,
-          <br />
-          <em className="text-gold italic">Crafted for Prestige</em>
+          <br className="hidden sm:block" />
+          <em className="text-gold italic block sm:inline mt-3 sm:mt-0">Crafted for Prestige</em>
         </h1>
 
         <p className="text-white/55 text-base sm:text-lg font-light leading-relaxed max-w-2xl mb-12 font-[family-name:var(--font-inter)]">
@@ -125,8 +125,8 @@ export default function Hero() {
         </div>
       )}
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
+      {/* Scroll indicator — hidden on small screens where it crowds the CTAs */}
+      <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 hidden sm:flex flex-col items-center gap-2">
         <span className="text-white/40 text-[9px] uppercase tracking-[4px] font-[family-name:var(--font-inter)]">
           Discover
         </span>
