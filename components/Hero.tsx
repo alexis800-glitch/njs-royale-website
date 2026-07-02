@@ -5,8 +5,7 @@ import Image from 'next/image'
 
 const slides = [
   '/images/grand-entrance-hall-01.png',
-  '/images/hero-3.jpg',
-  '/images/hero-4.jpg',
+  '/images/njs-rooftop-infinity-pool-atlantic-view.png',
   '/images/ground-floor-bar-01.png',
 ]
 
@@ -32,6 +31,7 @@ export default function Hero() {
           loop
           muted
           playsInline
+          poster="/images/grand-entrance-hall-01.png"
           className="absolute inset-0 w-full h-full object-cover"
           onError={() => setVideoError(true)}
         >
