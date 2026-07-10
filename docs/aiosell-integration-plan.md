@@ -36,18 +36,32 @@ Aiosell is the source of truth for availability. Payment is taken on our side
 
 ## 2. Endpoint map
 
-### 2.1 Inbound — endpoints we expose (Aiosell calls us)
+### 2.1 Inbound — endpoint we expose (Aiosell calls us)
 
-All must respond `{ "success": true, "message": "..." }` and be idempotent
-(pure upserts), so replays are harmless. Every call is written to
-`webhook_logs` before processing.
+> **Correction (2026-07-10, implemented in Phase 1):** an earlier draft of
+> this plan specified four separate inbound routes. Per the official Aiosell
+> OTA docs, Aiosell POSTs **all four update types to the single base URL**
+> registered with them, so we expose **one** receiver and discriminate by
+> payload shape.
 
-| Endpoint | Payload (from Aiosell) | Action |
+**`POST /api/aiosell/webhook`** — must respond
+`{ "success": true, "message": "..." }` and be idempotent (pure upserts), so
+replays are harmless. Every call is written to `webhook_events` (raw payload
++ headers) before processing; processing failures are recorded there and
+still acknowledged with HTTP 200.
+
+Payload-shape discrimination:
+
+| Shape | Type | Action |
 |---|---|---|
-| `POST /api/aiosell/inventory` | `hotelCode`, `updates[] { startDate, endDate, rooms[] { roomCode, available } }` | Upsert availability per (roomCode, date) |
-| `POST /api/aiosell/rates` | `hotelCode`, `updates[] { startDate, endDate, rates[] { roomCode, rateplanCode, rate } }` | Upsert nightly rate per (rateplanCode, date) |
-| `POST /api/aiosell/inventory-restrictions` | inventory payload + per-room `restrictions {}` | Upsert room-level restrictions per (roomCode, date) |
-| `POST /api/aiosell/rate-restrictions` | `rates[] { roomCode, rateplanCode, restrictions {} }` | Upsert rateplan-level restrictions per (rateplanCode, date) |
+| `updates[].rooms[]`, no `restrictions` key | inventory | Upsert availability per (roomCode, date) |
+| `updates[].rooms[]` with `restrictions {}` | inventory_restrictions | Upsert room-level restrictions per (roomCode, date) — payload also carries `available`, so inventory is upserted too |
+| `updates[].rates[]` with a `rate` field | rates | Upsert nightly rate per (rateplanCode, date) |
+| `updates[].rates[]` with `restrictions {}`, no rate | rate_restrictions | Upsert rateplan-level restrictions per (rateplanCode, date) |
+
+Date ranges (`startDate` → `endDate`) are expanded **inclusively**, one row
+per day. Room and rateplan codes are matched case-insensitively; unknown
+codes are skipped and logged, never a 500.
 
 Restriction object fields (both restriction endpoints):
 `stopSell` (bool), `minimumStay` (int), `maximumStay`, `closeOnArrival` (bool),
@@ -55,9 +69,10 @@ Restriction object fields (both restriction endpoints):
 `maximumAdvanceReservation`, `exactStayArrival`, `minimumStayArrival`,
 `maximumStayArrival` (nullable unless set).
 
-Security on inbound endpoints (pending Aiosell confirmation of what they
-support): shared-secret header or URL token + `hotelCode` validation +
-optional IP allowlist. Secret values via environment variables only.
+Security on inbound endpoints: **Aiosell has confirmed Basic Auth is
+supported** (2026-07-10). Not enforced in the Phase 1 sandbox receiver —
+pending production enforcement/configuration. Credentials via environment
+variables only, plus `hotelCode` validation.
 
 ### 2.2 Outbound — endpoints we call
 
@@ -199,10 +214,13 @@ GUEST                    WEBSITE / DB                           AIOSELL
 ## 5. Architecture
 
 - **Frontend:** existing Next.js site; booking UI reads only the local mirror.
-- **API routes:** `app/api/aiosell/*` (4 receivers), `app/api/payments/webhook`
+- **API routes:** `app/api/aiosell/webhook` (single receiver, see §2.1), `app/api/payments/webhook`
   (signature-verified), internal booking routes. Deployed as Vercel functions.
-- **Database:** Supabase Postgres. Service-role key server-side only; RLS on
-  all tables; anonymous role has no access to operational tables.
+- **Database:** Phase 1 sandbox uses **Neon Postgres with Drizzle ORM**
+  (implemented). The schema is plain Postgres with no Neon-specific features,
+  so it is portable to Supabase Postgres later if needed (swap the connection
+  string/driver; add RLS + service-role hygiene at that point). All database
+  access is server-side only.
 - **Payments:** Paystack primary (NGN native), Stripe optional for
   international cards.
 - **Jobs:** Vercel Cron (or Supabase pg_cron) for `sync_failed` retries and
@@ -240,26 +258,29 @@ Sandbox credentials: **in `.env.local` only — never in this repo.**
 
 ---
 
-## 7. Open Questions for Aiosell — MUST be answered before production
+## 7. Open Questions for Aiosell — status
 
-> **Gate: production booking logic must not be built until items 1, 2, 3, 5,
-> 6, and 7 below are confirmed in writing by Aiosell.**
+> **Gate: production booking logic must not be built until the remaining
+> blocking items below (5 final value, 6 production handling, 7) are
+> confirmed in writing by Aiosell.**
+> Items marked **Answered** were confirmed by Aiosell on 2026-07-10.
 
-1. **Authentication** — the docs specify no auth for either direction. What is
-   supported: header token, basic auth, IP allowlist? *(Blocking.)*
-2. **`cmBookingId`** — the reservation sample sends both `bookingId` and
-   `cmBookingId` from the OTA side. Who generates `cmBookingId`?
-3. **Idempotency** — is a retried `book` with the same `bookingId`
-   deduplicated, or does it double-book? *(Blocking.)*
+1. **Authentication** — **Answered: Basic Auth is supported.** Webhook
+   verification is not yet enforced in the Phase 1 sandbox receiver —
+   pending production enforcement/configuration.
+2. **`cmBookingId`** — **Answered: generated by Aiosell/CM.** We omit it on
+   new bookings and store the value Aiosell returns.
+3. **Idempotency** — **Answered: a duplicate `bookingId` is rejected**, so
+   retries with the same `bookingId` cannot double-book.
 4. **Error contract** — HTTP status codes and error body shapes? What
    retry/backoff does Aiosell apply when pushing to us and our endpoint is
    unreachable?
-5. **Production endpoint + partner ID** — `sample-ota` is sandbox; what is our
-   production partner path and `PARTNER_ID`, and how is our receiving base URL
-   registered? *(Blocking.)*
-6. **Currency / NGN** — samples are INR. Is NGN fully supported? What should
-   the India-specific `tcs` / `tds` fields contain for a Nigerian property —
-   zero, or omitted? *(Blocking.)*
+5. **Production endpoint + partner ID** — **Partially answered: the
+   production partner ID WILL change from `sample-ota`.** Exact value and
+   how our receiving base URL is registered still TBC. *(Blocking.)*
+6. **Currency / NGN** — **Partially answered: `tcs` / `tds` can be 0 for
+   sandbox.** Final production handling for a Nigerian property (and full
+   NGN support) still to confirm. *(Blocking.)*
 7. **Master data** — how are `roomCode` and `rateplanCode` values provisioned
    and communicated? Is there an API to list them? *(Blocking.)*
 8. **Initial sync** — on go-live, does Aiosell push a full 365-day snapshot,
@@ -275,4 +296,6 @@ Sandbox credentials: **in `.env.local` only — never in this repo.**
 
 ---
 
-*Prepared 2026-07-06. Planning document only — see gate above.*
+*Prepared 2026-07-06. Revised 2026-07-10: Phase 1 implemented (single
+webhook receiver, Neon + Drizzle); Aiosell answers incorporated. See gate
+above.*
