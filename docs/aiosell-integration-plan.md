@@ -1,15 +1,24 @@
 # NJS Royale × Aiosell — Channel Manager Integration Plan
 
-> **Status: PLANNING ONLY — no production booking logic is to be built until the
-> "Open Questions for Aiosell" section below is answered and confirmed.**
+> **Status: Phase 1 implemented and verified (2026-07-10). Phase 2 (outbound
+> reservation push, FETCH reconciliation, dev routes, admin debug) approved
+> 2026-07-11 — sandbox scope only. Production booking logic remains gated on
+> the blocking Open Questions in §7.**
+>
+> **Current sandbox blocker (2026-07-11): the first reservation push was
+> rejected by Aiosell with HTTP 400 "Authentication Required!". All outbound
+> testing is paused until Aiosell confirms the correct authentication method
+> for the push endpoint and the sandbox hotel code (§7 Q1, Q7a).**
 >
 > **Credentials policy:** No usernames, passwords, tokens, or API secrets may
 > ever appear in this repository — not in this document, not in code, not in
-> commits. Sandbox and production credentials live only in `.env.local`
-> (gitignored) and in Vercel environment variables.
+> commits, not in `sync_logs` or any other log table. Sandbox and production
+> credentials live only in `.env.local` (gitignored) and in Vercel
+> environment variables.
 
-Reference: Aiosell REST API Documentation — OTA/Booking Engine to Channel Manager
-(support.aiosell.com knowledge base).
+Reference: Aiosell REST API Documentation — OTA/Booking Engine to Channel
+Manager (support.aiosell.com knowledge base), plus written answers from
+Aiosell (2026-07-10).
 
 ---
 
@@ -19,18 +28,37 @@ In Aiosell's model, the NJS Royale website acts as an **"OTA"** — a private
 sales channel alongside Booking.com, Expedia, etc.
 
 - **Aiosell → website (push):** rate changes, availability changes, and
-  booking restrictions are POSTed by Aiosell to endpoints **we host** and
-  register with them. We mirror this data into our own database. The booking
-  UI reads only from this local mirror — never from Aiosell in real time.
+  booking restrictions are POSTed by Aiosell to the single endpoint **we
+  host** and register with them. We mirror this data into our own database
+  (the "Neon mirror"). Availability is **always read from this local
+  mirror — never from Aiosell in real time.**
 - **Website → Aiosell (push):** guest bookings are POSTed to Aiosell with
   `action: "book"` (also `"modify"` / `"cancel"`). Aiosell then decrements
   availability across all other channels.
-- **Website → Aiosell (pull):** a FETCH API returns current inventory, rates,
-  and reservations on demand — used for scheduled reconciliation so a missed
-  push can never permanently corrupt our mirror.
+- **Website → Aiosell (pull):** a FETCH API returns current inventory and
+  rates (and reservations — schema undocumented, see §6a) on demand — used
+  for reconciliation so a missed push can never permanently corrupt our
+  mirror.
 
-Aiosell is the source of truth for availability. Payment is taken on our side
-(Paystack/Stripe) **before** the reservation is pushed to Aiosell.
+### Core invariants (non-negotiable)
+
+1. **Mirror-first reads.** Availability, restrictions, and rates are read
+   from the Neon mirror only.
+2. **Local booking first.** The local booking row is created and persisted
+   **before** any push to Aiosell. A failed push must never delete or lose a
+   local booking.
+3. **NJS reference is primary.** The guest-facing NJS booking reference
+   (`NJS-{YYYYMMDD}-{6 alphanumeric}`) is generated locally and used as the
+   Aiosell `bookingId` and as the idempotency key.
+4. **`cmBookingId` is secondary only.** It is **omitted unconditionally on
+   new bookings** (Aiosell confirmed 2026-07-10 that their CM generates it).
+   The value Aiosell returns is stored as a secondary reference only. An
+   earlier draft's fallback — "send our bookingId as cmBookingId if omission
+   is rejected" — is **rejected**: it would conflate the two identifiers.
+5. **Payment before production push.** In production, a reservation is
+   pushed to Aiosell **only after payment is confirmed** (`status = paid`).
+   The push service enforces this structurally. (Sandbox test bookings are
+   created directly at `paid`, since payment integration is out of scope.)
 
 ---
 
@@ -69,192 +97,306 @@ Restriction object fields (both restriction endpoints):
 `maximumAdvanceReservation`, `exactStayArrival`, `minimumStayArrival`,
 `maximumStayArrival` (nullable unless set).
 
-Security on inbound endpoints: **Aiosell has confirmed Basic Auth is
-supported** (2026-07-10). Not enforced in the Phase 1 sandbox receiver —
-pending production enforcement/configuration. Credentials via environment
-variables only, plus `hotelCode` validation.
+Security on inbound endpoints: **Aiosell confirmed (2026-07-10) that Basic
+Auth is supported** on the webhook. Not enforced in the Phase 1/2 sandbox
+receiver — enforcement must be configured **together with** the Vercel
+Protection path exception at the moment the endpoint is registered with
+Aiosell, so the path is never exposed unauthenticated. Credentials via
+environment variables only, plus `hotelCode` validation (currently
+log-and-process; tighten to hard reject before production).
 
 ### 2.2 Outbound — endpoints we call
 
 | Aiosell endpoint | Purpose |
 |---|---|
-| `POST https://live.aiosell.com/api/v2/cm/push/sample-ota` *(sandbox partner path — production path TBC)* | Send reservation: `action` = `book` / `modify` / `cancel` |
-| `POST https://live.aiosell.com/api/v2/cm/data/{PARTNER_ID}` | FETCH `{ "type": "inventory" \| "rates" \| "reservations", "hotelCode": ... }` for reconciliation |
+| `POST {AIOSELL_BASE_URL}/api/v2/cm/push/{AIOSELL_PARTNER_ID}` *(sandbox partner `sample-ota` — production partner ID WILL change, exact value TBC)* | Send reservation: `action` = `book` / `modify` / `cancel` |
+| `POST {AIOSELL_BASE_URL}/api/v2/cm/data/{AIOSELL_PARTNER_ID}` | FETCH `{ "type": "inventory" \| "rates" \| "reservations", "hotelCode": ... }` for reconciliation |
+
+All outbound calls use HTTP Basic Auth (`AIOSELL_USERNAME` /
+`AIOSELL_PASSWORD` from environment variables). The Authorization header is
+**never** written to `sync_logs` or console output.
 
 ### 2.3 Reservation payload (website → Aiosell)
 
-Root fields: `action`, `hotelCode`, `channel`, `bookingId` (our unique ref —
-idempotency key), `cmBookingId` (ownership TBC), `bookedOn`
-(`YYYY-MM-DD HH:MM:SS`), `checkin`, `checkout` (`YYYY-MM-DD`), `segment`,
-`specialRequests`, `pah` (bool).
+Root fields: `action`, `hotelCode`, `channel`, `bookingId` (**our NJS
+reference — idempotency key**), `bookedOn` (`YYYY-MM-DD HH:MM:SS`, Africa/
+Lagos local time — timezone semantics to be confirmed with Aiosell, §7 Q14),
+`checkin`, `checkout` (`YYYY-MM-DD`), `segment`, `specialRequests`, `pah`
+(bool).
 
+- `cmBookingId` is **not sent** on new bookings (see invariant 4).
 - `amount {}`: `amountAfterTax`, `amountBeforeTax`, `tax`, `currency`,
-  `commission`, `tcs`, `tds` (tcs/tds are India-specific — see Open Questions)
+  `commission`, `tcs`, `tds`. Sandbox uses `tax/tcs/tds/commission = 0`
+  (Aiosell confirmed 0 is acceptable for sandbox); production NGN tax
+  handling is a blocking open question (§7 Q6) — no tax rule is invented.
 - `guest {}`: `firstName`, `lastName`, `email`, `phone`,
   `address { line1, city, state, country, zipCode }`
 - `rooms []`: `roomCode`, `rateplanCode`, `guestName`,
-  `occupancy { adults, children }`, `prices [] { date, sellRate }` (per night)
+  `occupancy { adults, children }`, `prices [] { date, sellRate }` — one
+  entry per night (checkout date excluded), derived from the `daily_rates`
+  mirror, and summing consistently with the `amount` fields.
 
 Cancel requires only: `action`, `hotelCode`, `channel`, `bookingId`.
 
 Success responses: `{ "success": true, "message": "Reservation Updated /
-Modified / Cancelled Successfully" }`. Error contract is **undocumented** —
-must be captured in sandbox testing.
+Modified / Cancelled Successfully" }`. Any `cmBookingId` found in a response
+is stored on the booking as the secondary reference. The **error contract is
+undocumented** — every non-success response is captured verbatim (redacted)
+in `sync_logs` and documented as evidence accumulates.
+
+Observed evidence (2026-07-11, first controlled sandbox booking):
+**authentication failures return HTTP 400 — not 401 — with body
+`{ "message": "Authentication Required!", "success": false }`.** The failure
+occurs **before hotel-code validation**, so it provides no evidence either
+way on the SANDBOX-OTA vs sandbox-pms question (§7 Q7a).
+
+Duplicate `bookingId`: Aiosell confirmed a duplicate is **rejected**, so
+retries with the same `bookingId` cannot double-book.
 
 ---
 
-## 3. Database schema (Supabase/Postgres)
+## 3. Database schema — as implemented (Drizzle + Neon Postgres)
+
+Phase 1 tables (migration `0000`, live in the Neon sandbox):
 
 ```
-room_types
-  id uuid PK, room_code text UNIQUE, name, description,
-  max_adults int, max_children int, images text[], active bool
+rooms                one row per room type
+  id serial PK, room_code text UNIQUE, name, active bool, timestamps
 
-rate_plans
-  id uuid PK, rateplan_code text UNIQUE, room_code FK→room_types.room_code,
-  name, meal_plan, cancellation_policy text, active bool
+rate_plans           one row per rate plan, FK to rooms
+  id serial PK, rateplan_code text UNIQUE, room_id FK, label,
+  active bool, timestamps
+  -- BOTH code sets are seeded (docs: EXECUTIVE-S-101…, support:
+  -- executive-s-ep…); AIOSELL_RATEPLAN_SET picks the active set.
 
-inventory                      -- one row per room type per date
-  id, room_code FK, date date, available int,
-  stop_sell bool, min_stay int, max_stay int,
-  close_on_arrival bool, close_on_departure bool,
-  min_advance int, max_advance int,
-  raw_restrictions jsonb,      -- verbatim last payload for audit
-  updated_at, UNIQUE(room_code, date)
+daily_rates          nightly rate mirror
+  id, rate_plan_id FK, date, rate numeric(12,2), currency default 'NGN',
+  updated_at, UNIQUE(rate_plan_id, date)
 
-rates                          -- one row per rate plan per date
-  id, rateplan_code FK, room_code, date date, rate numeric(12,2),
-  stop_sell bool, min_stay int, close_on_arrival bool,
-  close_on_departure bool, raw_restrictions jsonb,
-  updated_at, UNIQUE(rateplan_code, date)
+daily_inventory      availability mirror
+  id, room_id FK, date, available int, updated_at, UNIQUE(room_id, date)
 
-guests
-  id uuid PK, first_name, last_name, email, phone,
-  address_line1, city, state, country, zip_code, created_at
+room_restrictions    room-level restrictions mirror
+  id, room_id FK, date, stop_sell, minimum_stay, maximum_stay,
+  close_on_arrival, close_on_departure, minimum_stay_arrival,
+  maximum_stay_arrival, exact_stay_arrival, minimum_advance_reservation,
+  maximum_advance_reservation, updated_at, UNIQUE(room_id, date)
 
-reservations
-  id uuid PK,
-  booking_id text UNIQUE,      -- our OTA bookingId (idempotency key)
-  cm_booking_id text,          -- channel-manager id (ownership TBC)
-  status text CHECK IN ('draft','pending_payment','paid',
-                        'synced','sync_failed','cancelled','modified'),
-  checkin date, checkout date, guest_id FK,
-  amount_after_tax numeric, amount_before_tax numeric, tax numeric,
-  currency text, special_requests text, pah bool DEFAULT false,
-  aiosell_synced_at timestamptz, created_at, updated_at
+rateplan_restrictions  same columns, keyed on rate_plan_id,
+  UNIQUE(rate_plan_id, date)
 
-reservation_rooms
-  id, reservation_id FK, room_code, rateplan_code,
-  guest_name, adults int, children int
+bookings             local reservation record (single-room — see limitation)
+  id serial PK,
+  booking_id text UNIQUE      -- NJS-{YYYYMMDD}-{6 alnum}; guest-facing
+                              -- confirmation, Aiosell bookingId,
+                              -- idempotency key
+  cm_booking_id text NULL     -- secondary Aiosell reference only
+  guest_* (name/email/phone/address), checkin, checkout,
+  room_id FK, rate_plan_id FK, adults, children,
+  amount_before_tax, tax, amount_after_tax, currency default 'NGN',
+  special_requests,
+  status text                 -- business lifecycle:
+                              --   pending_payment | paid | cancelled
+  sync_status text            -- Aiosell mirror state (Phase 2):
+                              --   not_pushed | sync_pending | synced |
+                              --   sync_failed
+  push_attempts int, last_push_error text, aiosell_response jsonb,
+  nightly_prices jsonb        -- [{ date, sellRate }]
+  timestamps
 
-reservation_room_prices
-  id, reservation_room_id FK, date date, sell_rate numeric
-
-payments
-  id uuid PK, reservation_id FK, provider text ('paystack'|'stripe'),
-  provider_ref text UNIQUE, amount numeric, currency,
-  status text ('initiated','confirmed','failed','refunded'),
-  raw_response jsonb, created_at
-
-sync_logs                      -- every outbound call we make to Aiosell
-  id, reservation_id FK NULL, direction text, endpoint, action,
-  request_payload jsonb, response jsonb, http_status int,
-  success bool, attempt int, created_at
-
-webhook_logs                   -- every inbound call Aiosell makes to us
-  id, endpoint text, headers jsonb, payload jsonb,
-  processed bool, processing_error text, received_at
+webhook_events       inbound audit log (raw payload persisted pre-parse)
+  id, event_type, raw_payload jsonb, headers jsonb, processed bool,
+  processing_error text, received_at
 ```
+
+Phase 2 additions (migration `0001`):
+
+```
+sync_logs            outbound audit log — EVERY call we make to Aiosell
+  id serial PK,
+  booking_id text NULL        -- NJS reference; NULL for FETCH operations
+  operation text              -- book | modify | cancel | fetch_inventory |
+                              --   fetch_rates | fetch_reservations
+  attempt int,
+  request_payload jsonb       -- Authorization header NEVER included
+  response_payload jsonb      -- redacted
+  http_status int NULL        -- NULL on network-level failure
+  success bool, error text NULL, created_at
+```
+
+`bookings` state model (Phase 2 rework): the Phase 1 `push_status` column is
+**dropped** and replaced by the two-axis model above. The two axes together
+distinguish all required states — including "cancelled locally but the
+cancel push failed" (`status = cancelled`, `sync_status = sync_failed`).
+The push service refuses to push any booking whose `status` is not `paid`
+(book/modify) or `cancelled` (cancel) — this is how invariant 5 is enforced
+in code rather than by convention.
+
+### Known limitation — single-room bookings (sandbox scope)
+
+The implemented `bookings` table models **one room / one rate plan per
+booking**, although Aiosell's payload technically carries a `rooms[]` array.
+This is a deliberate sandbox simplification. Multi-room bookings, separate
+guest records, and payment records are part of the future production design
+below and require a schema extension before production launch.
+
+### Future production design (not implemented — reference only)
+
+Retained from the original plan for the production build-out: normalized
+`guests` table; `reservations` with multi-room `reservation_rooms` and
+per-night `reservation_room_prices`; `payments` (Paystack/Stripe provider
+refs, signature-verified webhooks); richer reservation status including
+refund states. This design is **not** part of Phase 2 and must be
+re-approved before implementation.
 
 ---
 
 ## 4. Booking flow
 
+Production flow (target — payment integration itself is out of scope until
+separately approved):
+
 ```
 GUEST                    WEBSITE / DB                           AIOSELL
   |                            |                                   |
   |  (background, continuous)  |<-- POST inventory/rates/restrictions
-  |                            |    upsert mirror tables            |
+  |                            |    upsert Neon mirror              |
   |                            |                                   |
   |-- search dates ----------->|                                   |
   |                            | read LOCAL mirror only            |
-  |<- rooms, rates, rules -----|  (enforce minStay/stopSell etc.)  |
+  |<- rooms, rates, rules -----|  (inventory, stopSell, minStay)   |
   |                            |                                   |
   |-- select room, guest info->|                                   |
-  |                            | create reservation                |
+  |                            | create booking row                |
   |                            |   status = pending_payment        |
-  |                            |   bookingId = NJS-<uuid>          |
-  |                            | RE-CHECK availability (fresh)     |
+  |                            |   sync_status = not_pushed        |
+  |                            |   booking_id = NJS-…  (generated) |
+  |                            | RE-CHECK mirror availability      |
   |                            |                                   |
-  |-- pay (Paystack/Stripe) -->|                                   |
-  |                            |<-- payment webhook: confirmed     |
-  |                            |   verify signature, record payment|
+  |-- pay ------------------->|                                   |
+  |                            |<-- payment confirmed              |
   |                            |   status = paid                   |
   |                            |                                   |
+  |                            | sync_status = sync_pending        |
   |                            |-- POST action:"book" ------------>|
-  |                            |<-- {success:true} ----------------|
-  |                            |   status = synced                 |
-  |<- confirmation email ------|                                   |
+  |                            |   (bookingId = NJS ref,           |
+  |                            |    cmBookingId omitted)           |
+  |                            |<-- {success:true, cmBookingId?} --|
+  |                            |   store cm_booking_id (secondary) |
+  |                            |   sync_status = synced            |
   |                            |<-- inventory push (updated) ------|
 ```
+
+Sandbox flow (Phase 2): identical from "create booking row" onward, except
+the dev test-booking route creates the row directly at `status = paid`
+(payments out of scope) **after validating the Neon mirror** for inventory,
+stop-sell, minimum stay, and the presence of a rate for every night.
 
 ### Failure handling
 
 | Scenario | Handling |
 |---|---|
-| Duplicate booking | `booking_id` UNIQUE constraint; payment-webhook replays and double-submits collapse into one row. Aiosell retries always reuse the same `bookingId`. |
-| Aiosell push to us fails / site briefly down | Pushes are idempotent upserts; recovery via scheduled FETCH reconciliation (nightly + after each deploy). All received calls audited in `webhook_logs`. |
-| Payment confirmed, Aiosell "book" fails | Guest keeps confirmation. Status `sync_failed` → retry job (exponential backoff, same `bookingId`) → after N failures, admin dashboard alert for manual entry in Aiosell dashboard. Invariant: never lose a paid booking. |
-| Aiosell accepted, payment failed | Structurally prevented — we push only after payment confirms. (Compensating action if flow ever changes: `action:"cancel"`.) |
-| Inventory mismatch | (1) availability re-check at payment initiation, (2) nightly FETCH reconcile, (3) optional admin-set sell buffer (e.g. never sell last room online). |
-| Cancellation / modification | Push `action:"cancel"` first, mark cancelled, then refund per policy. `modify` sends full payload; re-validate new dates before confirming to guest. |
+| Duplicate booking | `booking_id` UNIQUE constraint locally; Aiosell rejects duplicate `bookingId` (confirmed). Retries always reuse the same `bookingId`. |
+| Aiosell push to us fails / site briefly down | Inbound pushes are idempotent upserts; recovery via FETCH reconciliation (on-demand in Phase 2; scheduled cron deferred, see §5). All received calls audited in `webhook_events`. |
+| Payment confirmed, Aiosell "book" push fails | Guest keeps their NJS confirmation. Short immediate retries only (serverless-safe — no long sleeps); on exhaustion `sync_status = sync_failed`, booking preserved, every attempt in `sync_logs`. Manual retry via protected dev route; scheduled retry job deferred. **Invariant: never lose a paid booking.** |
+| Aiosell accepted, payment failed | Structurally prevented — the push service refuses bookings not in `paid`. (Compensating action if flow ever changes: `action:"cancel"`.) |
+| Inventory mismatch | (1) mirror re-check at booking creation, (2) FETCH reconcile, (3) optional admin-set sell buffer (production, TBC). |
+| Cancellation / modification | Cancel: `status = cancelled` locally first, then push `action:"cancel"`; a failed cancel push shows as `cancelled` + `sync_failed` for manual retry. Modify: re-validate the mirror for the new dates before pushing `action:"modify"` with the same `bookingId`. |
 
 ---
 
 ## 5. Architecture
 
-- **Frontend:** existing Next.js site; booking UI reads only the local mirror.
-- **API routes:** `app/api/aiosell/webhook` (single receiver, see §2.1), `app/api/payments/webhook`
-  (signature-verified), internal booking routes. Deployed as Vercel functions.
-- **Database:** Phase 1 sandbox uses **Neon Postgres with Drizzle ORM**
-  (implemented). The schema is plain Postgres with no Neon-specific features,
-  so it is portable to Supabase Postgres later if needed (swap the connection
-  string/driver; add RLS + service-role hygiene at that point). All database
-  access is server-side only.
-- **Payments:** Paystack primary (NGN native), Stripe optional for
-  international cards.
-- **Jobs:** Vercel Cron (or Supabase pg_cron) for `sync_failed` retries and
-  nightly FETCH reconciliation.
-- **Admin dashboard:** protected route — reservations with payment/sync
-  status, failed-sync queue with manual retry, webhook log viewer.
+- **Frontend:** existing Next.js site; no public booking UI in Phase 2. Any
+  future booking UI reads only the local mirror.
+- **API routes (Vercel functions):**
+  - `app/api/aiosell/webhook` — single inbound receiver (§2.1), Phase 1.
+  - `app/api/dev/*` — Phase 2 development routes (below).
+  - `app/admin/debug` — Phase 2 debug view (below).
+- **Outbound services:** `lib/aiosell/aiosellClient.ts` (Basic Auth fetch
+  wrapper + redaction + `sync_logs` writer), `lib/aiosell/pushReservation.ts`
+  (book/modify/cancel), `lib/aiosell/fetchSync.ts` (FETCH reconciliation),
+  `lib/aiosell/availability.ts` (mirror validation),
+  `lib/aiosell/bookingRef.ts` (NJS reference generator).
+- **Retry design:** at most short immediate retries inside a request (a few
+  seconds total — **no long blocking sleeps inside Vercel functions**), then
+  persist `sync_failed` and rely on the manual retry route. A scheduled
+  cron retry + nightly FETCH reconciliation is **documented but deferred**
+  until separately approved.
+- **Dev routes (Phase 2):** `POST /api/dev/test-booking`,
+  `POST /api/dev/modify-booking/[bookingId]`,
+  `POST /api/dev/cancel-booking/[bookingId]`,
+  `POST /api/dev/retry-push/[bookingId]`, `POST /api/dev/fetch-sync`.
+  Guarded by a **header-based** secret (`x-dev-secret` must equal
+  `DEV_SECRET`; never a query parameter — query strings leak into access
+  logs) and **hard-disabled when `VERCEL_ENV === 'production'`**.
+- **Admin debug (Phase 2):** `/admin/debug`, server-rendered by a route
+  handler; HTTP Basic Auth challenge (`ADMIN_DEBUG_PASSWORD`);
+  `X-Robots-Tag: noindex`; returns 404 in production unless
+  `ADMIN_DEBUG_ENABLED=true`. Shows webhook health, sync attempts, and
+  booking states with guest names/emails **masked** — it is a diagnostics
+  view, not a PII browser.
+- **Database:** Neon Postgres with Drizzle ORM (implemented). Plain
+  Postgres, portable to Supabase later (swap driver; add RLS + service-role
+  hygiene at that point). All database access is server-side only.
+- **Payments:** out of scope until separately approved. Paystack primary
+  (NGN native), Stripe optional — future design only.
 - **Environment variables (Vercel + `.env.local` only, never committed):**
-  `AIOSELL_BASE_URL`, `AIOSELL_HOTEL_CODE`, `AIOSELL_PARTNER_ID`,
-  `AIOSELL_INBOUND_SECRET`, `PAYSTACK_SECRET_KEY`, `STRIPE_SECRET_KEY`,
-  `SUPABASE_SERVICE_ROLE_KEY`.
-- **Phasing:** the marketing site stays static; the booking engine is a
-  Phase-2 module (new routes in this repo, or a `book.` subdomain app) so the
-  concept site's simplicity is preserved.
+  `DATABASE_URL`, `AIOSELL_BASE_URL`, `AIOSELL_PARTNER_ID`,
+  `AIOSELL_HOTEL_CODE`, `AIOSELL_USERNAME`, `AIOSELL_PASSWORD`,
+  `AIOSELL_CHANNEL_NAME`, `AIOSELL_RATEPLAN_SET`, `DEV_SECRET`,
+  `ADMIN_DEBUG_PASSWORD`, `ADMIN_DEBUG_ENABLED`.
+- **Logging hygiene:** Authorization headers, passwords, and connection
+  strings are never logged or stored in `sync_logs` / `webhook_events`.
+  (Lesson learned 2026-07-10: an invalid-URL error path echoed a full
+  connection string into runtime logs; the credential was rotated. Treat
+  every log write as potentially public.)
+- **Phasing:** the marketing site stays static; the booking engine remains a
+  future module so the concept site's simplicity is preserved.
 
 ---
 
 ## 6. Sandbox testing checklist
 
-Sandbox host: `live.aiosell.com`, hotel code `SANDBOX-OTA`.
+Sandbox host: `live.aiosell.com`, partner `sample-ota`, hotel code
+env-configured (`SANDBOX-OTA` default — docs vs support conflict, §7 Q7a).
 Sandbox credentials: **in `.env.local` only — never in this repo.**
+Full curl-level detail lives in `TESTING.md`.
 
-1. [ ] Stand up the 4 inbound endpoints on a preview deployment; register the base URL with Aiosell sandbox
-2. [ ] Receive a rates push → `rates` rows match payload (date ranges expanded per day)
-3. [ ] Receive an inventory push → `inventory` rows correct
-4. [ ] Receive inventory + rate restrictions → `stopSell` / `minimumStay` land correctly AND the booking UI blocks violating searches
-5. [ ] Replay the same push twice → idempotent, no duplicates
-6. [ ] POST test `action:"book"` to the sandbox partner endpoint → `{"success": true}`
-7. [ ] Reservation visible in the Aiosell sandbox dashboard
-8. [ ] Aiosell pushes decremented inventory back after the booking
-9. [ ] POST `action:"cancel"` for the same `bookingId` → cancelled in sandbox, inventory restored
-10. [ ] Send an invalid payload (unknown `roomCode`) → record actual error response shape (undocumented)
-11. [ ] Retry `book` with the same `bookingId` → observe dedupe behaviour (evidence for Open Question 3)
-12. [ ] FETCH inventory/rates/reservations → capture real response schemas (undocumented)
-13. [ ] End-to-end: search → book → pay (Paystack test mode) → auto-push → sandbox dashboard shows booking
+Phase 1 — completed 2026-07-10 (local Neon + Vercel preview):
+
+1. [x] Single inbound receiver stood up; all 4 payload types processed
+2. [x] Rates push → `daily_rates` rows match payload (ranges expanded per day)
+3. [x] Inventory push → `daily_inventory` rows correct
+4. [x] Inventory + rate restrictions → `stopSell` / `minimumStay` land correctly
+5. [x] Replay same push twice → idempotent, no duplicates
+
+Phase 2 — pending (gated on migration approval, then push approval):
+
+6. [ ] Test booking created locally (mirror-validated) BEFORE any push
+7. [ ] `action:"book"` push → `{"success": true}`; `cm_booking_id` stored
+   — *first controlled sandbox booking (2026-07-11) REJECTED: HTTP 400
+   "Authentication Required!"; exactly one attempt (4xx = definitive, no
+   retry), local booking preserved as `paid`/`sync_failed`; evidence kept in
+   the corresponding sanitized sync log. Blocked on §7 Q1.*
+8. [ ] Reservation visible in the Aiosell sandbox dashboard
+9. [ ] Aiosell pushes decremented inventory back after the booking
+10. [ ] Duplicate `bookingId` push → capture actual rejection response
+11. [ ] Failed push (simulated) → booking preserved, `sync_failed`, manual retry succeeds
+12. [ ] `action:"modify"` (date change) → observe scope of modify support
+13. [ ] `action:"cancel"` → cancelled in sandbox, inventory restored
+14. [ ] Invalid payload (unknown `roomCode`) → record actual error shape
+15. [ ] FETCH inventory/rates → mirror updated through existing mappers
+16. [ ] FETCH reservations → **capture raw response only**, document schema (§6a)
+17. [ ] Inventory / stop-sell / minimum-stay enforcement rejects violating test bookings
+18. [ ] `sync_logs` rows contain no Authorization header or secrets
+
+### 6a. Reservations FETCH — capture, don't assume
+
+The response schema for `type: "reservations"` is undocumented. Phase 2
+performs a one-off sandbox capture: the raw response is stored in
+`sync_logs` (redacted) and its actual shape documented here afterwards. No
+table is written and no schema is assumed until then.
 
 ---
 
@@ -266,36 +408,56 @@ Sandbox credentials: **in `.env.local` only — never in this repo.**
 > Items marked **Answered** were confirmed by Aiosell on 2026-07-10.
 
 1. **Authentication** — **Answered: Basic Auth is supported.** Webhook
-   verification is not yet enforced in the Phase 1 sandbox receiver —
-   pending production enforcement/configuration.
-2. **`cmBookingId`** — **Answered: generated by Aiosell/CM.** We omit it on
-   new bookings and store the value Aiosell returns.
+   verification is not yet enforced — it must be enabled together with the
+   Vercel Protection path exception at endpoint-registration time.
+   **Re-opened 2026-07-11 — CURRENT SANDBOX BLOCKER:** the issued sandbox
+   credentials were rejected on the push endpoint
+   (`/api/v2/cm/push/sample-ota`) with HTTP 400 "Authentication Required!".
+   Awaiting Aiosell confirmation of the correct auth method / credential
+   scope for reservation pushes. No auth-format changes, endpoint changes,
+   hotel-code switches, or retries until confirmed in writing.
+2. **`cmBookingId`** — **Answered: generated by Aiosell/CM.** We omit it
+   **unconditionally** on new bookings and store the returned value as a
+   secondary reference only. The earlier "send bookingId as cmBookingId"
+   fallback is rejected.
 3. **Idempotency** — **Answered: a duplicate `bookingId` is rejected**, so
-   retries with the same `bookingId` cannot double-book.
+   retries with the same `bookingId` cannot double-book. (Actual rejection
+   response shape still to be captured — checklist item 10.)
 4. **Error contract** — HTTP status codes and error body shapes? What
    retry/backoff does Aiosell apply when pushing to us and our endpoint is
-   unreachable?
+   unreachable? *(Phase 2 captures observed shapes in `sync_logs`.)*
+   **First observation (2026-07-11): auth failures use HTTP 400 with
+   `success: false`, rather than 401.**
 5. **Production endpoint + partner ID** — **Partially answered: the
    production partner ID WILL change from `sample-ota`.** Exact value and
    how our receiving base URL is registered still TBC. *(Blocking.)*
 6. **Currency / NGN** — **Partially answered: `tcs` / `tds` can be 0 for
-   sandbox.** Final production handling for a Nigerian property (and full
-   NGN support) still to confirm. *(Blocking.)*
+   sandbox.** Final production handling for a Nigerian property (VAT /
+   consumption tax representation, full NGN support) still to confirm.
+   *(Blocking.)*
 7. **Master data** — how are `roomCode` and `rateplanCode` values provisioned
    and communicated? Is there an API to list them? *(Blocking.)*
+   7a. **Hotel code conflict** — docs say `SANDBOX-OTA`, support said
+   `sandbox-pms`. Env-configured; the first outbound push test resolves it
+   empirically. Hard-reject validation deferred until resolved.
 8. **Initial sync** — on go-live, does Aiosell push a full 365-day snapshot,
    or do we FETCH to seed the mirror? How far ahead do updates extend?
 9. **`pah` flag** — exact pay-at-hotel semantics and effects.
 10. **FETCH API** — full response schemas and auth for
-    `type: inventory | rates | reservations`.
+    `type: inventory | rates | reservations`. *(Phase 2 captures these.)*
 11. **Modification scope** — can `modify` change dates/rooms, or is the
-    pattern cancel + rebook?
+    pattern cancel + rebook? *(Checklist item 12 tests a date change.)*
 12. **Rate limits / SLA** — request caps, push latency after a change,
     sandbox reset policy.
 13. **Children pricing** — how are child ages / extra-bed rates represented?
+14. **`bookedOn` timezone** — docs show `YYYY-MM-DD HH:MM:SS` local time
+    with no timezone field. We send Africa/Lagos time; please confirm.
 
 ---
 
 *Prepared 2026-07-06. Revised 2026-07-10: Phase 1 implemented (single
-webhook receiver, Neon + Drizzle); Aiosell answers incorporated. See gate
-above.*
+webhook receiver, Neon + Drizzle); Aiosell answers incorporated. Revised
+2026-07-11: aligned to implemented schema; Phase 2 design approved (sync_logs,
+two-axis booking state, outbound client, dev routes, admin debug); core
+invariants and single-room limitation documented; multi-room/payments design
+moved to future-production section.*

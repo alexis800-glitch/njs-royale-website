@@ -147,14 +147,36 @@ export const bookings = pgTable('bookings', {
   amountAfterTax: numeric('amount_after_tax', { precision: 12, scale: 2 }).notNull(),
   currency: text('currency').notNull().default('NGN'),
   specialRequests: text('special_requests'),
-  status: text('status').notNull(), // confirmed | modified | cancelled
-  pushStatus: text('push_status').notNull().default('pending'), // pending | pushed | failed
+  // Two-axis state model. `status` is the business lifecycle; `syncStatus`
+  // is the Aiosell mirror state. Kept separate so "cancelled locally but the
+  // cancel push failed" is representable (cancelled + sync_failed). The push
+  // service only pushes bookings in `paid` (book/modify) or `cancelled`
+  // (cancel) — payment-before-push is enforced here, not by convention.
+  status: text('status').notNull(), // pending_payment | paid | cancelled
+  syncStatus: text('sync_status').notNull().default('not_pushed'), // not_pushed | sync_pending | synced | sync_failed
   pushAttempts: integer('push_attempts').notNull().default(0),
   lastPushError: text('last_push_error'),
   aiosellResponse: jsonb('aiosell_response'),
   nightlyPrices: jsonb('nightly_prices').notNull(), // [{ date, sellRate }]
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
+// Outbound audit log — one row per attempt for EVERY call we make to
+// Aiosell (reservation pushes and FETCH reconciliation). Authorization
+// headers, passwords, and connection strings must never be written here;
+// payloads are stored redacted.
+export const syncLogs = pgTable('sync_logs', {
+  id: serial('id').primaryKey(),
+  bookingId: text('booking_id'), // NJS reference; NULL for FETCH operations
+  operation: text('operation').notNull(), // book | modify | cancel | fetch_inventory | fetch_rates | fetch_reservations
+  attempt: integer('attempt').notNull().default(1),
+  requestPayload: jsonb('request_payload'),
+  responsePayload: jsonb('response_payload'),
+  httpStatus: integer('http_status'), // NULL on network-level failure
+  success: boolean('success').notNull().default(false),
+  error: text('error'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
 export const webhookEvents = pgTable('webhook_events', {
