@@ -57,9 +57,13 @@ export async function fetchSync(
   const hotelCode = process.env.AIOSELL_HOTEL_CODE
   if (!hotelCode) throw new Error('AIOSELL_HOTEL_CODE is not set')
 
+  // Aiosell expects singular "reservation" on the wire (confirmed by Aiosell
+  // 2026-07-14 after "Invalid type: reservations"); internal naming stays plural.
+  const wireType = type === 'reservations' ? 'reservation' : type
+
   const result = await callAiosell(db, {
     url: aiosellFetchUrl(),
-    requestBody: { type, hotelCode, startDate, endDate },
+    requestBody: { type: wireType, hotelCode, startDate, endDate },
     operation: `fetch_${type}`,
     attempt: 1,
   })
