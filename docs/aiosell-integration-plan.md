@@ -423,7 +423,11 @@ Phase 1 — completed 2026-07-10 (local Neon + Vercel preview):
 
 Phase 2 — pending (gated on migration approval, then push approval):
 
-6. [ ] Test booking created locally (mirror-validated) BEFORE any push
+6. [x] Test booking created locally (mirror-validated) BEFORE any push —
+   **DB-verified 2026-07-16**: booking row `NJS-20260714-FU4VDF` created
+   2026-07-13 23:48:07 UTC; the `book` push was logged 2026-07-13
+   23:48:10 UTC (`sync_logs` id 3) — local record precedes the push
+   (invariant 2).
 7. [x] `action:"book"` push → **SUCCEEDED 2026-07-14, DB-verified
    2026-07-16**: booking `NJS-20260714-FU4VDF` accepted with HTTP 200 in
    exactly **1 attempt** (endpoint partner path `sample-ota`, payload
