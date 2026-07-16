@@ -5,10 +5,28 @@
 > 2026-07-11 — sandbox scope only. Production booking logic remains gated on
 > the blocking Open Questions in §7.**
 >
-> **Current sandbox blocker (2026-07-11): the first reservation push was
-> rejected by Aiosell with HTTP 400 "Authentication Required!". All outbound
-> testing is paused until Aiosell confirms the correct authentication method
-> for the push endpoint and the sandbox hotel code (§7 Q1, Q7a).**
+> **Sandbox push PROVEN WORKING (2026-07-14): booking
+> `NJS-20260714-FU4VDF` was accepted with HTTP 200 using endpoint partner
+> path `/push/sample-ota` and payload `hotelCode: sandbox-ota`. This is the
+> proven configuration of record — do not change it without a written
+> Aiosell instruction that names the endpoint path explicitly.**
+>
+> **Identifier disambiguation (2026-07-16).** Aiosell's message "You need
+> to use only sandbox-ota partner id" is ambiguous and conflicts with the
+> proven endpoint path. Four identifiers must not be conflated:
+> 1. **Endpoint partner/channel ID** (URL path segment) — proven working:
+>    `sample-ota`.
+> 2. **Payload `hotelCode`** — proven working: `sandbox-ota` (this also
+>    resolves the §7 Q7a docs-vs-support conflict empirically).
+> 3. **Dashboard property identifier** — unknown / TBC.
+> 4. Aiosell did **NOT** explicitly instruct changing the endpoint from
+>    `/push/sample-ota` to `/push/sandbox-ota`; their wording most
+>    plausibly refers to the hotel code (identifier 2). Clarification
+>    requested before any endpoint change.
+>
+> **Reservations FETCH (2026-07-16): intentionally unsupported by Aiosell
+> and no longer required for reconciliation** — reservations are push-only;
+> the push response plus `sync_logs` is the verification mechanism.
 >
 > **Credentials policy:** No usernames, passwords, tokens, or API secrets may
 > ever appear in this repository — not in this document, not in code, not in
@@ -109,8 +127,8 @@ log-and-process; tighten to hard reject before production).
 
 | Aiosell endpoint | Purpose |
 |---|---|
-| `POST {AIOSELL_BASE_URL}/api/v2/cm/push/{AIOSELL_PARTNER_ID}` *(sandbox partner `sample-ota` — production partner ID WILL change, exact value TBC)* | Send reservation: `action` = `book` / `modify` / `cancel` |
-| `POST {AIOSELL_BASE_URL}/api/v2/cm/data/{AIOSELL_PARTNER_ID}` | FETCH `{ "type": "inventory" \| "rates" \| "reservations", "hotelCode": ... }` for reconciliation |
+| `POST {AIOSELL_BASE_URL}/api/v2/cm/push/{AIOSELL_PARTNER_ID}` *(sandbox partner path PROVEN `sample-ota` on 2026-07-14 with payload `hotelCode: sandbox-ota`; Aiosell's 2026-07-16 "use only sandbox-ota partner id" is unconfirmed for the endpoint path — see header disambiguation; production partner ID WILL change, exact value TBC)* | Send reservation: `action` = `book` / `modify` / `cancel` |
+| `POST {AIOSELL_BASE_URL}/api/v2/cm/data/{AIOSELL_PARTNER_ID}` | FETCH `{ "type": "inventory" \| "rates" \| "reservation", "hotelCode": ... }` — **reservation FETCH is disabled by Aiosell (2026-07-16, intentional — do not use); inventory/rates FETCH retained for reconciliation** |
 
 All outbound calls use HTTP Basic Auth (`AIOSELL_USERNAME` /
 `AIOSELL_PASSWORD` from environment variables). The Authorization header is
@@ -149,6 +167,37 @@ Observed evidence (2026-07-11, first controlled sandbox booking):
 `{ "message": "Authentication Required!", "success": false }`.** The failure
 occurs **before hotel-code validation**, so it provides no evidence either
 way on the SANDBOX-OTA vs sandbox-pms question (§7 Q7a).
+
+Resolution (2026-07-14): a subsequent controlled push **succeeded with
+HTTP 200** — booking `NJS-20260714-FU4VDF`, endpoint partner path
+`sample-ota`, payload `hotelCode: sandbox-ota`. This is the proven
+configuration of record. The exact cause of the 2026-07-11 rejection was
+never confirmed by Aiosell; their 2026-07-15 "channel is disabled" remark
+referred to the reservations FETCH channel, not the push.
+
+**Verified against database records (2026-07-16)** — booking row +
+`sync_logs` id 3 for `NJS-20260714-FU4VDF`:
+
+- `sync_logs`: operation `book`, attempt **1**, `http_status` **200**,
+  `success: true`, `error: null`; request payload `hotelCode:
+  "sandbox-ota"`, `channel: "NJSResortWebsite"` (logged 2026-07-13
+  23:48 UTC = 2026-07-14 00:48 Africa/Lagos, matching the booking
+  reference date).
+- Booking row: `status = paid`, `sync_status = synced`,
+  `push_attempts = 1`, `last_push_error = null`.
+- **No `cmBookingId` was returned** — the response body contains none and
+  `cm_booking_id` remains **NULL** (secondary reference simply absent; the
+  NJS reference is the only identifier, consistent with invariant 3).
+- Observed success-response shape (differs from the docs' plain-string
+  message): `{ "success": true, "message": [ { "action": "book",
+  "hotelId": "sandbox-ota", "bookingId": "NJS-20260714-FU4VDF" } ] }` —
+  `message` is an **array of objects**, and Aiosell labels the property
+  identifier **`hotelId`**, echoing our payload `hotelCode`. This supports
+  reading their "use only sandbox-ota partner id" (2026-07-16) as the
+  hotel identifier, not the endpoint path.
+- The endpoint URL is by design not persisted in `sync_logs`; the
+  `sample-ota` partner path is attested by the environment configuration,
+  which has remained on `sample-ota` since the successful test.
 
 Duplicate `bookingId`: Aiosell confirmed a duplicate is **rejected**, so
 retries with the same `bookingId` cannot double-book.
@@ -358,8 +407,9 @@ stop-sell, minimum stay, and the presence of a rate for every night.
 
 ## 6. Sandbox testing checklist
 
-Sandbox host: `live.aiosell.com`, partner `sample-ota`, hotel code
-env-configured (`SANDBOX-OTA` default — docs vs support conflict, §7 Q7a).
+Sandbox host: `live.aiosell.com`. Proven working (2026-07-14): endpoint
+partner path `sample-ota`, payload `hotelCode: sandbox-ota` (resolves the
+§7 Q7a docs-vs-support conflict empirically).
 Sandbox credentials: **in `.env.local` only — never in this repo.**
 Full curl-level detail lives in `TESTING.md`.
 
@@ -374,11 +424,16 @@ Phase 1 — completed 2026-07-10 (local Neon + Vercel preview):
 Phase 2 — pending (gated on migration approval, then push approval):
 
 6. [ ] Test booking created locally (mirror-validated) BEFORE any push
-7. [ ] `action:"book"` push → `{"success": true}`; `cm_booking_id` stored
-   — *first controlled sandbox booking (2026-07-11) REJECTED: HTTP 400
-   "Authentication Required!"; exactly one attempt (4xx = definitive, no
-   retry), local booking preserved as `paid`/`sync_failed`; evidence kept in
-   the corresponding sanitized sync log. Blocked on §7 Q1.*
+7. [x] `action:"book"` push → **SUCCEEDED 2026-07-14, DB-verified
+   2026-07-16**: booking `NJS-20260714-FU4VDF` accepted with HTTP 200 in
+   exactly **1 attempt** (endpoint partner path `sample-ota`, payload
+   `hotelCode: sandbox-ota`); final state `status = paid`,
+   `sync_status = synced`. **No `cmBookingId` was returned;
+   `cm_booking_id` remains NULL** (see §2.3 verified evidence). History:
+   the first attempt (2026-07-11) was rejected HTTP 400 "Authentication
+   Required!"; exactly one attempt (4xx = definitive, no retry), local
+   booking preserved as `paid`/`sync_failed`; the exact cause of that
+   rejection was never confirmed by Aiosell.
 8. [ ] Reservation visible in the Aiosell sandbox dashboard
 9. [ ] Aiosell pushes decremented inventory back after the booking
 10. [ ] Duplicate `bookingId` push → capture actual rejection response
@@ -387,16 +442,22 @@ Phase 2 — pending (gated on migration approval, then push approval):
 13. [ ] `action:"cancel"` → cancelled in sandbox, inventory restored
 14. [ ] Invalid payload (unknown `roomCode`) → record actual error shape
 15. [ ] FETCH inventory/rates → mirror updated through existing mappers
-16. [ ] FETCH reservations → **capture raw response only**, document schema (§6a)
+16. [~] FETCH reservations → **DROPPED 2026-07-16**: Aiosell disabled the
+    reservations FETCH channel intentionally and instructed not to use it;
+    push-only for reservations (§6a)
 17. [ ] Inventory / stop-sell / minimum-stay enforcement rejects violating test bookings
 18. [ ] `sync_logs` rows contain no Authorization header or secrets
 
-### 6a. Reservations FETCH — capture, don't assume
+### 6a. Reservations FETCH — intentionally unsupported (2026-07-16)
 
-The response schema for `type: "reservations"` is undocumented. Phase 2
-performs a one-off sandbox capture: the raw response is stored in
-`sync_logs` (redacted) and its actual shape documented here afterwards. No
-table is written and no schema is assumed until then.
+Aiosell confirmed the reservations FETCH channel is turned off
+intentionally and instructed us not to use it: reservations are push-only
+("reservation in"). **Reservation FETCH is no longer required for
+reconciliation.** The earlier plan to capture its response schema is
+dropped. `fetchSync.ts` keeps the code path but it must not be called;
+reservation-state verification relies on push responses + `sync_logs`
+(Aiosell has not named an alternative verification mechanism — treat the
+push response as authoritative).
 
 ---
 
@@ -410,16 +471,25 @@ table is written and no schema is assumed until then.
 1. **Authentication** — **Answered: Basic Auth is supported.** Webhook
    verification is not yet enforced — it must be enabled together with the
    Vercel Protection path exception at endpoint-registration time.
-   **Re-opened 2026-07-11 — CURRENT SANDBOX BLOCKER:** the issued sandbox
-   credentials were rejected on the push endpoint
-   (`/api/v2/cm/push/sample-ota`) with HTTP 400 "Authentication Required!".
-   Awaiting Aiosell confirmation of the correct auth method / credential
-   scope for reservation pushes. No auth-format changes, endpoint changes,
-   hotel-code switches, or retries until confirmed in writing.
+   **Re-opened 2026-07-11, resolved empirically 2026-07-14:** a successful
+   push (HTTP 200, booking `NJS-20260714-FU4VDF`) proved the working
+   configuration: endpoint partner path `sample-ota`, payload
+   `hotelCode: sandbox-ota`. Aiosell's 2026-07-15 "channel is disabled"
+   remark referred to the reservations FETCH channel (intentionally off),
+   not the push. Aiosell's 2026-07-16 "use only sandbox-ota partner id" is
+   ambiguous — it conflicts with the proven endpoint path and most
+   plausibly refers to the hotel code; they did NOT explicitly instruct
+   changing the endpoint from `/push/sample-ota` to `/push/sandbox-ota`.
+   **The proven configuration stays until Aiosell confirms otherwise in
+   writing, naming the endpoint path explicitly.**
 2. **`cmBookingId`** — **Answered: generated by Aiosell/CM.** We omit it
    **unconditionally** on new bookings and store the returned value as a
    secondary reference only. The earlier "send bookingId as cmBookingId"
-   fallback is rejected.
+   fallback is rejected. **Observed 2026-07-14 (DB-verified 2026-07-16):
+   the successful sandbox push returned NO `cmBookingId`** —
+   `cm_booking_id` remains NULL on `NJS-20260714-FU4VDF`. The field is
+   therefore optional in practice; our NJS reference is the working
+   identifier.
 3. **Idempotency** — **Answered: a duplicate `bookingId` is rejected**, so
    retries with the same `bookingId` cannot double-book. (Actual rejection
    response shape still to be captured — checklist item 10.)
@@ -429,22 +499,31 @@ table is written and no schema is assumed until then.
    **First observation (2026-07-11): auth failures use HTTP 400 with
    `success: false`, rather than 401.**
 5. **Production endpoint + partner ID** — **Partially answered: the
-   production partner ID WILL change from `sample-ota`.** Exact value and
-   how our receiving base URL is registered still TBC. *(Blocking.)*
+   production partner ID WILL change from the sandbox value (proven
+   `sample-ota` in the endpoint path).** Onboarding path confirmed
+   2026-07-16: once the rates/inventory webhook is developed and tested
+   (done — Phase 1) and a reservation push is demonstrated (done —
+   2026-07-14, `NJS-20260714-FU4VDF`), Aiosell adds us as a partner with
+   **a small contract**. Exact production partner ID and how our receiving
+   base URL is registered still TBC. *(Blocking.)*
 6. **Currency / NGN** — **Partially answered: `tcs` / `tds` can be 0 for
    sandbox.** Final production handling for a Nigerian property (VAT /
    consumption tax representation, full NGN support) still to confirm.
    *(Blocking.)*
 7. **Master data** — how are `roomCode` and `rateplanCode` values provisioned
    and communicated? Is there an API to list them? *(Blocking.)*
-   7a. **Hotel code conflict** — docs say `SANDBOX-OTA`, support said
-   `sandbox-pms`. Env-configured; the first outbound push test resolves it
-   empirically. Hard-reject validation deferred until resolved.
+   7a. **Hotel code conflict** — **Resolved empirically 2026-07-14:
+   `sandbox-ota`** (payload `hotelCode`) was accepted on the successful
+   push — neither the docs' `SANDBOX-OTA` nor support's `sandbox-pms` as
+   written. Aiosell's 2026-07-16 "use only sandbox-ota partner id" is
+   consistent with this reading (hotel code, not endpoint path).
 8. **Initial sync** — on go-live, does Aiosell push a full 365-day snapshot,
    or do we FETCH to seed the mirror? How far ahead do updates extend?
 9. **`pah` flag** — exact pay-at-hotel semantics and effects.
-10. **FETCH API** — full response schemas and auth for
-    `type: inventory | rates | reservations`. *(Phase 2 captures these.)*
+10. **FETCH API** — **Partially answered 2026-07-16: the reservations FETCH
+    channel is disabled intentionally — do not use it.** Full response
+    schemas for `type: inventory | rates` still to capture. *(Phase 2
+    captures these.)*
 11. **Modification scope** — can `modify` change dates/rooms, or is the
     pattern cancel + rebook? *(Checklist item 12 tests a date change.)*
 12. **Rate limits / SLA** — request caps, push latency after a change,
@@ -452,6 +531,34 @@ table is written and no schema is assumed until then.
 13. **Children pricing** — how are child ages / extra-bed rates represented?
 14. **`bookedOn` timezone** — docs show `YYYY-MM-DD HH:MM:SS` local time
     with no timezone field. We send Africa/Lagos time; please confirm.
+15. **Integration model decision (new, 2026-07-15)** — Aiosell confirmed
+    two paths: (A) the hotel uses **Aiosell's booking engine** connected to
+    the custom website (Aiosell handles payments), or (B) our **custom
+    booking engine connects as an OTA** — the architecture this plan
+    implements. The hotel must choose.
+    **Option A partially answered 2026-07-16:** their booking engine CAN be
+    white-labelled to our domain and branding; "the payment gateway charge
+    will be 5%". **The 5% is unclarified — before presenting it to the
+    hotel, Aiosell must confirm:** (a) is it payment-gateway processing
+    only, Aiosell commission, or both combined; (b) is it charged on the
+    room total only, or also on taxes and extras; (c) is it refunded when
+    a guest booking is cancelled. (If 5% of the whole booking value: a
+    ₦600,000 two-night booking costs ₦30,000 in fees.) Depth of
+    customisation (fonts, room photos, guest journey) and a white-labelled
+    example still unseen — the shared sample
+    `be.aiosell.com/book/octave-hotel-sarjapur-rd` shows the default design.
+    **Option B onboarding answered 2026-07-16:** develop and test the
+    rates/inventory webhook (done — Phase 1), demonstrate a successful
+    reservation push, then Aiosell adds us as a partner with a small
+    contract. Note: Phase 1 (rates/inventory mirror) remains useful under
+    both options.
+16. **Reconciliation method (new, 2026-07-16)** — **Answered: do not use
+    reservation FETCH** (channel disabled intentionally); reservations are
+    push-only. No alternative verification mechanism was named — the push
+    response is treated as authoritative, with `sync_logs` as our audit
+    trail. Historical note: sandbox rejected plural `"reservations"` FETCH
+    type with 400 "Invalid type"; singular `"reservation"` fix (2026-07-14)
+    is now moot for reservations.
 
 ---
 
@@ -460,4 +567,15 @@ webhook receiver, Neon + Drizzle); Aiosell answers incorporated. Revised
 2026-07-11: aligned to implemented schema; Phase 2 design approved (sync_logs,
 two-axis booking state, outbound client, dev routes, admin debug); core
 invariants and single-room limitation documented; multi-room/payments design
-moved to future-production section.*
+moved to future-production section. Revised 2026-07-16: recorded and
+DB-verified the PROVEN sandbox push success of 2026-07-14
+(`NJS-20260714-FU4VDF`, HTTP 200, 1 attempt, `paid`/`synced`, no
+`cmBookingId` returned — `cm_booking_id` NULL; endpoint partner path
+`sample-ota`, payload `hotelCode: sandbox-ota`);
+disambiguated Aiosell's "use only sandbox-ota partner id" (refers to hotel
+code, not the endpoint path — no explicit endpoint-change instruction was
+given); reservations FETCH marked intentionally unsupported and no longer
+required for reconciliation; Option A white-label confirmed but the 5%
+charge needs clarification (scope, base, refunds); Option B onboarding path
+confirmed (webhook + push demonstrated → partner + small contract);
+integration-model decision (§7 Q15) pending with the hotel.*
