@@ -1,8 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
+// Cinematic hero sequence — plays in order, crossfading between clips.
+// Daytime → Sunset → Night (matches the approved NJS Royale sequence).
+const clips = [
+  { key: 'daytime', poster: '/images/njs-hero-daytime-poster.jpg' },
+  { key: 'sunset',  poster: '/images/njs-hero-sunset-poster.jpg'  },
+  { key: 'night',   poster: '/images/njs-hero-night-poster.jpg'   },
+] as const
+
+// Static fallback if the hero videos cannot load at all.
 const slides = [
   '/images/grand-entrance-hall-01.png',
   '/images/njs-rooftop-infinity-pool-atlantic-view.png',
@@ -12,45 +21,75 @@ const slides = [
 export default function Hero() {
   const [active, setActive]         = useState(0)
   const [videoError, setVideoError] = useState(false)
+  const [tier, setTier]             = useState<'desktop' | 'mobile'>('desktop')
+  const [reduced, setReduced]       = useState(false)
+  const videoRefs                   = useRef<(HTMLVideoElement | null)[]>([])
 
-  // Slideshow timer runs in background — activates instantly if video fails
+  // Pick optimised source tier + honour reduced-motion (after mount, avoids SSR mismatch)
   useEffect(() => {
-    const id = setInterval(() => {
-      setActive((prev) => (prev + 1) % slides.length)
-    }, 5000)
-    return () => clearInterval(id)
+    const mobileMq  = window.matchMedia('(max-width: 767px)')
+    const reduceMq  = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const applyTier = () => setTier(mobileMq.matches ? 'mobile' : 'desktop')
+    applyTier()
+    setReduced(reduceMq.matches)
+    mobileMq.addEventListener('change', applyTier)
+    return () => mobileMq.removeEventListener('change', applyTier)
   }, [])
+
+  // Play the active clip from its start whenever it becomes active
+  useEffect(() => {
+    if (videoError || reduced) return
+    const v = videoRefs.current[active]
+    if (v) {
+      try { v.currentTime = 0 } catch {}
+      v.play().catch(() => {/* autoplay may defer; poster covers the gap */})
+    }
+  }, [active, tier, videoError, reduced])
+
+  const advance = () => setActive((prev) => (prev + 1) % clips.length)
+
+  const showVideo = !videoError && !reduced
 
   return (
     <section className="relative h-screen overflow-hidden">
 
-      {/* ── Primary background: cinematic hero video ── */}
-      {!videoError && (
+      {/* ── Primary background: cinematic hero video sequence (crossfade) ── */}
+      {showVideo && clips.map((clip, i) => (
         <video
-          autoPlay
-          loop
+          key={clip.key}
+          ref={(el) => { videoRefs.current[i] = el }}
+          autoPlay={i === 0}
           muted
           playsInline
-          poster="/images/njs-hero-branded-poster.png"
-          className="absolute inset-0 w-full h-full object-cover"
+          preload={i === 0 ? 'auto' : 'none'}
+          poster={clip.poster}
+          onEnded={advance}
           onError={() => setVideoError(true)}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+          style={{ opacity: i === active ? 1 : 0 }}
         >
-          <source src="/images/njs-oceanfront-hero-v4.mp4" type="video/mp4" />
-          {/* Backup video if v4 fails; slideshow takes over if both fail */}
-          <source
-            src="/images/njs-oceanfront-hero-v2.mp4"
-            type="video/mp4"
-            onError={() => setVideoError(true)}
-          />
+          <source src={`/videos/njs-hero-${clip.key}-${tier}.mp4`} type="video/mp4" />
+          <source src={`/videos/njs-hero-${clip.key}-desktop.mp4`} type="video/mp4" />
         </video>
+      ))}
+
+      {/* ── Reduced-motion: single static hero frame (no autoplay) ── */}
+      {!videoError && reduced && (
+        <Image
+          src={clips[0].poster}
+          alt="NJS Royale Beach Resort at dawn over the Atlantic"
+          fill
+          priority
+          className="absolute inset-0 object-cover"
+        />
       )}
 
-      {/* ── Fallback: image slideshow (shown if video cannot load) ── */}
+      {/* ── Fallback: image slideshow (shown only if video cannot load) ── */}
       {videoError && slides.map((src, i) => (
         <div
           key={src}
           className="absolute inset-0 transition-opacity duration-[1500ms] ease-in-out"
-          style={{ opacity: i === active ? 1 : 0 }}
+          style={{ opacity: i === active % slides.length ? 1 : 0 }}
         >
           <Image
             src={src}
@@ -61,6 +100,9 @@ export default function Hero() {
           />
         </div>
       ))}
+
+      {/* Advance the fallback slideshow on a timer when video is unavailable */}
+      <FallbackTimer enabled={videoError} onTick={advance} />
 
       {/* Dark luxury overlay */}
       <div
@@ -107,23 +149,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Slide dots — only visible in slideshow fallback mode */}
-      {videoError && (
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className="h-[3px] rounded-full transition-all duration-500"
-              style={{
-                width: i === active ? '24px' : '8px',
-                background: i === active ? '#C9A84C' : 'rgba(255,255,255,0.3)',
-              }}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
+      {/* One uninterrupted cinematic reel — no carousel controls. */}
 
       {/* Scroll indicator — hidden on small screens where it crowds the CTAs */}
       <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 hidden sm:flex flex-col items-center gap-2">
@@ -135,4 +161,14 @@ export default function Hero() {
 
     </section>
   )
+}
+
+// Advances the image-slideshow fallback every 5s (only mounts logic when enabled)
+function FallbackTimer({ enabled, onTick }: { enabled: boolean; onTick: () => void }) {
+  useEffect(() => {
+    if (!enabled) return
+    const id = setInterval(onTick, 5000)
+    return () => clearInterval(id)
+  }, [enabled, onTick])
+  return null
 }
