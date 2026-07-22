@@ -7,8 +7,8 @@ import { Waves, Leaf, UtensilsCrossed, CalendarDays, Sun, BellRing } from 'lucid
 const amenities = [
   {
     Icon: Waves,
-    title: 'Rooftop Pool',
-    desc: 'A stunning rooftop infinity pool perched above the Atlantic — the centrepiece of the resort with 360° ocean views.',
+    title: 'Infinity Pool',
+    desc: 'A stunning second-floor ocean-facing infinity pool — the centrepiece of the resort, with a 12-metre pool bar and uninterrupted Atlantic views.',
   },
   {
     Icon: Leaf,
@@ -18,7 +18,7 @@ const amenities = [
   {
     Icon: UtensilsCrossed,
     title: 'Fine Dining',
-    desc: 'Four signature restaurants including an international rooftop kitchen and a ground floor lounge bar with ocean views.',
+    desc: 'Four signature restaurants including an international kitchen and a ground floor lounge bar with ocean views.',
   },
   {
     Icon: CalendarDays,

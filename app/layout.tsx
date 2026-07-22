@@ -18,7 +18,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'NJS Royale Beach Resort — Atlantic Oceanfront, Nigeria',
   description:
-    'A private coastal escape on Nigeria\'s Atlantic coast. NJS Royale Beach Resort offers refined oceanfront hospitality, a rooftop infinity pool, signature dining, and world-class spa.',
+    'A private coastal escape on Nigeria\'s Atlantic coast. NJS Royale Beach Resort offers refined oceanfront hospitality, an ocean-facing infinity pool, signature dining, and world-class spa.',
 }
 
 export default function RootLayout({
