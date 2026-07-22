@@ -43,7 +43,7 @@ export default function About() {
               NJS Royale Beach Resort rises above Nigeria&apos;s Atlantic coastline as a monument to refined hospitality. Every room, every terrace, and every amenity has been positioned to offer an unobstructed relationship with the ocean.
             </p>
             <p className="text-navy/58 text-lg leading-loose mb-8 font-[family-name:var(--font-inter)]">
-              From the rooftop infinity pool that mirrors the sky to the four signature restaurants perched above the waves, life here is lived at the water&apos;s edge — in absolute luxury.
+              From the ocean-facing infinity pool that mirrors the sky to the four signature restaurants perched above the waves, life here is lived at the water&apos;s edge — in absolute luxury.
             </p>
             <a
               href="#rooms"

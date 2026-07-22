@@ -61,9 +61,9 @@ export default function BookCTA() {
             </p>
             <a
               href="#"
-              className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-[14px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Register Interest
+              Reserve Now
             </a>
           </div>
 

@@ -1,15 +1,15 @@
 'use client'
 
 import { useRef } from 'react'
-import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
-import { Waves, Sun, Eye, UtensilsCrossed } from 'lucide-react'
+import { Waves, Building2, Wine, Eye } from 'lucide-react'
+import SectionVideo from './SectionVideo'
 
 const features = [
-  { Icon: Sun,             stat: 'Fifth Floor',  label: 'Rooftop Elevation' },
-  { Icon: Waves,           stat: 'Infinity',     label: 'Edge Pool' },
-  { Icon: Eye,             stat: '360°',         label: 'Ocean Panoramas' },
-  { Icon: UtensilsCrossed, stat: 'Al Fresco',    label: 'Poolside Dining' },
+  { Icon: Building2, stat: 'Second Floor', label: 'Ocean-Facing Terrace' },
+  { Icon: Waves,     stat: 'Infinity',     label: 'Edge Pool' },
+  { Icon: Wine,      stat: '12 Metres',    label: 'Pool Bar' },
+  { Icon: Eye,       stat: 'Atlantic',     label: 'Views' },
 ]
 
 const fadeUp = (delay = 0) => ({
@@ -24,13 +24,12 @@ export default function RooftopPool() {
   return (
     <section ref={ref} id="rooftop" className="relative bg-[#060E1A] overflow-hidden">
 
-      {/* Cinematic infinity pool image */}
+      {/* Cinematic daytime aerial video — second-floor ocean-facing pool terrace */}
       <div className="relative h-[65vh] w-full overflow-hidden">
-        <Image
-          src="/images/njs-rooftop-infinity-pool-atlantic-view.png"
-          alt="NJS Royale rooftop infinity pool — Atlantic coast, Nigeria"
-          fill
-          className="object-cover"
+        <SectionVideo
+          name="daytime"
+          poster="/images/njs-hero-daytime-poster.jpg"
+          alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
         />
         <div
           className="absolute inset-0"
@@ -40,10 +39,10 @@ export default function RooftopPool() {
           }}
         />
 
-        {/* Heading overlaid on image */}
+        {/* Heading overlaid on video */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <p className="text-gold text-[10px] uppercase tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
-            Rooftop Experience
+            Ocean-Facing Pool Terrace
           </p>
           <h2
             className="font-[family-name:var(--font-cormorant)] text-white leading-none drop-shadow-lg"
@@ -65,7 +64,7 @@ export default function RooftopPool() {
         }}
       />
 
-      {/* Content below image */}
+      {/* Content below video */}
       <div className="relative max-w-6xl mx-auto px-8 pb-32">
 
         {/* Divider */}
@@ -85,18 +84,11 @@ export default function RooftopPool() {
           variants={fadeUp(0.1)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="text-center text-white/45 text-base leading-loose max-w-2xl mx-auto mb-4 font-[family-name:var(--font-inter)]"
+          className="text-center text-white/45 text-base leading-loose max-w-2xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
         >
-          Rising above Nigeria's Atlantic coastline on the fifth floor, the NJS Royale rooftop infinity pool offers an unbroken panorama of sky and sea — a horizon that belongs to you alone.
-        </motion.p>
-
-        <motion.p
-          variants={fadeUp(0.15)}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="text-center text-white/40 text-sm leading-loose max-w-xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
-        >
-          Poolside recliners, attentive attendant service, and direct access to the rooftop international kitchen — every element conceived for unhurried luxury above the Atlantic.
+          Set on the second-floor ocean-facing terrace, the NJS Royale infinity pool opens to
+          uninterrupted views of the Atlantic. Cabanas, a 12-metre pool bar and dedicated guest
+          facilities create a relaxed setting from day into night.
         </motion.p>
 
         {/* 4 feature stats */}

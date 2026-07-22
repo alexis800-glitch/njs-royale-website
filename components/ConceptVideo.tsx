@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import SectionVideo from './SectionVideo'
 
 const fadeUp = (delay = 0) => ({
   hidden: { opacity: 0, y: 28 },
@@ -18,15 +19,11 @@ export default function ConceptVideo() {
       {/* Video container */}
       <div className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden">
 
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/images/njs-rooftop-experience.mp4" type="video/mp4" />
-        </video>
+        <SectionVideo
+          name="sunset"
+          poster="/images/njs-hero-sunset-poster.jpg"
+          alt="NJS Royale second-floor ocean-facing pool terrace at Atlantic sunset"
+        />
 
         {/* Dark overlay — heavier at top and bottom */}
         <div
@@ -46,7 +43,7 @@ export default function ConceptVideo() {
             animate={isInView ? 'visible' : 'hidden'}
             className="text-gold/70 text-[9px] uppercase tracking-[5px] mb-5 font-[family-name:var(--font-inter)]"
           >
-            Phase 1 Concept Visual
+            Atlantic Sunset Experience
           </motion.p>
 
           <motion.h2
@@ -56,7 +53,7 @@ export default function ConceptVideo() {
             className="font-[family-name:var(--font-cormorant)] text-white leading-tight drop-shadow-lg mb-6"
             style={{ fontSize: 'clamp(32px, 5vw, 68px)' }}
           >
-            Rooftop Infinity Pool
+            Atlantic Sunset Pool
             <br />
             <em className="text-gold italic">Experience</em>
           </motion.h2>
@@ -67,9 +64,9 @@ export default function ConceptVideo() {
             animate={isInView ? 'visible' : 'hidden'}
             className="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl font-[family-name:var(--font-inter)]"
           >
-            A cinematic preview of the proposed rooftop leisure atmosphere — designed to capture
-            ocean-facing relaxation, sunset views, and the elevated lifestyle vision for NJS Royale
-            Beach Resort.
+            A cinematic view of the second-floor ocean-facing pool terrace as the sun settles over
+            the Atlantic — bringing together the infinity pool, cabanas, pool bar and warm evening
+            atmosphere of NJS Royale.
           </motion.p>
 
         </div>
@@ -81,7 +78,7 @@ export default function ConceptVideo() {
           animate={isInView ? 'visible' : 'hidden'}
           className="absolute bottom-6 left-0 right-0 text-center text-white/25 text-[10px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]"
         >
-          Concept media for presentation purposes
+          Architectural visualisation for presentation purposes
         </motion.p>
 
       </div>

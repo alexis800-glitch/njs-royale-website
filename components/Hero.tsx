@@ -3,153 +3,165 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
-// Cinematic hero sequence — plays in order, crossfading between clips.
-// Daytime → Sunset → Night (matches the approved NJS Royale sequence).
-const clips = [
-  { key: 'daytime', poster: '/images/njs-hero-daytime-poster.jpg' },
-  { key: 'sunset',  poster: '/images/njs-hero-sunset-poster.jpg'  },
-  { key: 'night',   poster: '/images/njs-hero-night-poster.jpg'   },
-] as const
-
-// Static fallback if the hero videos cannot load at all.
-const slides = [
-  '/images/grand-entrance-hall-01.png',
-  '/images/njs-rooftop-infinity-pool-atlantic-view.png',
-  '/images/ground-floor-bar-01.png',
-]
-
+// Homepage hero — the approved Night Atlantic Approach (v2) as the sole hero video.
+// Autoplays muted + loops when motion is allowed. Under prefers-reduced-motion (or if
+// autoplay is blocked) the poster shows with a visible "Play video" control, so the hero
+// is never permanently frozen while still respecting accessibility.
 export default function Hero() {
-  const [active, setActive]         = useState(0)
-  const [videoError, setVideoError] = useState(false)
+  const videoRef                    = useRef<HTMLVideoElement>(null)
   const [tier, setTier]             = useState<'desktop' | 'mobile'>('desktop')
   const [reduced, setReduced]       = useState(false)
-  const videoRefs                   = useRef<(HTMLVideoElement | null)[]>([])
+  const [failed, setFailed]         = useState(false)
+  const [blocked, setBlocked]       = useState(false) // autoplay rejected (needs a gesture)
+  const [userPlaying, setUserPlaying] = useState(false) // user opted in via the control
 
-  // Pick optimised source tier + honour reduced-motion (after mount, avoids SSR mismatch)
+  // Source tier + reduced-motion (after mount, avoids SSR mismatch); react to changes
   useEffect(() => {
-    const mobileMq  = window.matchMedia('(max-width: 767px)')
-    const reduceMq  = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const mobileMq = window.matchMedia('(max-width: 767px)')
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
     const applyTier = () => setTier(mobileMq.matches ? 'mobile' : 'desktop')
+    const applyRM   = () => setReduced(reduceMq.matches)
     applyTier()
-    setReduced(reduceMq.matches)
+    applyRM()
     mobileMq.addEventListener('change', applyTier)
-    return () => mobileMq.removeEventListener('change', applyTier)
+    reduceMq.addEventListener('change', applyRM)
+    return () => {
+      mobileMq.removeEventListener('change', applyTier)
+      reduceMq.removeEventListener('change', applyRM)
+    }
   }, [])
 
-  // Play the active clip from its start whenever it becomes active
+  // Play when motion is allowed; under reduced-motion wait for the user to opt in.
   useEffect(() => {
-    if (videoError || reduced) return
-    const v = videoRefs.current[active]
-    if (v) {
-      try { v.currentTime = 0 } catch {}
-      v.play().catch(() => {/* autoplay may defer; poster covers the gap */})
+    if (failed) return
+    const v = videoRef.current
+    if (!v) return
+    // Check the LIVE preference at call time (not the React state) to avoid a
+    // first-render race where stale state could let playback start under reduced-motion.
+    const suppressed = () =>
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches && !userPlaying
+    if (suppressed()) {
+      v.pause() // respect reduced-motion: hold on the poster until the user hits Play
+      return
     }
-  }, [active, tier, videoError, reduced])
+    let tries = 0
+    const tryPlay = () => {
+      if (suppressed()) { v.pause(); return }
+      v.play().then(() => setBlocked(false)).catch(() => {
+        if (tries++ < 6) setTimeout(tryPlay, 400)
+        else setBlocked(true) // surface a Play control if the browser refuses autoplay
+      })
+    }
+    v.addEventListener('canplay', tryPlay)
+    v.addEventListener('loadeddata', tryPlay)
+    tryPlay()
+    return () => {
+      v.removeEventListener('canplay', tryPlay)
+      v.removeEventListener('loadeddata', tryPlay)
+    }
+  }, [reduced, userPlaying, failed, tier])
 
-  const advance = () => setActive((prev) => (prev + 1) % clips.length)
+  const showVideo      = !failed
+  const showPlayButton = showVideo && !userPlaying && (reduced || blocked)
 
-  const showVideo = !videoError && !reduced
+  const handlePlay = () => {
+    setUserPlaying(true)
+    videoRef.current?.play().catch(() => {/* ignore; effect will retry */})
+  }
 
   return (
     <section className="relative h-screen overflow-hidden">
 
-      {/* ── Primary background: cinematic hero video sequence (crossfade) ── */}
-      {showVideo && clips.map((clip, i) => (
+      {/* ── Primary background: Night Atlantic Approach hero video ── */}
+      {showVideo ? (
         <video
-          key={clip.key}
-          ref={(el) => { videoRefs.current[i] = el }}
-          autoPlay={i === 0}
+          ref={videoRef}
+          // No `autoPlay` attribute: playback is started by the effect below, which
+          // respects reduced-motion. This avoids a first-render race where autoPlay
+          // would fire before `reduced` is known.
+          loop
           muted
           playsInline
-          preload={i === 0 ? 'auto' : 'none'}
-          poster={clip.poster}
-          onEnded={advance}
-          onError={() => setVideoError(true)}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: i === active ? 1 : 0 }}
+          preload="auto"
+          poster="/images/njs-hero-night-poster.jpg"
+          onError={() => setFailed(true)}
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src={`/videos/njs-hero-${clip.key}-${tier}.mp4`} type="video/mp4" />
-          <source src={`/videos/njs-hero-${clip.key}-desktop.mp4`} type="video/mp4" />
+          <source src={`/videos/njs-hero-night-${tier}.mp4`} type="video/mp4" />
+          <source src="/videos/njs-hero-night-desktop.mp4" type="video/mp4" />
         </video>
-      ))}
-
-      {/* ── Reduced-motion: single static hero frame (no autoplay) ── */}
-      {!videoError && reduced && (
+      ) : (
+        /* ── Hard fallback: night poster only (video failed to load) ── */
         <Image
-          src={clips[0].poster}
-          alt="NJS Royale Beach Resort at dawn over the Atlantic"
+          src="/images/njs-hero-night-poster.jpg"
+          alt="NJS Royale Beach Resort illuminated over the Atlantic at night"
           fill
           priority
           className="absolute inset-0 object-cover"
         />
       )}
 
-      {/* ── Fallback: image slideshow (shown only if video cannot load) ── */}
-      {videoError && slides.map((src, i) => (
-        <div
-          key={src}
-          className="absolute inset-0 transition-opacity duration-[1500ms] ease-in-out"
-          style={{ opacity: i === active % slides.length ? 1 : 0 }}
-        >
-          <Image
-            src={src}
-            alt={`NJS Royale resort view ${i + 1}`}
-            fill
-            className="object-cover"
-            priority={i === 0}
-          />
-        </div>
-      ))}
-
-      {/* Advance the fallback slideshow on a timer when video is unavailable */}
-      <FallbackTimer enabled={videoError} onTick={advance} />
-
-      {/* Dark luxury overlay */}
+      {/* Dark gradient — stronger toward the top where the centred copy sits, then clears
+          through the middle so the illuminated pool, 12m bar and central façade stay visible */}
       <div
         className="absolute inset-0 z-10"
         style={{
           background:
-            'linear-gradient(to bottom, rgba(6,14,26,0.45) 0%, rgba(6,14,26,0.20) 45%, rgba(6,14,26,0.70) 100%)',
+            'linear-gradient(to bottom, rgba(6,14,26,0.60) 0%, rgba(6,14,26,0.34) 30%, rgba(6,14,26,0.10) 52%, rgba(6,14,26,0) 70%, rgba(6,14,26,0.18) 100%)',
         }}
       />
 
-      {/* Hero content */}
-      <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-6">
-        <p className="text-gold/80 text-[9px] sm:text-[10px] uppercase tracking-[3px] sm:tracking-[6px] leading-relaxed mb-10 sm:mb-7 font-[family-name:var(--font-inter)]">
-          Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
-        </p>
-
-        <h1
-          className="font-[family-name:var(--font-cormorant)] text-white leading-[1.3] sm:leading-tight mb-9 sm:mb-8"
-          style={{ fontSize: 'clamp(30px, 7vw, 88px)' }}
+      {/* Hero content — restrained centred composition, lifted slightly so the pool / bar / façade stay visible */}
+      <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-6">
+        <div
+          className="w-full max-w-[1000px] flex flex-col items-center -translate-y-[4vh] sm:-translate-y-[7vh]"
+          style={{ textShadow: '0 1px 3px rgba(6,14,26,0.72), 0 2px 28px rgba(6,14,26,0.72)' }}
         >
-          A Private Oceanfront Escape,
-          <br className="hidden sm:block" />
-          <em className="text-gold italic block sm:inline mt-4 sm:mt-0">Crafted for Prestige</em>
-        </h1>
+          <p className="text-gold/85 text-[9px] sm:text-[10px] uppercase tracking-[3px] sm:tracking-[6px] leading-relaxed mb-6 font-[family-name:var(--font-inter)]">
+            Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
+          </p>
 
-        <p className="text-white/55 text-[15px] sm:text-lg font-light leading-[1.6] sm:leading-relaxed max-w-xs sm:max-w-2xl mb-12 font-[family-name:var(--font-inter)]">
-          NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
-          hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
-        </p>
+          <h1 className="font-[family-name:var(--font-cormorant)] text-white mb-6 sm:mb-7 text-balance">
+            <span className="block leading-[1.1] text-[clamp(2.15rem,6.4vw,2.75rem)] sm:text-[clamp(3rem,4.3vw,3.9rem)]">
+              A Private Oceanfront Escape,
+            </span>
+            <em className="block italic text-gold leading-[1.15] mt-2 text-[clamp(1.65rem,5vw,2.1rem)] sm:text-[clamp(2.1rem,3vw,2.7rem)]">
+              Crafted for Prestige
+            </em>
+          </h1>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-none sm:w-auto">
-          <a
-            href="#about"
-            className="w-full sm:w-auto text-center bg-gold text-navy px-10 py-4 text-[11px] uppercase tracking-widest font-semibold hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
-          >
-            Explore the Resort
-          </a>
-          <a
-            href="#enquire"
-            className="w-full sm:w-auto text-center border border-white/50 text-white px-10 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
-          >
-            Register Interest
-          </a>
+          <p className="text-white/60 font-light leading-[1.6] sm:leading-relaxed max-w-xs sm:max-w-[660px] mb-9 font-[family-name:var(--font-inter)] text-[15px] sm:text-[clamp(1rem,1.2vw,1.2rem)]">
+            NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
+            hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-none sm:w-auto">
+            <a
+              href="#about"
+              className="inline-flex items-center justify-center w-full sm:w-auto sm:min-w-[210px] min-h-[50px] text-center bg-[#c9a84c] text-navy px-[30px] py-[15px] text-[12px] uppercase tracking-[0.1em] font-medium [text-shadow:none] hover:bg-[#bd9f45] transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            >
+              Explore the Resort
+            </a>
+            <a
+              href="#enquire"
+              className="w-full sm:w-auto sm:min-w-[190px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            >
+              Reserve Now
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* One uninterrupted cinematic reel — no carousel controls. */}
+      {/* Play-video control — appears only when autoplay is suppressed (reduced-motion / blocked) */}
+      {showPlayButton && (
+        <button
+          onClick={handlePlay}
+          aria-label="Play hero video"
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 border border-gold/60 text-gold bg-navy/40 backdrop-blur-sm px-5 py-2.5 text-[10px] uppercase tracking-[3px] font-semibold hover:bg-gold hover:text-navy transition-colors duration-300 font-[family-name:var(--font-inter)]"
+        >
+          <span className="text-xs">▶</span> Play video
+        </button>
+      )}
 
       {/* Scroll indicator — hidden on small screens where it crowds the CTAs */}
       <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-20 hidden sm:flex flex-col items-center gap-2">
@@ -161,14 +173,4 @@ export default function Hero() {
 
     </section>
   )
-}
-
-// Advances the image-slideshow fallback every 5s (only mounts logic when enabled)
-function FallbackTimer({ enabled, onTick }: { enabled: boolean; onTick: () => void }) {
-  useEffect(() => {
-    if (!enabled) return
-    const id = setInterval(onTick, 5000)
-    return () => clearInterval(id)
-  }, [enabled, onTick])
-  return null
 }
