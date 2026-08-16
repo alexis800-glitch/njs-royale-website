@@ -64,7 +64,7 @@ export default function Rooms() {
             Rooms &amp; Suites
           </h2>
           <p className="text-white/50 text-base font-[family-name:var(--font-inter)] max-w-md mx-auto">
-            Every room and suite at NJS Royale is positioned to frame the Atlantic. Reservations opening soon.
+            Every room and suite at NJS Royale is positioned to frame the Atlantic. Rooms are not yet bookable — room reservations open from July 2027.
           </p>
         </div>
 

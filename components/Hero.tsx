@@ -146,7 +146,7 @@ export default function Hero() {
               href="#enquire"
               className="w-full sm:w-auto sm:min-w-[190px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Reserve Now
+              Plan Your Stay
             </a>
           </div>
         </div>

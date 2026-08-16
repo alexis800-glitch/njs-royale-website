@@ -43,7 +43,7 @@ export default function About() {
               NJS Royale Beach Resort rises above Nigeria&apos;s Atlantic coastline as a monument to refined hospitality. Every room, every terrace, and every amenity has been positioned to offer an unobstructed relationship with the ocean.
             </p>
             <p className="text-navy/58 text-lg leading-loose mb-8 font-[family-name:var(--font-inter)]">
-              From the ocean-facing infinity pool that mirrors the sky to the four signature restaurants perched above the waves, life here is lived at the water&apos;s edge — in absolute luxury.
+              From the ocean-facing infinity pool that mirrors the sky to the signature restaurants perched above the waves, life here is lived at the water&apos;s edge.
             </p>
             <a
               href="#rooms"
@@ -119,7 +119,7 @@ export default function About() {
                 Nicole Shuler
               </p>
               <p className="text-navy/55 text-base leading-relaxed font-[family-name:var(--font-inter)]">
-                NJS Royale Beach Resort was born from Nicole Shuler&apos;s vision to create a soulful coastal retreat where Nigerian heritage meets global luxury. Designed as a destination for belonging, beauty, wellness, and refined hospitality, the resort reflects a lifelong commitment to excellence, culture, and heartfelt hospitality.
+                NJS Royale Beach Resort was born from Nicole Shuler&apos;s vision to create a soulful coastal escape where Nigerian heritage meets refined hospitality. Designed as a destination for belonging, beauty, wellness, and refined hospitality, the resort reflects a lifelong commitment to excellence, culture, and heartfelt hospitality.
               </p>
             </div>
 

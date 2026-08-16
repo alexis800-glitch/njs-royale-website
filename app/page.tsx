@@ -1,12 +1,12 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
+import Daycation from '@/components/Daycation'
 import Rooms from '@/components/Rooms'
 import ResortExperiences from '@/components/ResortExperiences'
 import RooftopPool from '@/components/RooftopPool'
 import ConceptVideo from '@/components/ConceptVideo'
 import Amenities from '@/components/Amenities'
-import EventCenter from '@/components/EventCenter'
 import Gallery from '@/components/Gallery'
 import Testimonials from '@/components/Testimonials'
 import DigitalPlatform from '@/components/DigitalPlatform'
@@ -19,12 +19,12 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      <Daycation />
       <Rooms />
       <ResortExperiences />
       <RooftopPool />
       <ConceptVideo />
       <Amenities />
-      <EventCenter />
       <Gallery />
       <Testimonials />
       <DigitalPlatform />

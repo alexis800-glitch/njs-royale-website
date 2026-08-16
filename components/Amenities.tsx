@@ -2,28 +2,28 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Waves, Leaf, UtensilsCrossed, CalendarDays, Sun, BellRing } from 'lucide-react'
+import { Waves, Leaf, UtensilsCrossed, Umbrella, Sun, BellRing } from 'lucide-react'
 
 const amenities = [
   {
     Icon: Waves,
     title: 'Infinity Pool',
-    desc: 'A stunning second-floor ocean-facing infinity pool — the centrepiece of the resort, with a 12-metre pool bar and uninterrupted Atlantic views.',
+    desc: 'An ocean-facing infinity pool — a centrepiece of the resort, with a pool bar and uninterrupted Atlantic views.',
   },
   {
     Icon: Leaf,
     title: 'Spa & Wellness',
-    desc: 'A dedicated wellness sanctuary offering treatments inspired by coastal African traditions and modern luxury therapies.',
+    desc: 'A dedicated wellness sanctuary offering treatments inspired by coastal African traditions and modern therapies.',
   },
   {
     Icon: UtensilsCrossed,
-    title: 'Fine Dining',
-    desc: 'Four signature restaurants including an international kitchen and a ground floor lounge bar with ocean views.',
+    title: 'Signature Dining',
+    desc: 'Signature restaurants including an international kitchen and a ground floor lounge bar with ocean views.',
   },
   {
-    Icon: CalendarDays,
-    title: 'Event Spaces',
-    desc: "Versatile ocean-view halls for weddings, corporate conferences, and high-profile private gatherings on Nigeria's Atlantic coast.",
+    Icon: Umbrella,
+    title: 'Leisure Park & Lounge',
+    desc: 'A coastal leisure park, lounge and pool — the resort’s first operating experience, open Thursday to Sunday from December.',
   },
   {
     Icon: Sun,

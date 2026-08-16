@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Footer() {
   return (
@@ -23,18 +24,12 @@ export default function Footer() {
         </p>
 
         <div className="flex gap-6">
-          <a
-            href="#"
+          <Link
+            href="/privacy"
             className="text-white/45 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
             Privacy
-          </a>
-          <a
-            href="#"
-            className="text-white/45 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
-          >
-            Terms
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

@@ -3,12 +3,15 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
-import { MapPin, Phone, Mail } from 'lucide-react'
+import { MapPin, Phone } from 'lucide-react'
 
 const info = [
-  { Icon: MapPin, label: 'Location',  value: 'Richland Garden Estate, Ibeju-Lekki, Lagos' },
-  { Icon: Phone,  label: 'Telephone', value: '07075334158' },
-  { Icon: Mail,   label: 'Enquiries', value: 'info@njsroyale.com.ng' },
+  {
+    Icon: MapPin,
+    label: 'Location',
+    value: 'Mosere-Kogo Village, via Eko Akete, Ibeju-Lekki, Lagos State, Nigeria',
+  },
+  { Icon: Phone, label: 'Telephone', value: '0707 533 4158', href: 'tel:+2347075334158' },
 ]
 
 export default function BookCTA() {
@@ -25,7 +28,7 @@ export default function BookCTA() {
         className="max-w-[760px] mx-auto text-center"
       >
         <p className="text-gold text-[10px] uppercase tracking-[4px] mb-5 font-[family-name:var(--font-inter)]">
-          Register Your Interest
+          Plan Your Stay
         </p>
 
         <h2
@@ -37,68 +40,53 @@ export default function BookCTA() {
           <em className="text-gold italic">NJS Royale Journey</em>
         </h2>
 
-        <p className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]" style={{ marginBottom: '3rem' }}>
-          Whether you are seeking a luxury coastal retreat at our Beach Resort or coordinating your next signature event at our Event &amp; Conference Center, NJS Royale is preparing to welcome you. Register your interest for priority updates and early reservation access.
+        <p
+          className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]"
+          style={{ marginBottom: '3rem' }}
+        >
+          Our beach resort daycation &mdash; leisure park, lounge and pool &mdash; opens
+          this December, Thursday to Sunday. Rooms open from July 2027. Our online enquiry
+          service is coming soon; for now, we would be glad to help you plan your visit by
+          phone.
         </p>
 
-        {/* Dual brand columns — logo + label + button, each brand self-contained */}
-        <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-gold/20 gap-10 md:gap-0 mb-16">
-
-          {/* Beach Resort */}
-          <div className="flex flex-col items-center gap-5 md:px-10">
-            <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
-              <div className="relative w-[96px] h-[96px]">
-                <Image
-                  src="/njs-logos/njs-royale-beach-resort-logo-gold.png"
-                  alt="NJS Royale Beach Resort"
-                  fill
-                  className="object-contain"
-                />
-              </div>
+        {/* Beach Resort brand mark */}
+        <div className="flex flex-col items-center gap-5 mb-12">
+          <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
+            <div className="relative w-[96px] h-[96px]">
+              <Image
+                src="/njs-logos/njs-royale-beach-resort-logo-gold.png"
+                alt="NJS Royale Beach Resort"
+                fill
+                className="object-contain"
+              />
             </div>
-            <p className="text-white/50 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
-              Beach Resort
-            </p>
+          </div>
+          <p className="text-white/50 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
+            Beach Resort
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
             <a
-              href="#"
-              className="w-full max-w-[320px] text-center bg-gold text-navy px-6 py-[14px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              href="tel:+2347075334158"
+              className="w-full sm:w-auto sm:min-w-[210px] text-center bg-gold text-navy px-6 py-[14px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Reserve Now
+              Call to Enquire
+            </a>
+            <a
+              href="#daycation"
+              className="w-full sm:w-auto sm:min-w-[190px] text-center border border-white/70 text-white px-6 py-[14px] text-[12px] uppercase tracking-[0.08em] font-medium hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            >
+              Plan Your Day
             </a>
           </div>
-
-          {/* Event & Conference Center */}
-          <div className="flex flex-col items-center gap-5 md:px-10">
-            <div className="bg-white p-3 shadow-md ring-1 ring-gold/10">
-              <div className="relative w-[96px] h-[96px]">
-                <Image
-                  src="/njs-logos/njs-royale-event-conference-center-logo-gold.png"
-                  alt="NJS Royale Event & Conference Center"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
-            <p className="text-white/50 text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
-              Event &amp; Conference Center
-            </p>
-            <a
-              href="#"
-              className="w-full max-w-[320px] text-center border border-white text-white px-6 py-4 text-[11px] uppercase tracking-widest font-semibold hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
-            >
-              Plan an Event
-            </a>
-          </div>
-
         </div>
 
         <p className="text-white/30 text-[11px] text-center leading-relaxed font-[family-name:var(--font-inter)] mb-12 italic">
-          Full reservation processing and online payment will be activated in Phase Two —
-          our reservations team is available now to assist with priority bookings.
+          Rooms are not yet available to book. Room reservations open from July 2027.
         </p>
 
-        <div className="border-t border-white/7 pt-12 grid md:grid-cols-3 gap-8">
-          {info.map(({ Icon, label, value }) => (
+        <div className="border-t border-white/7 pt-12 grid gap-8 sm:grid-cols-2 max-w-2xl mx-auto">
+          {info.map(({ Icon, label, value, href }) => (
             <div key={label} className="text-center">
               <div className="flex justify-center mb-3">
                 <Icon size={18} strokeWidth={1.25} className="text-gold/60" />
@@ -107,7 +95,13 @@ export default function BookCTA() {
                 {label}
               </div>
               <div className="text-white/55 text-sm font-[family-name:var(--font-inter)]">
-                {value}
+                {href ? (
+                  <a href={href} className="hover:text-gold transition-colors duration-300">
+                    {value}
+                  </a>
+                ) : (
+                  value
+                )}
               </div>
             </div>
           ))}

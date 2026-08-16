@@ -6,11 +6,10 @@ import { Menu, X } from 'lucide-react'
 const links = [
   { label: 'Home',           href: '#'            },
   { label: 'About',          href: '#about'       },
+  { label: 'Daycation',      href: '#daycation'   },
   { label: 'Rooms & Suites', href: '#rooms'       },
   { label: 'Dining',         href: '#amenities'   },
   { label: 'Wellness',       href: '#experiences' },
-  { label: 'Experiences',    href: '#experiences' },
-  { label: 'Events',         href: '#events'      },
   { label: 'Gallery',        href: '#gallery'     },
   { label: 'Contact',        href: '#enquire'     },
 ]
@@ -100,7 +99,7 @@ export default function Navbar() {
             </span>
           </a>
 
-          {/* ── Right: refined Reserve Now — transparent w/ thin ivory border over
+          {/* ── Right: refined Enquire CTA — transparent w/ thin ivory border over
                 the hero, restrained navy fill once solid (compact on mobile) ── */}
           <div className="flex items-center justify-self-end min-w-0">
             <a
@@ -111,7 +110,7 @@ export default function Navbar() {
                   : 'bg-transparent text-[#f6f2e9] border border-[#f6f2e9]/55 hover:bg-white/10'
               }`}
             >
-              Reserve<span className="hidden sm:inline">&nbsp;Now</span>
+              Enquire
             </a>
           </div>
         </div>
@@ -170,12 +169,12 @@ export default function Navbar() {
             <a
               href="#enquire"
               onClick={closeMenu}
-              className="inline-block text-center bg-navy text-[#f6f2e9] w-[168px] px-6 py-[13px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-gold hover:text-navy transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="inline-block text-center bg-navy text-[#f6f2e9] w-[180px] px-6 py-[13px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-gold hover:text-navy transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Reserve Now
+              Plan Your Stay
             </a>
             <p className="text-navy/45 text-[11px] tracking-wide font-[family-name:var(--font-inter)]">
-              Mosere-Kogo Village &nbsp;·&nbsp; Ibeju-Lekki, Lagos
+              Mosere-Kogo Village, via Eko Akete &nbsp;·&nbsp; Ibeju-Lekki, Lagos State
             </p>
           </div>
         </div>
