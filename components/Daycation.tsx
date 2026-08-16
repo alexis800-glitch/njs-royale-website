@@ -27,8 +27,8 @@ export default function Daycation() {
           className="relative aspect-[4/3] overflow-hidden order-1 md:order-none"
         >
           <Image
-            src="/images/njs-rooftop-infinity-pool-atlantic-view.png"
-            alt="NJS Royale ocean-facing infinity pool and leisure deck"
+            src="/images/njs-hero-sunset-poster.jpg"
+            alt="NJS Royale Beach Resort infinity pool and lounge deck at sunset over the Atlantic"
             fill
             className="object-cover"
             sizes="(max-width: 768px) 90vw, 48vw"
@@ -41,9 +41,10 @@ export default function Daycation() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 }}
           transition={{ duration: 0.85, ease: 'easeOut', delay: 0.12 }}
         >
-          <p className="text-gold text-[10px] uppercase tracking-[4px] mb-5 font-[family-name:var(--font-inter)]">
+          <span className="inline-flex items-center gap-2 border border-gold/50 text-gold text-[11px] font-semibold uppercase tracking-[3px] px-4 py-2 mb-6 font-[family-name:var(--font-inter)]">
+            <Sun size={13} strokeWidth={1.6} />
             Opening this December
-          </p>
+          </span>
           <h2
             className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-6"
             style={{ fontSize: 'clamp(34px, 4.4vw, 54px)' }}

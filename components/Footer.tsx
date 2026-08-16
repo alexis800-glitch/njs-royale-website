@@ -26,9 +26,9 @@ export default function Footer() {
         <div className="flex gap-6">
           <Link
             href="/privacy"
-            className="text-white/45 hover:text-gold text-[11px] uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
+            className="text-white/70 hover:text-gold text-[11px] font-semibold uppercase tracking-widest transition-colors duration-300 font-[family-name:var(--font-inter)]"
           >
-            Privacy
+            Privacy Policy
           </Link>
         </div>
       </div>

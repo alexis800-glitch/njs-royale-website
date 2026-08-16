@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import AnnouncementRibbon from '@/components/AnnouncementRibbon'
 import About from '@/components/About'
 import Daycation from '@/components/Daycation'
 import Rooms from '@/components/Rooms'
@@ -18,6 +19,7 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
+      <AnnouncementRibbon />
       <About />
       <Daycation />
       <Rooms />
