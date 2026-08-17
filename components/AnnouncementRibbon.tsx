@@ -7,10 +7,10 @@ const items = [
 function Item({ label }: { label: string }) {
   return (
     <span className="flex items-center">
-      <span className="text-[10.5px] sm:text-[11px] uppercase tracking-[2.5px] text-[#f6f2e9]/90 font-[family-name:var(--font-inter)] whitespace-nowrap">
+      <span className="text-[10.5px] sm:text-[11px] font-medium uppercase tracking-[2.5px] text-navy font-[family-name:var(--font-inter)] whitespace-nowrap">
         {label}
       </span>
-      <span className="mx-5 sm:mx-7 text-gold/70 text-[10px]" aria-hidden="true">
+      <span className="mx-5 sm:mx-7 text-[#a8842f] text-[10px]" aria-hidden="true">
         &bull;
       </span>
     </span>
@@ -19,7 +19,7 @@ function Item({ label }: { label: string }) {
 
 function Group() {
   return (
-    <div className="flex items-center py-3 shrink-0">
+    <div className="flex items-center py-3.5 shrink-0">
       {items.map((label) => (
         <Item key={label} label={label} />
       ))}
@@ -32,17 +32,39 @@ export default function AnnouncementRibbon() {
     <section
       id="opening"
       aria-label="Opening announcements"
-      className="relative bg-navyDark border-y border-gold/25 overflow-hidden"
+      className="relative isolate overflow-hidden border-y border-gold/45 bg-[linear-gradient(90deg,#F6EFDC_0%,#ECDFC2_50%,#F6EFDC_100%)]"
     >
+      {/* Soft inner depth: top highlight fading to a faint warm shade */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.55),rgba(255,255,255,0)_48%,rgba(90,70,20,0.06))]"
+      />
+
+      {/* Extremely subtle slow satin sweep — motion-safe only, behind the text */}
+      <div
+        aria-hidden="true"
+        className="ribbon-satin pointer-events-none absolute inset-y-0 left-0 hidden w-1/4 motion-safe:block"
+      />
+      <style>{`
+        @keyframes ribbon-satin {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(440%); }
+        }
+        .ribbon-satin {
+          background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+          animation: ribbon-satin 16s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Accessible, non-visual copy (read once by screen readers) */}
       <p className="sr-only">
         Daycation opens this December, Thursday to Sunday. Rooms open July 2027.
       </p>
 
-      {/* Animated seamless marquee — only when motion is allowed */}
+      {/* Animated seamless marquee — only when motion is allowed (slow, smooth) */}
       <div
         aria-hidden="true"
-        className="hidden motion-safe:flex w-max animate-marquee will-change-transform"
+        className="relative z-10 hidden motion-safe:flex w-max animate-marquee [animation-duration:60s] will-change-transform"
       >
         <Group />
         <Group />
@@ -51,15 +73,15 @@ export default function AnnouncementRibbon() {
       {/* Static, centred fallback — shown when the visitor prefers reduced motion */}
       <div
         aria-hidden="true"
-        className="motion-safe:hidden flex flex-wrap items-center justify-center gap-x-5 gap-y-1 py-3 px-4 text-center"
+        className="relative z-10 motion-safe:hidden flex flex-wrap items-center justify-center gap-x-5 gap-y-1 py-3.5 px-4 text-center"
       >
         {items.map((label, i) => (
           <span key={label} className="flex items-center">
-            <span className="text-[10.5px] sm:text-[11px] uppercase tracking-[2.5px] text-[#f6f2e9]/90 font-[family-name:var(--font-inter)]">
+            <span className="text-[10.5px] sm:text-[11px] font-medium uppercase tracking-[2.5px] text-navy font-[family-name:var(--font-inter)]">
               {label}
             </span>
             {i < items.length - 1 && (
-              <span className="mx-4 text-gold/70 text-[10px]" aria-hidden="true">
+              <span className="mx-4 text-[#a8842f] text-[10px]" aria-hidden="true">
                 &bull;
               </span>
             )}
