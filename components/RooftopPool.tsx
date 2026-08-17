@@ -22,7 +22,7 @@ export default function RooftopPool() {
   const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
 
   return (
-    <section ref={ref} id="rooftop" className="relative bg-[#060E1A] overflow-hidden">
+    <section ref={ref} id="rooftop" className="relative bg-[#0A1628] overflow-hidden">
 
       {/* Cinematic daytime aerial video — second-floor ocean-facing pool terrace */}
       <div className="relative h-[65vh] w-full overflow-hidden">
@@ -35,7 +35,7 @@ export default function RooftopPool() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(6,14,26,0.20) 0%, rgba(6,14,26,0.35) 50%, rgba(6,14,26,1) 100%)',
+              'linear-gradient(to bottom, rgba(10,22,40,0.12) 0%, rgba(10,22,40,0.30) 55%, rgba(10,22,40,0.92) 100%)',
           }}
         />
 
@@ -84,7 +84,7 @@ export default function RooftopPool() {
           variants={fadeUp(0.1)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="text-center text-white/45 text-base leading-loose max-w-2xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
+          className="text-center text-white/70 text-base leading-loose max-w-2xl mx-auto mb-16 font-[family-name:var(--font-inter)]"
         >
           Set on the second-floor ocean-facing terrace, the NJS Royale infinity pool opens to
           uninterrupted views of the Atlantic. Cabanas, a 12-metre pool bar and dedicated guest
@@ -96,12 +96,12 @@ export default function RooftopPool() {
           variants={fadeUp(0.22)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gold/10"
+          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gold/15"
         >
           {features.map(({ Icon, stat, label }) => (
             <div
               key={label}
-              className="bg-[#060E1A] px-4 py-8 md:px-8 md:py-10 text-center group hover:bg-[#0A1628] transition-colors duration-500"
+              className="bg-[#0F1D34] px-4 py-8 md:px-8 md:py-10 text-center group hover:bg-[#16243d] transition-colors duration-500"
             >
               <div className="flex justify-center mb-4">
                 <Icon
@@ -113,7 +113,7 @@ export default function RooftopPool() {
               <div className="font-[family-name:var(--font-cormorant)] text-gold text-3xl font-light mb-1 leading-none">
                 {stat}
               </div>
-              <div className="text-white/45 text-[10px] uppercase tracking-[2px] mt-2 font-[family-name:var(--font-inter)]">
+              <div className="text-white/65 text-[10px] uppercase tracking-[2px] mt-2 font-[family-name:var(--font-inter)]">
                 {label}
               </div>
             </div>

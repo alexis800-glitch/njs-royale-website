@@ -165,6 +165,14 @@ export default function Rooms() {
                     </div>
                   </div>
 
+                  {/* Restrained, data-driven opening-phase indicator */}
+                  {a.openingPhase && (
+                    <p className="flex items-center gap-2 text-gold/70 text-[9px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
+                      <span className="inline-block h-1 w-1 rounded-full bg-gold/60" aria-hidden="true" />
+                      {a.openingPhase}
+                    </p>
+                  )}
+
                   <div className="flex-1">
                     <Specs a={a} />
                   </div>
