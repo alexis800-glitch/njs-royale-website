@@ -1,7 +1,8 @@
 const items = [
-  'Daycation opens this December',
+  'Daycation opens December 12, 2026',
   'Thursday to Sunday',
-  'Rooms open July 2027',
+  'Accommodation from February 2027',
+  'Grand Opening July 2027',
 ]
 
 function Item({ label }: { label: string }) {
@@ -58,7 +59,8 @@ export default function AnnouncementRibbon() {
 
       {/* Accessible, non-visual copy (read once by screen readers) */}
       <p className="sr-only">
-        Daycation opens this December, Thursday to Sunday. Rooms open July 2027.
+        Daycation opens December 12, 2026, Thursday to Sunday. Accommodation opens
+        progressively from February 2027, with Grand Opening in July 2027.
       </p>
 
       {/* Animated seamless marquee — only when motion is allowed (slow, smooth) */}

@@ -44,10 +44,10 @@ export default function BookCTA() {
           className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]"
           style={{ marginBottom: '3rem' }}
         >
-          Our beach resort daycation &mdash; leisure park, lounge and pool &mdash; opens
-          this December, Thursday to Sunday. Rooms open from July 2027. Our online enquiry
-          service is coming soon; for now, we would be glad to help you plan your visit by
-          phone.
+          Our beach resort daycation opens December 12, 2026, Thursday to Sunday.
+          Accommodation opens progressively from February 2027, with the complete resort
+          at Grand Opening in July 2027. Our online enquiry service is coming soon; for
+          now, we would be glad to help you plan your visit by phone.
         </p>
 
         {/* Beach Resort brand mark */}
@@ -82,7 +82,8 @@ export default function BookCTA() {
         </div>
 
         <p className="text-white/30 text-[11px] text-center leading-relaxed font-[family-name:var(--font-inter)] mb-12 italic">
-          Rooms are not yet available to book. Room reservations open from July 2027.
+          Online booking is not yet live. Accommodation opens progressively from February
+          2027; enquiries are warmly welcomed now.
         </p>
 
         <div className="border-t border-white/7 pt-12 grid gap-8 sm:grid-cols-2 max-w-2xl mx-auto">

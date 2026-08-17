@@ -7,8 +7,22 @@ import { CalendarDays, Sun, Waves } from 'lucide-react'
 
 const facts = [
   { Icon: CalendarDays, label: 'Open', value: 'Thursday to Sunday' },
-  { Icon: Sun, label: 'First season', value: 'Opening December' },
-  { Icon: Waves, label: 'Enjoy', value: 'Leisure park, lounge & pool' },
+  { Icon: Sun, label: 'Launches', value: 'December 12, 2026' },
+  { Icon: Waves, label: 'Enjoy', value: 'Beach, pools & rooftop' },
+]
+
+const experiences = [
+  'Beach',
+  'Pools',
+  'Rooftop',
+  'Leisure clubs',
+  'Food',
+  'Cocktails & mocktails',
+  'Music',
+  'Cabanas',
+  'Movie nights',
+  'Sunset experiences',
+  'Evening experiences',
 ]
 
 export default function Daycation() {
@@ -43,7 +57,7 @@ export default function Daycation() {
         >
           <span className="inline-flex items-center gap-2 border border-gold/50 text-gold text-[11px] font-semibold uppercase tracking-[3px] px-4 py-2 mb-6 font-[family-name:var(--font-inter)]">
             <Sun size={13} strokeWidth={1.6} />
-            Opening this December
+            Opening December 12, 2026
           </span>
           <h2
             className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-6"
@@ -54,9 +68,10 @@ export default function Daycation() {
             <em className="text-gold italic">Begins</em>
           </h2>
           <p className="text-navy/60 leading-relaxed mb-8 font-[family-name:var(--font-inter)] max-w-lg">
-            NJS Royale opens first as a beach resort daycation. A leisure park, a relaxed
-            lounge and an ocean-facing pool, open Thursday to Sunday. Come for the day and
-            stay through golden hour.
+            NJS Royale opens first as a beach resort daycation, launching December 12,
+            2026. Beaches, pools, a rooftop and leisure clubs, open Thursday to Sunday — a
+            paid resort day experience by the coast. Come for the day and stay through
+            golden hour.
           </p>
 
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-9 border-t border-navy/10 pt-7">
@@ -72,6 +87,25 @@ export default function Daycation() {
               </div>
             ))}
           </dl>
+
+          <div className="mb-8">
+            <p className="text-navy/45 text-[10px] uppercase tracking-[2px] mb-3 font-[family-name:var(--font-inter)]">
+              The experience may include
+            </p>
+            <ul className="flex flex-wrap gap-2">
+              {experiences.map((x) => (
+                <li
+                  key={x}
+                  className="border border-navy/15 text-navy/70 text-[11px] px-3 py-1.5 font-[family-name:var(--font-inter)]"
+                >
+                  {x}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-navy/45 text-[12px] italic font-[family-name:var(--font-inter)]">
+              Daycation admission applies. Full details to be announced.
+            </p>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <a
