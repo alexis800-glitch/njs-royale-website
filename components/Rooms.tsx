@@ -46,12 +46,10 @@ function Specs({ a }: { a: AccommodationCategory }) {
   if (a.kitchenOrKitchenette) rows.push({ label: 'Kitchen', value: a.kitchenOrKitchenette })
   if (a.guestWC) rows.push({ label: 'Guest WC', value: a.guestWC })
 
+  // No confirmed specifications yet — render nothing here; the general note below
+  // the grid covers this. When specs are supplied later, this renders automatically.
   if (!hasSpecs(a)) {
-    return (
-      <p className="text-white/40 text-[11px] italic font-[family-name:var(--font-inter)] pt-2 border-t border-gold/10">
-        Full specifications coming soon
-      </p>
-    )
+    return null
   }
 
   return (
@@ -96,10 +94,10 @@ export default function Rooms() {
             Rooms &amp; Suites
           </h2>
           <p className="text-white/55 text-base leading-relaxed font-[family-name:var(--font-inter)]">
-            {RESORT_KEYS} keys across eleven accommodation categories, from Royale Rooms
-            to the Presidential Suite. Accommodation opens progressively from February
-            2027, with the complete resort at Grand Opening in July 2027. Rates shown are
-            opening rates, per night.
+            A collection of {RESORT_KEYS} rooms, suites and residences across eleven
+            accommodation categories, from Royale Rooms to the Presidential Suite.
+            Accommodation opens progressively from February 2027, with the complete resort
+            at Grand Opening in July 2027. Rates shown are opening rates, per night.
           </p>
         </div>
 
@@ -135,7 +133,7 @@ export default function Rooms() {
                       sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
                     />
                   ) : (
-                    <RoomPlaceholder label={a.name} />
+                    <RoomPlaceholder />
                   )}
                   <div className="absolute top-4 left-4 bg-[#0A1628]/80 backdrop-blur-sm px-3 py-1">
                     <span className="text-gold text-[10px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
