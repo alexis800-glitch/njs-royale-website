@@ -2,23 +2,23 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Users, Briefcase, Heart } from 'lucide-react'
+import { Users, Umbrella, Heart } from 'lucide-react'
 
 const pillars = [
   {
     Icon: Heart,
     title: 'Refined Oceanfront Hospitality',
-    body: 'Every aspect of the NJS Royale experience is curated around the Atlantic. From arrival to departure, the resort is designed to anticipate, personalise, and exceed the expectations of the most discerning guests.',
+    body: 'Every aspect of the NJS Royale experience is curated around the Atlantic. From arrival to departure, the resort is designed to anticipate and personalise each guest’s stay with genuine care.',
   },
   {
-    Icon: Briefcase,
-    title: 'Corporate & Private Retreats',
-    body: 'Purpose-built for high-profile business retreats, executive summits, and exclusive private gatherings. Ocean-view conference suites, dedicated event coordination, and complete discretion — on Nigeria\'s Atlantic coast.',
+    Icon: Umbrella,
+    title: 'Beach Resort Daycation',
+    body: 'The resort opens first as a beach resort daycation — a leisure park, lounge and pool by the Atlantic, open Thursday to Sunday from December. Come for the day and stay through golden hour.',
   },
   {
     Icon: Users,
-    title: 'Celebrations & Luxury Leisure',
-    body: 'Whether marking a milestone, celebrating a union, or simply indulging in unhurried Atlantic leisure, NJS Royale offers a setting of exceptional beauty and an unmatched standard of premium service.',
+    title: 'Unhurried Atlantic Leisure',
+    body: 'Whether marking a milestone or simply enjoying an unhurried day by the coast, NJS Royale offers a setting of natural beauty and considered, personal service.',
   },
 ]
 

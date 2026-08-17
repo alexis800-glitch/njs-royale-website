@@ -28,7 +28,7 @@ const experiences = [
   {
     Icon: Flag,
     title: 'Indoor Golf Simulator',
-    desc: 'A premium indoor golf experience for guests, leisure groups, and corporate retreats.',
+    desc: 'An indoor golf simulator for guests and leisure groups.',
   },
   {
     Icon: Star,

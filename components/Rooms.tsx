@@ -58,13 +58,16 @@ export default function Rooms() {
             Accommodation
           </p>
           <h2
-            className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-4"
+            className="font-[family-name:var(--font-cormorant)] text-white leading-tight mb-5"
             style={{ fontSize: 'clamp(32px, 4vw, 52px)' }}
           >
             Rooms &amp; Suites
           </h2>
+          <span className="inline-flex items-center gap-2 border border-gold/50 text-gold text-[11px] font-semibold uppercase tracking-[3px] px-4 py-2 mb-4 font-[family-name:var(--font-inter)]">
+            Rooms Opening July 2027
+          </span>
           <p className="text-white/50 text-base font-[family-name:var(--font-inter)] max-w-md mx-auto">
-            Every room and suite at NJS Royale is positioned to frame the Atlantic. Reservations opening soon.
+            Every room and suite at NJS Royale is positioned to frame the Atlantic. Room reservations are not yet open.
           </p>
         </div>
 

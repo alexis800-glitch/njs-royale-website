@@ -18,7 +18,7 @@ const features = [
   {
     Icon: BarChart3,
     title: 'Owner Dashboard',
-    desc: 'Executive visibility into occupancy, revenue, ADR, RevPAR, restaurant revenue, event revenue, daily arrivals, and departures.',
+    desc: 'Executive visibility into occupancy, revenue, ADR, RevPAR, restaurant revenue, daily arrivals, and departures.',
   },
   {
     Icon: Zap,

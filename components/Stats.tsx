@@ -3,11 +3,13 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 
+// NOTE: figures like suite counts, star ratings and restaurant counts are not
+// yet confirmed and must not be published. Using confirmed positioning instead.
 const stats = [
-  { number: '253', label: 'Suites' },
-  { number: '5★', label: 'Five-Star Standard' },
-  { number: '4', label: 'Signature Restaurants' },
-  { number: '∞', label: 'Horizon Views' },
+  { number: 'Thu–Sun', label: 'Daycation Days' },
+  { number: 'Dec', label: 'Opening Season' },
+  { number: 'July 2027', label: 'Rooms Open' },
+  { number: '∞', label: 'Atlantic Views' },
 ]
 
 const containerVariants = {
