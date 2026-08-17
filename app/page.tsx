@@ -4,6 +4,8 @@ import AnnouncementRibbon from '@/components/AnnouncementRibbon'
 import About from '@/components/About'
 import Daycation from '@/components/Daycation'
 import Rooms from '@/components/Rooms'
+import StayExperience from '@/components/StayExperience'
+import RoadToOpening from '@/components/RoadToOpening'
 import ResortExperiences from '@/components/ResortExperiences'
 import RooftopPool from '@/components/RooftopPool'
 import ConceptVideo from '@/components/ConceptVideo'
@@ -23,12 +25,14 @@ export default function Home() {
       <About />
       <Daycation />
       <Rooms />
+      <StayExperience />
       <ResortExperiences />
       <RooftopPool />
       <ConceptVideo />
       <Amenities />
       <Gallery />
       <Testimonials />
+      <RoadToOpening />
       <DigitalPlatform />
       <BookCTA />
       <Footer />
