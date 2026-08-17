@@ -15,11 +15,10 @@ export default function StayExperience() {
           Two-Night Minimum Stay
         </h2>
         <p className="text-navy/60 leading-relaxed font-[family-name:var(--font-inter)]">
-          Royale is designed to be experienced, not passed through. A two-night minimum
-          stay gives you the time to settle into the rhythm of the coast — unhurried
+          NJS Royale is designed as a destination, not simply an overnight stay. A
+          two-night minimum invites you to settle into the rhythm of the coast — unhurried
           mornings by the water, long golden afternoons, and evenings that unfold at their
-          own pace. It is an invitation to arrive slowly and leave restored, rather than a
-          place for a single night in transit.
+          own pace — arriving slowly and leaving restored.
         </p>
         <div className="mt-8">
           <a

@@ -70,8 +70,8 @@ export default function Daycation() {
           <p className="text-navy/60 leading-relaxed mb-8 font-[family-name:var(--font-inter)] max-w-lg">
             NJS Royale opens first as a beach resort daycation, launching December 12,
             2026. Beaches, pools, a rooftop and leisure clubs, open Thursday to Sunday — a
-            ticketed day experience by the coast. Come for the day and stay through golden
-            hour.
+            paid resort day experience by the coast. Come for the day and stay through
+            golden hour.
           </p>
 
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-9 border-t border-navy/10 pt-7">
@@ -103,7 +103,7 @@ export default function Daycation() {
               ))}
             </ul>
             <p className="mt-4 text-navy/45 text-[12px] italic font-[family-name:var(--font-inter)]">
-              A ticketed resort experience. Full details to be announced.
+              Daycation admission applies. Full details to be announced.
             </p>
           </div>
 

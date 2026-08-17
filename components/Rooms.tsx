@@ -112,6 +112,10 @@ export default function Rooms() {
         >
           {accommodation.map((a) => {
             const signature = a.tier === 'signature'
+            // Avoid repeating the view when it is already part of the name;
+            // fall back to the tier's residence label. `view` stays in the data.
+            const secondary =
+              a.view && !a.name.includes(a.view) ? a.view : tierLabel[a.tier]
             return (
               <motion.div
                 key={a.id}
@@ -146,9 +150,11 @@ export default function Rooms() {
                     <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl leading-tight">
                       {a.name}
                     </h3>
-                    <p className="mt-1 text-[11px] uppercase tracking-[2px] text-gold/80 font-[family-name:var(--font-inter)]">
-                      {a.view ?? tierLabel[a.tier] ?? ' '}
-                    </p>
+                    {secondary && (
+                      <p className="mt-1 text-[11px] uppercase tracking-[2px] text-gold/80 font-[family-name:var(--font-inter)]">
+                        {secondary}
+                      </p>
+                    )}
                   </div>
 
                   {/* Opening rate */}
