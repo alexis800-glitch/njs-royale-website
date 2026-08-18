@@ -142,7 +142,13 @@ export default function Hero() {
             </em>
           </h1>
 
-          <p className="text-white/75 sm:text-white/60 font-light leading-[1.65] sm:leading-relaxed max-w-[17rem] sm:max-w-[660px] mb-11 sm:mb-9 font-[family-name:var(--font-inter)] text-[15px] sm:text-[clamp(1rem,1.2vw,1.2rem)]">
+          {/* Mobile: one concise supporting line — don't overload the image with copy */}
+          <p className="sm:hidden text-white/80 font-light leading-[1.6] max-w-[16rem] mb-11 font-[family-name:var(--font-inter)] text-[15px]">
+            Elegant coastal hospitality, shaped by the Atlantic.
+          </p>
+
+          {/* Desktop / tablet: full descriptive copy (unchanged) */}
+          <p className="hidden sm:block text-white/60 font-light leading-relaxed max-w-[660px] mb-9 font-[family-name:var(--font-inter)] text-[clamp(1rem,1.2vw,1.2rem)]">
             NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
             hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
           </p>

@@ -96,21 +96,21 @@ export default function RooftopPool() {
           variants={fadeUp(0.22)}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gold/10"
+          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-gold/10 max-md:auto-rows-fr"
         >
           {features.map(({ Icon, stat, label }) => (
             <div
               key={label}
-              className="bg-[#060E1A] px-4 py-8 md:px-8 md:py-10 text-center group hover:bg-[#0A1628] transition-colors duration-500"
+              className="bg-[#060E1A] px-4 py-8 md:px-8 md:py-10 text-center group hover:bg-[#0A1628] transition-colors duration-500 max-md:flex max-md:flex-col max-md:items-center max-md:justify-start"
             >
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center mb-4 max-md:h-6 max-md:items-center">
                 <Icon
                   size={22}
                   strokeWidth={1.25}
                   className="text-gold/60 group-hover:text-gold transition-colors duration-500"
                 />
               </div>
-              <div className="font-[family-name:var(--font-cormorant)] text-gold text-3xl font-light mb-1 leading-none">
+              <div className="font-[family-name:var(--font-cormorant)] text-gold text-3xl max-md:text-[1.6rem] font-light mb-1 max-md:mb-0 leading-none max-md:leading-[1.15] max-md:min-h-[2.3em] max-md:flex max-md:items-center max-md:justify-center">
                 {stat}
               </div>
               <div className="text-white/45 text-[10px] uppercase tracking-[2px] mt-2 font-[family-name:var(--font-inter)]">
