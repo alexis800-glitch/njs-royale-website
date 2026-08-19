@@ -71,7 +71,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(true)}
               aria-label="Open navigation menu"
               aria-expanded={menuOpen}
-              className={`${ink} hover:text-gold transition-colors duration-300 p-1`}
+              className={`${ink} hover:text-gold transition-colors duration-300 p-1 max-sm:p-1.5`}
             >
               <Menu size={22} strokeWidth={1.4} />
             </button>
@@ -82,18 +82,18 @@ export default function Navbar() {
 
           {/* ── Centre: official NJS Royale crest + wordmark, mathematically
                 centred by the grid's auto column ── */}
-          <a href="#" aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2.5 sm:gap-3.5 whitespace-nowrap">
+          <a href="#" aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2 sm:gap-3.5 whitespace-nowrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/njs-logos/njs-crest-mark.png"
               alt="NJS Royale crest"
-              className="h-11 sm:h-[52px] w-auto flex-shrink-0"
+              className="h-10 max-[360px]:h-9 sm:h-[52px] w-auto flex-shrink-0"
             />
             <span className="flex flex-col items-start leading-none">
-              <span className={`font-[family-name:var(--font-cormorant)] text-lg sm:text-xl tracking-wide transition-colors duration-500 ${ink}`}>
+              <span className={`font-[family-name:var(--font-cormorant)] text-lg max-[360px]:text-[15px] sm:text-xl tracking-wide transition-colors duration-500 ${ink}`}>
                 NJS Royale
               </span>
-              <span className="text-gold text-[8px] sm:text-[9px] uppercase tracking-[3.5px] mt-0.5 font-[family-name:var(--font-inter)]">
+              <span className="text-gold text-[8px] sm:text-[9px] uppercase tracking-[3.5px] max-[360px]:tracking-[2px] mt-0.5 font-[family-name:var(--font-inter)]">
                 Beach Resort
               </span>
             </span>
@@ -104,7 +104,7 @@ export default function Navbar() {
           <div className="flex items-center justify-self-end min-w-0">
             <a
               href="#enquire"
-              className={`inline-flex items-center justify-center uppercase font-medium tracking-[0.08em] transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap text-[11px] px-4 py-2.5 sm:text-[12px] sm:px-[26px] sm:min-h-[46px] ${
+              className={`inline-flex items-center justify-center uppercase font-medium tracking-[0.08em] transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap text-[10px] px-3 py-2 min-h-[42px] max-[360px]:px-2.5 sm:text-[12px] sm:px-[26px] sm:py-2.5 sm:min-h-[46px] ${
                 scrolled
                   ? 'bg-navy text-[#f6f2e9] hover:bg-gold hover:text-navy'
                   : 'bg-transparent text-[#f6f2e9] border border-[#f6f2e9]/55 hover:bg-white/10'

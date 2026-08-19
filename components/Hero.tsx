@@ -70,7 +70,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-screen max-sm:h-auto max-sm:min-h-[100svh] overflow-hidden">
 
       {/* ── Primary background: Night Atlantic Approach hero video ── */}
       {showVideo ? (
@@ -101,50 +101,68 @@ export default function Hero() {
         />
       )}
 
-      {/* Dark gradient — stronger toward the top where the centred copy sits, then clears
-          through the middle so the illuminated pool, 12m bar and central façade stay visible */}
+      {/* Desktop dark gradient — stronger toward the top where the centred copy sits, then
+          clears through the middle so the illuminated pool, 12m bar and central façade stay
+          visible. Mobile uses its own overlay (below), so this is desktop-only. */}
       <div
-        className="absolute inset-0 z-10"
+        className="absolute inset-0 z-10 hidden sm:block"
         style={{
           background:
             'linear-gradient(to bottom, rgba(6,14,26,0.60) 0%, rgba(6,14,26,0.34) 30%, rgba(6,14,26,0.10) 52%, rgba(6,14,26,0) 70%, rgba(6,14,26,0.18) 100%)',
         }}
       />
 
+      {/* Mobile-only overlay — on a phone the copy occupies the vertical centre, directly over
+          the bright façade/pool, so it needs a gradual scrim there for legibility. The band
+          behind the text is darkened while the lower image stays visible (not an opaque block). */}
+      <div
+        className="absolute inset-0 z-10 sm:hidden"
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(6,14,26,0.62) 0%, rgba(6,14,26,0.50) 20%, rgba(6,14,26,0.54) 44%, rgba(6,14,26,0.48) 62%, rgba(6,14,26,0.22) 80%, rgba(6,14,26,0.38) 100%)',
+        }}
+      />
+
       {/* Hero content — restrained centred composition, lifted slightly so the pool / bar / façade stay visible */}
-      <div className="relative z-20 h-full flex flex-col justify-center items-center text-center px-6">
+      <div className="relative z-20 h-full max-sm:min-h-[100svh] flex flex-col justify-center items-center text-center px-6 max-sm:pt-[104px] max-sm:pb-16">
         <div
-          className="w-full max-w-[1000px] flex flex-col items-center -translate-y-[4vh] sm:-translate-y-[7vh]"
+          className="w-full max-w-[1000px] flex flex-col items-center -translate-y-[2vh] sm:-translate-y-[7vh]"
           style={{ textShadow: '0 1px 3px rgba(6,14,26,0.72), 0 2px 28px rgba(6,14,26,0.72)' }}
         >
           <p className="text-gold/85 text-[9px] sm:text-[10px] uppercase tracking-[3px] sm:tracking-[6px] leading-relaxed mb-6 font-[family-name:var(--font-inter)]">
             Atlantic Oceanfront &nbsp;·&nbsp; Nigeria
           </p>
 
-          <h1 className="font-[family-name:var(--font-cormorant)] text-white mb-6 sm:mb-7 text-balance">
-            <span className="block leading-[1.1] text-[clamp(2.15rem,6.4vw,2.75rem)] sm:text-[clamp(3rem,4.3vw,3.9rem)]">
+          <h1 className="font-[family-name:var(--font-cormorant)] text-white mb-8 sm:mb-7 text-balance max-w-[19rem] sm:max-w-none">
+            <span className="block leading-[1.12] sm:leading-[1.1] text-[clamp(1.85rem,7.2vw,2.3rem)] sm:text-[clamp(3rem,4.3vw,3.9rem)]">
               A Private Oceanfront Escape,
             </span>
-            <em className="block italic text-gold leading-[1.15] mt-2 text-[clamp(1.65rem,5vw,2.1rem)] sm:text-[clamp(2.1rem,3vw,2.7rem)]">
+            <em className="block italic text-gold leading-[1.15] mt-3.5 sm:mt-2 text-[clamp(1.55rem,5.4vw,1.95rem)] sm:text-[clamp(2.1rem,3vw,2.7rem)]">
               Crafted for Prestige
             </em>
           </h1>
 
-          <p className="text-white/60 font-light leading-[1.6] sm:leading-relaxed max-w-xs sm:max-w-[660px] mb-9 font-[family-name:var(--font-inter)] text-[15px] sm:text-[clamp(1rem,1.2vw,1.2rem)]">
+          {/* Mobile: one concise supporting line — don't overload the image with copy */}
+          <p className="sm:hidden text-white/80 font-light leading-[1.6] max-w-[16rem] mb-11 font-[family-name:var(--font-inter)] text-[15px]">
+            Elegant coastal hospitality, shaped by the Atlantic.
+          </p>
+
+          {/* Desktop / tablet: full descriptive copy (unchanged) */}
+          <p className="hidden sm:block text-white/60 font-light leading-relaxed max-w-[660px] mb-9 font-[family-name:var(--font-inter)] text-[clamp(1rem,1.2vw,1.2rem)]">
             NJS Royale Beach Resort is envisioned as a refined coastal destination where elegant
             hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-none sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             <a
               href="#about"
-              className="inline-flex items-center justify-center w-full sm:w-auto sm:min-w-[210px] min-h-[50px] text-center bg-[#c9a84c] text-navy px-[30px] py-[15px] text-[12px] uppercase tracking-[0.1em] font-medium [text-shadow:none] hover:bg-[#bd9f45] transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="inline-flex items-center justify-center max-sm:w-[220px] sm:w-auto sm:min-w-[210px] min-h-[50px] max-sm:min-h-[46px] text-center bg-[#c9a84c] text-navy px-[30px] py-[15px] max-sm:px-6 max-sm:py-3 text-[12px] max-sm:text-[11px] uppercase tracking-[0.1em] font-medium [text-shadow:none] hover:bg-[#bd9f45] transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Explore the Resort
             </a>
             <a
               href="#enquire"
-              className="w-full sm:w-auto sm:min-w-[190px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="inline-flex items-center justify-center max-sm:w-[220px] sm:w-auto sm:min-w-[190px] min-h-[50px] max-sm:min-h-[46px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] max-sm:px-6 max-sm:py-3 text-[12px] max-sm:text-[11px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Plan Your Stay
             </a>

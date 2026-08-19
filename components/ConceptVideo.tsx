@@ -58,11 +58,22 @@ export default function ConceptVideo() {
             <em className="text-gold italic">Experience</em>
           </motion.h2>
 
+          {/* Mobile: one short, emotive supporting line (no long paragraph over the image) */}
           <motion.p
             variants={fadeUp(0.22)}
             initial="hidden"
             animate={isInView ? 'visible' : 'hidden'}
-            className="text-white/60 text-sm sm:text-base leading-relaxed max-w-xl font-[family-name:var(--font-inter)]"
+            className="sm:hidden text-white/70 text-[15px] leading-relaxed max-w-[17rem] font-[family-name:var(--font-inter)]"
+          >
+            Sunset, sea views and effortless poolside evenings.
+          </motion.p>
+
+          {/* Desktop / tablet: full descriptive copy (unchanged) */}
+          <motion.p
+            variants={fadeUp(0.22)}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            className="hidden sm:block text-white/60 text-base leading-relaxed max-w-xl font-[family-name:var(--font-inter)]"
           >
             A cinematic view of the second-floor ocean-facing pool terrace as the sun settles over
             the Atlantic — bringing together the infinity pool, cabanas, pool bar and warm evening

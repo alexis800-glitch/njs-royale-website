@@ -72,8 +72,10 @@ export default function About() {
               />
             </div>
 
-            {/* Beach Resort logo badge */}
-            <div className="absolute top-5 right-5 bg-white p-3 shadow-xl">
+            {/* Beach Resort logo badge — the asset has a navy ground, so on a small screen it
+                reads as a floating placeholder box over the image. Show it on desktop only, where
+                it sits as an intentional badge within the composed two-column layout. */}
+            <div className="hidden md:block absolute top-5 right-5 bg-white p-3 shadow-xl">
               <div className="relative w-[72px] h-[72px]">
                 <Image
                   src="/njs-logos/njs-royale-beach-resort-logo-gold.png"
