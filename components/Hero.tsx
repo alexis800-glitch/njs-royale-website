@@ -153,16 +153,16 @@ export default function Hero() {
             hospitality, ocean-facing leisure, and elevated lifestyle experiences meet the Atlantic.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-4 max-sm:gap-[18px] w-full max-w-[19rem] sm:max-w-none sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             <a
               href="#about"
-              className="inline-flex items-center justify-center w-full sm:w-auto sm:min-w-[210px] min-h-[50px] text-center bg-[#c9a84c] text-navy px-[30px] py-[15px] text-[12px] uppercase tracking-[0.1em] font-medium [text-shadow:none] hover:bg-[#bd9f45] transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="inline-flex items-center justify-center max-sm:w-[220px] sm:w-auto sm:min-w-[210px] min-h-[50px] max-sm:min-h-[46px] text-center bg-[#c9a84c] text-navy px-[30px] py-[15px] max-sm:px-6 max-sm:py-3 text-[12px] max-sm:text-[11px] uppercase tracking-[0.1em] font-medium [text-shadow:none] hover:bg-[#bd9f45] transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Explore the Resort
             </a>
             <a
               href="#enquire"
-              className="inline-flex items-center justify-center w-full sm:w-auto sm:min-w-[190px] min-h-[50px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="inline-flex items-center justify-center max-sm:w-[220px] sm:w-auto sm:min-w-[190px] min-h-[50px] max-sm:min-h-[46px] text-center bg-transparent border border-[#f6f2e9]/55 text-[#f6f2e9] px-[28px] py-[15px] max-sm:px-6 max-sm:py-3 text-[12px] max-sm:text-[11px] uppercase tracking-[0.08em] font-medium hover:bg-white/10 transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Plan Your Stay
             </a>

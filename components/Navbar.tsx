@@ -104,7 +104,7 @@ export default function Navbar() {
           <div className="flex items-center justify-self-end min-w-0">
             <a
               href="#enquire"
-              className={`inline-flex items-center justify-center uppercase font-medium tracking-[0.08em] transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap text-[10.5px] px-3.5 py-2.5 min-h-[42px] max-[360px]:text-[10px] max-[360px]:px-2.5 sm:text-[12px] sm:px-[26px] sm:min-h-[46px] ${
+              className={`inline-flex items-center justify-center uppercase font-medium tracking-[0.08em] transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap text-[10px] px-3 py-2 min-h-[42px] max-[360px]:px-2.5 sm:text-[12px] sm:px-[26px] sm:py-2.5 sm:min-h-[46px] ${
                 scrolled
                   ? 'bg-navy text-[#f6f2e9] hover:bg-gold hover:text-navy'
                   : 'bg-transparent text-[#f6f2e9] border border-[#f6f2e9]/55 hover:bg-white/10'
