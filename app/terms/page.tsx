@@ -140,12 +140,19 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="9. Limitation of liability">
+        <Section title="9. Liability">
           <p>
-            To the extent permitted by applicable law, we will not be liable for any loss or damage arising
-            from your use of, or inability to use, this website, or from reliance on any information on it.
-            Nothing in these Terms excludes or limits any liability that cannot be excluded or limited under
-            applicable law.
+            We take reasonable care in providing the information on this website. However, because the resort
+            is in a pre-opening phase, website content may change as plans are finalised.
+          </p>
+          <p>
+            To the extent permitted by applicable law, NJS Royale Beach Resort will not be responsible for
+            losses arising solely from reliance on preliminary or outdated website information where the
+            relevant information has subsequently been updated or changed.
+          </p>
+          <p>
+            Nothing in these Terms excludes, restricts or limits any liability or consumer right that cannot
+            lawfully be excluded, restricted or limited under applicable Nigerian law.
           </p>
         </Section>
 
@@ -159,15 +166,22 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="11. Governing law">
+        <Section title="11. Consumer rights">
           <p>
-            These Terms are governed by the laws of the Federal Republic of Nigeria, and the courts of Lagos
-            State, Nigeria will have jurisdiction over any dispute relating to them, without affecting any
-            mandatory rights you may have under applicable law.
+            Nothing in these Terms is intended to exclude, restrict or limit any rights or remedies available
+            to consumers under applicable Nigerian consumer protection law.
           </p>
         </Section>
 
-        <Section title="12. Changes to these Terms">
+        <Section title="12. Governing law">
+          <p>
+            These Terms are governed by the laws of the Federal Republic of Nigeria. Any dispute relating to
+            these Terms will be handled in accordance with applicable Nigerian law, without limiting any
+            rights or remedies available to you under applicable law.
+          </p>
+        </Section>
+
+        <Section title="13. Changes to these Terms">
           <p>
             We may update these Terms from time to time to reflect changes in our services or legal
             requirements. When we do, we will revise the &ldquo;Last updated&rdquo; date at the top of this
@@ -175,7 +189,7 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="13. Contact us">
+        <Section title="14. Contact us">
           <p>If you have any question about these Terms, you can reach us at:</p>
           <p className="font-[family-name:var(--font-cormorant)] text-white/80 text-lg leading-relaxed">
             NJS Royale Beach Resort
