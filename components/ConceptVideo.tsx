@@ -19,10 +19,19 @@ export default function ConceptVideo() {
       {/* Video container */}
       <div className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden">
 
+        {/* Reframed, not regenerated. As the shot pulls back it reveals an inland
+            strip of scrub and road along the right edge that is not part of the
+            approved site. On wide viewports the box is wider than the clip, so
+            object-cover shows the full width and that strip lands in frame; anchoring
+            the transform to the left and scaling 1.16 pushes the right ~14% out of
+            the box. Below md the box is far narrower than the clip and object-cover
+            already crops to the middle, so the strip never appears and no transform
+            is applied. Pool, ocean, sunset and architecture are untouched. */}
         <SectionVideo
           name="sunset"
           poster="/images/njs-hero-sunset-poster.jpg"
           alt="NJS Royale second-floor ocean-facing pool terrace at Atlantic sunset"
+          frameClassName="md:scale-[1.16] md:origin-left"
         />
 
         {/* Dark overlay — heavier at top and bottom */}

@@ -1,0 +1,35 @@
+glyph mask: 26527 px
+
+POSITIVE CONTROL  original, caption present
+   STATIC glyph corr : mean +0.0463  max +0.0690  worst f0050
+   MOVING glyph corr : mean -0.0258  max +0.0372  worst f0021
+
+
+DELIVERED       desktop 1920x1080
+   STATIC glyph corr : mean +0.0004  max +0.0164  worst f0021
+   MOVING glyph corr : mean +0.0249  max +0.0640  worst f0061
+
+MATCHED CONTROL desktop 1920x1080 (caption never applied)
+   STATIC glyph corr : mean +0.0004  max +0.0168  worst f0022
+   MOVING glyph corr : mean +0.0220  max +0.0640  worst f0061
+
+------------------------------------------------------------------------
+desktop 1920x1080 STATIC : delivered +0.0004  matched control +0.0004  a real caption +0.0463
+desktop 1920x1080        : residual = -0.17% of an actual caption -> CLEAN
+desktop 1920x1080 MOVING : delivered +0.0249  matched control +0.0220  (informational; worst frame f0061 is the same frame as the control - a lamp post crossing the box)
+
+DELIVERED       mobile  1280x720 
+   STATIC glyph corr : mean -0.0001  max +0.0241  worst f0021
+   MOVING glyph corr : mean +0.0270  max +0.0721  worst f0061
+
+MATCHED CONTROL mobile  1280x720  (caption never applied)
+   STATIC glyph corr : mean +0.0002  max +0.0242  worst f0021
+   MOVING glyph corr : mean +0.0243  max +0.0713  worst f0061
+
+------------------------------------------------------------------------
+mobile  1280x720  STATIC : delivered -0.0001  matched control +0.0002  a real caption +0.0463
+mobile  1280x720         : residual = -0.47% of an actual caption -> CLEAN
+mobile  1280x720  MOVING : delivered +0.0270  matched control +0.0243  (informational; worst frame f0061 is the same frame as the control - a lamp post crossing the box)
+
+========================================================================
+RESULT: no caption residual - every tier sits on its matched caption-free control

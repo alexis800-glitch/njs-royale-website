@@ -1,0 +1,9 @@
+caption-region high-freq residual : max 9.58  mean 0.075
+control-region high-freq residual : max 16.43  mean 0.779
+worst frames (frame, cap_max, ctl_max):
+   f0050   9.58   10.75
+   f0112   6.40   8.36
+   f0121   6.33   9.73
+   f0057   6.07   9.45
+   f0098   5.89   15.85
+frames where caption residual exceeds the control ceiling: 0 / 121
