@@ -25,7 +25,10 @@ export default function RooftopPool() {
     <section ref={ref} id="rooftop" className="relative bg-[#060E1A] overflow-hidden">
 
       {/* Cinematic daytime aerial video — second-floor ocean-facing pool terrace */}
-      <div className="relative h-[65vh] w-full overflow-hidden">
+      {/* Full-viewport presentation. svh on small screens so a phone's collapsing
+          address bar cannot change the height mid-scroll; h-screen from md up. No
+          sticky positioning and no scroll snapping - the section scrolls normally. */}
+      <div className="relative min-h-[100svh] md:h-screen w-full overflow-hidden">
         {/* Reframed, not regenerated. This aerial is the widest shot on the page, and
             at its opening it takes in an external strip that is not part of the
             approved site: scrub and treeline behind the hotel, and the elevated
@@ -36,18 +39,18 @@ export default function RooftopPool() {
 
             The scale is the MINIMUM that clears the strip, measured per column over
             all 193 frames, so as much of the hotel is retained as possible. It does
-            not fall off at wide sizes: object-cover shows the FULL clip width at every
-            desktop size, so scale(k) keeps source columns 0..1920/k whatever the
-            viewport, and only the top edge moves. 1.28 is therefore the minimum from
-            sm up, including 1920 - 1.25 keeps columns to 1536, where the strip still
-            reaches row 318, and leaves it visible on tall windows. Below sm the band
-            is narrow enough that object-cover already crops to the middle columns, so
-            1.22 suffices there. Verified 390-2560px across the whole clip. */}
+            not fall off at wide sizes. Recomputed for the full-height band: at 65vh
+            the band was far wider than 16:9, so object-cover already discarded much
+            of the top; at 100vh a 16:9 window shows the ENTIRE frame and the
+            transform has to do all the work. The minimums came out the same or
+            lower - 1.22 to 767px, 1.26 at 768-1023, 1.28 from 1024 up, holding for
+            every viewport height from 600 to 1440. Verified 390-2560px across all
+            193 frames. */}
         <SectionVideo
           name="daytime"
           poster="/images/njs-hero-daytime-poster.jpg"
           alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
-          frameClassName="origin-bottom-left scale-[1.22] sm:scale-[1.28]"
+          frameClassName="origin-bottom-left scale-[1.22] md:scale-[1.26] lg:scale-[1.28]"
         />
         {/* Scrim lightened so the aerial reads bright. The lower stops still run to
             solid #060E1A because that is what blends the video into the section
