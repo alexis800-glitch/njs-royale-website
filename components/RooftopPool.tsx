@@ -30,16 +30,24 @@ export default function RooftopPool() {
             at its opening it takes in an external strip that is not part of the
             approved site: scrub and treeline behind the hotel, and the elevated
             coastal road with its barrier along the top right. The strip runs off the
-            TOP of the source frame in every frame it appears, so anchoring the
-            transform to the bottom-left and scaling 1.35 drops the top ~26% and the
-            right ~26% of the clip, which clears it at every viewport from 390px up.
-            The Atlantic, the beach, the infinity pool and the resort's own palms and
-            lawn all stay in frame; the building's right-hand wing is cropped. */}
+            TOP of the source frame in every frame it appears - the resort's own palms
+            and lawn never do - so anchoring the transform to the bottom-left and
+            scaling drops it while keeping the planting.
+
+            The scale is the MINIMUM that clears the strip, measured per column over
+            all 193 frames, so as much of the hotel is retained as possible. It does
+            not fall off at wide sizes: object-cover shows the FULL clip width at every
+            desktop size, so scale(k) keeps source columns 0..1920/k whatever the
+            viewport, and only the top edge moves. 1.28 is therefore the minimum from
+            sm up, including 1920 - 1.25 keeps columns to 1536, where the strip still
+            reaches row 318, and leaves it visible on tall windows. Below sm the band
+            is narrow enough that object-cover already crops to the middle columns, so
+            1.22 suffices there. Verified 390-2560px across the whole clip. */}
         <SectionVideo
           name="daytime"
           poster="/images/njs-hero-daytime-poster.jpg"
           alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
-          frameClassName="scale-[1.35] origin-bottom-left"
+          frameClassName="origin-bottom-left scale-[1.22] sm:scale-[1.28]"
         />
         {/* Scrim lightened so the aerial reads bright. The lower stops still run to
             solid #060E1A because that is what blends the video into the section
