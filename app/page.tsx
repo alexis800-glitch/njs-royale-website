@@ -27,8 +27,10 @@ export default function Home() {
       <Daycation />
       <Rooms />
       <StayExperience />
-      <ResortExperiences />
+      {/* The pool film leads, and Curated Resort Experiences reads as what the
+          terrace opens onto, rather than delaying it. */}
       <RooftopPool />
+      <ResortExperiences />
       <ConceptVideo />
       <ArrivalExperience />
       <Amenities />
