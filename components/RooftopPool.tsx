@@ -26,10 +26,20 @@ export default function RooftopPool() {
 
       {/* Cinematic daytime aerial video — second-floor ocean-facing pool terrace */}
       <div className="relative h-[65vh] w-full overflow-hidden">
+        {/* Reframed, not regenerated. This aerial is the widest shot on the page, and
+            at its opening it takes in an external strip that is not part of the
+            approved site: scrub and treeline behind the hotel, and the elevated
+            coastal road with its barrier along the top right. The strip runs off the
+            TOP of the source frame in every frame it appears, so anchoring the
+            transform to the bottom-left and scaling 1.35 drops the top ~26% and the
+            right ~26% of the clip, which clears it at every viewport from 390px up.
+            The Atlantic, the beach, the infinity pool and the resort's own palms and
+            lawn all stay in frame; the building's right-hand wing is cropped. */}
         <SectionVideo
           name="daytime"
           poster="/images/njs-hero-daytime-poster.jpg"
           alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
+          frameClassName="scale-[1.35] origin-bottom-left"
         />
         {/* Scrim lightened so the aerial reads bright. The lower stops still run to
             solid #060E1A because that is what blends the video into the section
