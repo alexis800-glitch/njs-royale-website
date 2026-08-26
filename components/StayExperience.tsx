@@ -3,7 +3,7 @@
 
 export default function StayExperience() {
   return (
-    <section className="bg-sand pt-24 md:pt-28 pb-8 md:pb-12 px-8">
+    <section className="bg-sand py-24 md:py-28 px-8">
       <div className="max-w-2xl mx-auto text-center">
         <p className="text-gold text-[10px] uppercase tracking-[4px] mb-5 font-[family-name:var(--font-inter)]">
           The NJS Royale Experience

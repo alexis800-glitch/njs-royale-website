@@ -25,62 +25,22 @@ export default function RooftopPool() {
     <section ref={ref} id="rooftop" className="relative bg-[#060E1A] overflow-hidden">
 
       {/* Cinematic daytime aerial video — second-floor ocean-facing pool terrace */}
-      {/* Full-viewport presentation. svh on small screens so a phone's collapsing
-          address bar cannot change the height mid-scroll; h-screen from md up. No
-          sticky positioning and no scroll snapping - the section scrolls normally. */}
-      <div className="relative min-h-[100svh] md:h-screen w-full overflow-hidden">
-        {/* Reframed, not regenerated. This aerial is the widest shot on the page, and
-            at its opening it takes in an external strip that is not part of the
-            approved site: scrub and treeline behind the hotel, and the elevated
-            coastal road with its barrier along the top right. The strip runs off the
-            TOP of the source frame in every frame it appears - the resort's own palms
-            and lawn never do - so anchoring the transform to the bottom-left and
-            scaling drops it while keeping the planting.
-
-            The scale is the MINIMUM that clears the strip, measured per column over
-            all 193 frames, so as much of the hotel is retained as possible. It does
-            not fall off at wide sizes. Recomputed for the full-height band: at 65vh
-            the band was far wider than 16:9, so object-cover already discarded much
-            of the top; at 100vh a 16:9 window shows the ENTIRE frame and the
-            transform has to do all the work. The minimums came out the same or
-            lower - 1.22 to 767px, 1.26 at 768-1023, 1.28 from 1024 up, holding for
-            every viewport height from 600 to 1440. Verified 390-2560px across all
-            193 frames.
-
-            The 4% leftward translate slides the visible window RIGHT without any
-            extra zoom, trading roughly 77px of open ocean at the left edge for the
-            same width of hotel at the right. Anchoring is still bottom-LEFT: moving
-            the origin to bottom-right was measured on the page and fails badly,
-            because the external planting continues DOWN the whole right-hand edge of
-            the frame past the building, so no top crop clears it - only cutting those
-            columns does, which is what the left anchor plus a bounded shift achieves.
-            This shows MORE of the hotel; it does not show the entire building, and no
-            crop of this footage can, since the hotel runs to the frame edge with the
-            planting immediately beyond it. */}
+      <div className="relative h-[65vh] w-full overflow-hidden">
         <SectionVideo
           name="daytime"
           poster="/images/njs-hero-daytime-poster.jpg"
           alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
-          frameClassName="origin-bottom-left -translate-x-[4%] scale-[1.22] md:scale-[1.26] lg:scale-[1.28]"
         />
-        {/* Scrim lightened so the aerial reads bright. The lower stops still run to
-            solid #060E1A because that is what blends the video into the section
-            background; only the upper two thirds, where the heading sits, were
-            opened up. The heading carries its own shadow so it stays readable
-            against the brighter plate. */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(6,14,26,0.08) 0%, rgba(6,14,26,0.16) 45%, rgba(6,14,26,0.58) 78%, rgba(6,14,26,1) 100%)',
+              'linear-gradient(to bottom, rgba(6,14,26,0.20) 0%, rgba(6,14,26,0.35) 50%, rgba(6,14,26,1) 100%)',
           }}
         />
 
         {/* Heading overlaid on video */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
-          style={{ textShadow: '0 1px 3px rgba(6,14,26,0.78), 0 2px 26px rgba(6,14,26,0.68)' }}
-        >
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <p className="text-gold text-[10px] uppercase tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
             Ocean-Facing Pool Terrace
           </p>

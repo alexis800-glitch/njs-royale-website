@@ -7,7 +7,6 @@ import Rooms from '@/components/Rooms'
 import StayExperience from '@/components/StayExperience'
 import RoadToOpening from '@/components/RoadToOpening'
 import ResortExperiences from '@/components/ResortExperiences'
-import RooftopPool from '@/components/RooftopPool'
 import ConceptVideo from '@/components/ConceptVideo'
 import ArrivalExperience from '@/components/ArrivalExperience'
 import Amenities from '@/components/Amenities'
@@ -27,9 +26,6 @@ export default function Home() {
       <Daycation />
       <Rooms />
       <StayExperience />
-      {/* The pool film leads, and Curated Resort Experiences reads as what the
-          terrace opens onto, rather than delaying it. */}
-      <RooftopPool />
       <ResortExperiences />
       <ConceptVideo />
       <ArrivalExperience />
