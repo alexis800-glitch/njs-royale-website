@@ -9,26 +9,19 @@ import Image from 'next/image'
 // is never permanently frozen while still respecting accessibility.
 export default function Hero() {
   const videoRef                    = useRef<HTMLVideoElement>(null)
-  const [tier, setTier]             = useState<'desktop' | 'mobile'>('desktop')
   const [reduced, setReduced]       = useState(false)
   const [failed, setFailed]         = useState(false)
   const [blocked, setBlocked]       = useState(false) // autoplay rejected (needs a gesture)
   const [userPlaying, setUserPlaying] = useState(false) // user opted in via the control
 
-  // Source tier + reduced-motion (after mount, avoids SSR mismatch); react to changes
+  // Reduced-motion (after mount, avoids SSR mismatch); react to changes.
+  // The source tier is NOT decided here — see the <source media> pair below.
   useEffect(() => {
-    const mobileMq = window.matchMedia('(max-width: 767px)')
     const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const applyTier = () => setTier(mobileMq.matches ? 'mobile' : 'desktop')
     const applyRM   = () => setReduced(reduceMq.matches)
-    applyTier()
     applyRM()
-    mobileMq.addEventListener('change', applyTier)
     reduceMq.addEventListener('change', applyRM)
-    return () => {
-      mobileMq.removeEventListener('change', applyTier)
-      reduceMq.removeEventListener('change', applyRM)
-    }
+    return () => reduceMq.removeEventListener('change', applyRM)
   }, [])
 
   // Play when motion is allowed; under reduced-motion wait for the user to opt in.
@@ -59,7 +52,7 @@ export default function Hero() {
       v.removeEventListener('canplay', tryPlay)
       v.removeEventListener('loadeddata', tryPlay)
     }
-  }, [reduced, userPlaying, failed, tier])
+  }, [reduced, userPlaying, failed])
 
   const showVideo      = !failed
   const showPlayButton = showVideo && !userPlaying && (reduced || blocked)
@@ -87,7 +80,14 @@ export default function Hero() {
           onError={() => setFailed(true)}
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src={`/videos/njs-hero-night-${tier}.mp4`} type="video/mp4" />
+          {/* Tier is chosen by the browser's own resource-selection pass, which
+              evaluates `media` in order and stops at the first match. That happens
+              before any bytes are requested, so a phone never touches the 1920x1080
+              desktop encode. Deciding this in an effect instead would be too late:
+              preload="auto" commits to a source on first paint, and swapping a
+              <source> src afterwards does nothing without an explicit video.load().
+              No `src` on <video> itself — that would outrank both and download eagerly. */}
+          <source media="(max-width: 767px)" src="/videos/njs-hero-night-mobile.mp4" type="video/mp4" />
           <source src="/videos/njs-hero-night-desktop.mp4" type="video/mp4" />
         </video>
       ) : (

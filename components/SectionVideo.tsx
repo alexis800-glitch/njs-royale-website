@@ -33,17 +33,10 @@ export default function SectionVideo({
   frameClassName?: string
 }) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [tier, setTier] = useState<'desktop' | 'mobile'>('desktop')
   const [reduced, setReduced] = useState(false)
 
   useEffect(() => {
-    const mobileMq = window.matchMedia('(max-width: 767px)')
-    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const applyTier = () => setTier(mobileMq.matches ? 'mobile' : 'desktop')
-    applyTier()
-    setReduced(reduceMq.matches)
-    mobileMq.addEventListener('change', applyTier)
-    return () => mobileMq.removeEventListener('change', applyTier)
+    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   }, [])
 
   useEffect(() => {
@@ -70,7 +63,7 @@ export default function SectionVideo({
       v.removeEventListener('canplay', tryPlay)
       v.removeEventListener('loadeddata', tryPlay)
     }
-  }, [reduced, tier])
+  }, [reduced])
 
   if (reduced) {
     return (
@@ -90,7 +83,12 @@ export default function SectionVideo({
       aria-label={alt}
       className={`absolute inset-0 w-full h-full object-cover ${frameClassName}`}
     >
-      <source src={`/videos/${SOURCES[name]}-${tier}.mp4`} type="video/mp4" />
+      {/* Same native selection as the hero: `media` is evaluated in order, first
+          match wins, and the pair is identical on the server and the client so
+          there is nothing to reconcile. The IntersectionObserver's v.load() below
+          runs this pass at scroll-in, rather than a React state change trying to
+          re-point an already-selected <source>. */}
+      <source media="(max-width: 767px)" src={`/videos/${SOURCES[name]}-mobile.mp4`} type="video/mp4" />
       <source src={`/videos/${SOURCES[name]}-desktop.mp4`} type="video/mp4" />
     </video>
   )
