@@ -45,12 +45,23 @@ export default function RooftopPool() {
             transform has to do all the work. The minimums came out the same or
             lower - 1.22 to 767px, 1.26 at 768-1023, 1.28 from 1024 up, holding for
             every viewport height from 600 to 1440. Verified 390-2560px across all
-            193 frames. */}
+            193 frames.
+
+            The 4% leftward translate slides the visible window RIGHT without any
+            extra zoom, trading roughly 77px of open ocean at the left edge for the
+            same width of hotel at the right. Anchoring is still bottom-LEFT: moving
+            the origin to bottom-right was measured on the page and fails badly,
+            because the external planting continues DOWN the whole right-hand edge of
+            the frame past the building, so no top crop clears it - only cutting those
+            columns does, which is what the left anchor plus a bounded shift achieves.
+            This shows MORE of the hotel; it does not show the entire building, and no
+            crop of this footage can, since the hotel runs to the frame edge with the
+            planting immediately beyond it. */}
         <SectionVideo
           name="daytime"
           poster="/images/njs-hero-daytime-poster.jpg"
           alt="NJS Royale second-floor ocean-facing infinity pool and Atlantic coast, Nigeria"
-          frameClassName="origin-bottom-left scale-[1.22] md:scale-[1.26] lg:scale-[1.28]"
+          frameClassName="origin-bottom-left -translate-x-[4%] scale-[1.22] md:scale-[1.26] lg:scale-[1.28]"
         />
         {/* Scrim lightened so the aerial reads bright. The lower stops still run to
             solid #060E1A because that is what blends the video into the section
