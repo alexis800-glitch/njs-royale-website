@@ -51,8 +51,14 @@ export default function ResortExperiences() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
 
+  // The top padding keeps the site's section rhythm. The bottom is halved because what
+  // follows is the full-bleed pool video rather than another text section: 128px of
+  // empty navy after the CTA pushed the video well down the viewport on short screens,
+  // so this section still filled most of it as the video came in. Nothing else was
+  // contributing - the section is static, has no min-height and no negative margin,
+  // and its bottom edge meets the video section exactly, with no overlap.
   return (
-    <section id="experiences" className="bg-[#0A1628] py-32 px-8">
+    <section id="experiences" className="bg-[#0A1628] pt-32 pb-16 px-8">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}

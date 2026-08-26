@@ -7,8 +7,8 @@ import Rooms from '@/components/Rooms'
 import StayExperience from '@/components/StayExperience'
 import RoadToOpening from '@/components/RoadToOpening'
 import ResortExperiences from '@/components/ResortExperiences'
-import RooftopPool from '@/components/RooftopPool'
 import ConceptVideo from '@/components/ConceptVideo'
+import ArrivalExperience from '@/components/ArrivalExperience'
 import Amenities from '@/components/Amenities'
 import Gallery from '@/components/Gallery'
 import Testimonials from '@/components/Testimonials'
@@ -27,8 +27,8 @@ export default function Home() {
       <Rooms />
       <StayExperience />
       <ResortExperiences />
-      <RooftopPool />
       <ConceptVideo />
+      <ArrivalExperience />
       <Amenities />
       <Gallery />
       <Testimonials />

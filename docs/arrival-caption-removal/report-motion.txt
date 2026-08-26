@@ -1,0 +1,36 @@
+
+BASELINE caption-free clip   (121 frames, 1920x1080)
+   repaired road  flicker: mean 4.1556  max 5.2876
+   control  road  flicker: mean 3.0434  max 3.6697
+   ratio repaired/control: 1.365   (INVESTIGATE)
+   at the original fade-in (frame 22): repaired 4.3019 vs control 3.3610
+   at the original fade-out (frame 114): repaired 4.0044 vs control 2.6665
+   worst frames: f0061 5.2876 (ctl 3.5046), f0062 5.2413 (ctl 3.4781), f0065 5.1798 (ctl 3.1846)
+
+DELIVERED desktop 1920x1080  (121 frames, 1920x1080)
+   repaired road  flicker: mean 4.0637  max 5.1796
+   control  road  flicker: mean 2.9189  max 3.5324
+   ratio repaired/control: 1.392   (INVESTIGATE)
+   at the original fade-in (frame 22): repaired 4.2542 vs control 3.2251
+   at the original fade-out (frame 114): repaired 3.8990 vs control 2.5769
+   worst frames: f0061 5.1796 (ctl 3.4034), f0065 5.0923 (ctl 3.1167), f0062 5.0838 (ctl 3.3520)
+
+DELIVERED mobile  1280x720  (121 frames, 1280x720)
+   repaired road  flicker: mean 3.9963  max 5.1605
+   control  road  flicker: mean 2.7944  max 3.4289
+   ratio repaired/control: 1.430   (INVESTIGATE)
+   at the original fade-in (frame 22): repaired 4.1173 vs control 3.0090
+   at the original fade-out (frame 114): repaired 3.7665 vs control 2.4192
+   worst frames: f0061 5.1605 (ctl 3.2822), f0065 5.1027 (ctl 2.9934), f0062 5.0972 (ctl 3.2910)
+
+ORIGINAL captioned vL_C      (121 frames, 1920x1080)
+   repaired road  flicker: mean 3.2879  max 4.5717
+   control  road  flicker: mean 3.0152  max 3.6257
+   ratio repaired/control: 1.090   (OK)
+   at the original fade-in (frame 22): repaired 4.0210 vs control 3.2910
+   at the original fade-out (frame 114): repaired 3.9940 vs control 2.6506
+   worst frames: f0021 4.5717 (ctl 3.4584), f0020 4.4897 (ctl 3.3591), f0116 4.2936 (ctl 2.7511)
+
+==============================================================
+geometric baseline from the caption-free clip: ratio 1.365
+RESULT: clean in motion on every delivered tier
