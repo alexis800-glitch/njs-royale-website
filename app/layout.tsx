@@ -69,6 +69,7 @@ const resortSchema = {
   description: DESCRIPTION,
   url: SITE_URL,
   telephone: '+2347075334158',
+  email: 'info@njsbeachresort.com',
   image: `${SITE_URL}/og.png`,
   address: {
     '@type': 'PostalAddress',
