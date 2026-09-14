@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
-import { MapPin, Phone } from 'lucide-react'
+import { Mail, MapPin, Phone } from 'lucide-react'
 
 const info = [
   {
@@ -12,6 +12,18 @@ const info = [
     value: 'Mosere-Kogo Village, via Eko Akete, Ibeju-Lekki, Lagos State, Nigeria',
   },
   { Icon: Phone, label: 'Telephone', value: '0707 533 4158', href: 'tel:+2347075334158' },
+  {
+    Icon: Mail,
+    label: 'General Enquiries',
+    value: 'info@njsbeachresort.com',
+    href: 'mailto:info@njsbeachresort.com',
+  },
+  {
+    Icon: Mail,
+    label: 'Careers / Recruitment',
+    value: 'careers@njsbeachresort.com',
+    href: 'mailto:careers@njsbeachresort.com',
+  },
 ]
 
 export default function BookCTA() {
@@ -47,7 +59,7 @@ export default function BookCTA() {
           Our beach resort daycation opens December 12, 2026, Thursday to Sunday.
           Accommodation opens progressively from February 2027, with the complete resort
           at Grand Opening in July 2027. Our online enquiry service is coming soon; for
-          now, we would be glad to help you plan your visit by phone.
+          now, we would be glad to help you plan your visit by phone or email.
         </p>
 
         {/* Beach Resort brand mark */}
