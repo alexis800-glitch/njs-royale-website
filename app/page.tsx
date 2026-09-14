@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import AnnouncementRibbon from '@/components/AnnouncementRibbon'
 import About from '@/components/About'
-import Daycation from '@/components/Daycation'
+import PhaseOne from '@/components/Daycation'
 import Rooms from '@/components/Rooms'
 import StayExperience from '@/components/StayExperience'
 import RoadToOpening from '@/components/RoadToOpening'
@@ -13,6 +13,7 @@ import Amenities from '@/components/Amenities'
 import Gallery from '@/components/Gallery'
 import Testimonials from '@/components/Testimonials'
 import DigitalPlatform from '@/components/DigitalPlatform'
+import LocationMap from '@/components/LocationMap'
 import BookCTA from '@/components/BookCTA'
 import Footer from '@/components/Footer'
 
@@ -23,7 +24,7 @@ export default function Home() {
       <Hero />
       <AnnouncementRibbon />
       <About />
-      <Daycation />
+      <PhaseOne />
       <Rooms />
       <StayExperience />
       <ResortExperiences />
@@ -34,6 +35,7 @@ export default function Home() {
       <Testimonials />
       <RoadToOpening />
       <DigitalPlatform />
+      <LocationMap />
       <BookCTA />
       <Footer />
     </main>

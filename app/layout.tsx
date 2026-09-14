@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter } from 'next/font/google'
 import './globals.css'
+import { MAP_LINK_URL, RESORT_COORDINATES } from '@/lib/location'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -18,12 +19,12 @@ const inter = Inter({
 const SITE_URL = 'https://www.njsbeachresort.com'
 const SITE_NAME = 'NJS Royale Beach Resort'
 const DESCRIPTION =
-  'A refined beach resort on the Atlantic coast at Ibeju-Lekki, Lagos. Our Daycation — beach, pools and rooftop — opens December 12, 2026, Thursday to Sunday. Accommodation opens progressively from February 2027, with the complete 262-key resort at Grand Opening in July 2027.'
+  'A refined beach resort on the Atlantic coast at Ibeju-Lekki, Lagos. Phase One opens the second-floor swimming-pool area on December 12, 2026. Phase Two, the full resort opening including all accommodation, follows on July 23, 2027.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'NJS Royale Beach Resort — Oceanfront Daycation & Resort, Ibeju-Lekki, Lagos',
+    default: 'NJS Royale Beach Resort — Oceanfront Resort, Ibeju-Lekki, Lagos',
     template: '%s | NJS Royale Beach Resort',
   },
   description: DESCRIPTION,
@@ -32,7 +33,6 @@ export const metadata: Metadata = {
   keywords: [
     'NJS Royale Beach Resort',
     'beach resort Lagos',
-    'daycation Lagos',
     'Ibeju-Lekki resort',
     'leisure park Lagos',
     'oceanfront resort Nigeria',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: 'NJS Royale Beach Resort — oceanfront daycation and resort, Ibeju-Lekki, Lagos',
+        alt: 'NJS Royale Beach Resort — oceanfront resort, Ibeju-Lekki, Lagos',
       },
     ],
   },
@@ -78,6 +78,12 @@ const resortSchema = {
     addressRegion: 'Lagos State',
     addressCountry: 'NG',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: RESORT_COORDINATES.latitude,
+    longitude: RESORT_COORDINATES.longitude,
+  },
+  hasMap: MAP_LINK_URL,
   areaServed: 'Lagos, Nigeria',
 }
 

@@ -12,8 +12,8 @@ const pillars = [
   },
   {
     Icon: Umbrella,
-    title: 'Beach Resort Daycation',
-    body: 'The resort opens first as a beach resort daycation — a leisure park, lounge and pool by the Atlantic, open Thursday to Sunday from December. Come for the day and stay through golden hour.',
+    title: 'Opening in Two Phases',
+    body: 'The second-floor swimming-pool area opens first, on December 12, 2026. The full resort, including all accommodation, follows on July 23, 2027.',
   },
   {
     Icon: Users,
