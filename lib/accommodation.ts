@@ -1,7 +1,7 @@
 // NJS Royale Beach Resort — accommodation catalogue (data-driven).
 //
 // These are accommodation CATEGORIES, not individual rooms. The full resort will
-// contain 262 keys at Grand Opening (July 2027).
+// contain 262 keys when all accommodation opens with Phase Two (July 23, 2027).
 //
 // IMPORTANT: only fields confirmed by the client are populated. Everything not yet
 // supplied is intentionally `null` (or an empty array) so the UI can hide it or show
@@ -10,7 +10,7 @@
 // one-line change to `mainImage`.
 
 export const RESORT_KEYS = 262
-export const GRAND_OPENING = 'July 2027'
+export const GRAND_OPENING = 'July 23, 2027'
 
 export type AvailabilityStatus =
   | 'enquire' // enquiries welcome; not yet bookable online

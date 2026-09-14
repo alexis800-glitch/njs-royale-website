@@ -1,5 +1,6 @@
-// Two-night positioning, framed as an experience rather than a booking rule.
-// Public copy only — internal stay exceptions are handled in the reservations system.
+// Two-night positioning, framed as an experience rather than a booking rule. It applies
+// from Phase Two, when accommodation opens. Public copy only — internal stay exceptions
+// are handled in the reservations system.
 
 export default function StayExperience() {
   return (
@@ -9,16 +10,20 @@ export default function StayExperience() {
           The NJS Royale Experience
         </p>
         <h2
-          className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-6"
+          className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-4"
           style={{ fontSize: 'clamp(30px, 4vw, 48px)' }}
         >
           Two-Night Minimum Stay
         </h2>
+        <p className="text-gold text-[11px] uppercase tracking-[2.5px] mb-6 font-[family-name:var(--font-inter)]">
+          From Phase Two · July 23, 2027
+        </p>
         <p className="text-navy/60 leading-relaxed font-[family-name:var(--font-inter)]">
-          NJS Royale is designed as a destination, not simply an overnight stay. A
-          two-night minimum invites you to settle into the rhythm of the coast — unhurried
-          mornings by the water, long golden afternoons, and evenings that unfold at their
-          own pace — arriving slowly and leaving restored.
+          When accommodation opens with Phase Two on July 23, 2027, stays at NJS Royale carry a
+          two-night minimum. The resort is designed as a destination, not simply an overnight
+          stay — two nights invite you to settle into the rhythm of the coast: unhurried
+          mornings by the water, long golden afternoons, and evenings that unfold at their own
+          pace.
         </p>
         <div className="mt-8">
           <a

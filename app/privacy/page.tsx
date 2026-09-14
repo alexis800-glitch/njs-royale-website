@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/privacy' },
 }
 
-const LAST_UPDATED = '16 August 2026'
+const LAST_UPDATED = '14 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -73,8 +73,12 @@ export default function PrivacyPolicy() {
             through this website.
           </p>
           <p>
-            If you contact us using the telephone number provided, we will receive the information you
-            choose to share during that call in order to respond to you.
+            If you contact us using the telephone number or email address provided, we will receive the
+            information you choose to share in order to respond to you.
+          </p>
+          <p>
+            Our homepage also offers an optional interactive Google Maps view of the resort&rsquo;s
+            location, which loads only if you choose to open it. Section 11 explains what that involves.
           </p>
         </Section>
 
@@ -152,11 +156,20 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="11. Cookies and analytics">
+        <Section title="11. Cookies, analytics and maps">
           <p>
             This website does not currently set analytics or advertising cookies, and does not use
             third-party tracking or marketing tools. If this changes, we will update this policy and, where
             required, ask for your consent before any non-essential cookies are used.
+          </p>
+          <p>
+            <span className="text-white/80">Google Maps.</span> The location section on our homepage
+            shows the resort&rsquo;s address and coordinates without contacting Google. The interactive
+            map loads only after you choose &ldquo;View Interactive Map&rdquo;. When you do, your browser
+            connects to Google, which may receive technical information such as your IP address and
+            device and browser details, and may set its own cookies. Google handles that information
+            under its own privacy policy. The &ldquo;Get Directions&rdquo; link opens Google Maps in a
+            new tab in the same way.
           </p>
         </Section>
 
@@ -181,11 +194,8 @@ export default function PrivacyPolicy() {
             Mosere-Kogo Village, via Eko Akete, Ibeju-Lekki, Lagos State, Nigeria
             <br />
             Telephone: <a href="tel:+2347075334158" className="text-gold hover:text-white transition-colors">0707 533 4158</a>
-          </p>
-          <p>
-            We are in the process of establishing a dedicated email address for privacy enquiries and will
-            add it to this policy once it is available. In the meantime, please use the telephone number or
-            postal address above.
+            <br />
+            Email: <a href="mailto:info@njsbeachresort.com" className="text-gold hover:text-white transition-colors">info@njsbeachresort.com</a>
           </p>
           <p>
             If you believe your data has not been handled properly, you also have the right to lodge a

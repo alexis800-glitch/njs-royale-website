@@ -1,69 +1,63 @@
-// The deliberate, phased rollout to Grand Opening. Dates and scope are exactly as
-// approved — no invented Phase III date, no per-category floor assignments.
+// The confirmed opening programme: exactly two phases. Do not add intermediate stages
+// or a third phase, and keep Phase One to the scope NJS has confirmed.
 
 const phases = [
   {
+    name: 'Phase One',
     date: 'December 12, 2026',
-    title: 'Daycation Soft Opening',
-    body: 'The rooftop, beach and leisure clubs, and pool-deck leisure experiences welcome their first guests.',
+    isoDate: '2026-12-12',
+    title: 'Second-Floor Pool Opening',
+    body: 'The second-floor swimming-pool area opens, together with its associated support spaces.',
+    final: false,
   },
   {
-    date: 'December 2026 – January 2027',
-    title: 'Daycation Season',
-    body: 'Thursday to Sunday Daycation operations by the coast.',
-  },
-  {
-    date: 'February 2027',
-    title: 'Accommodation Begins',
-    body: 'Initial accommodation inventory begins opening progressively, including the lower accommodation floors.',
-  },
-  {
-    date: 'April – July 2027',
-    title: 'Resort Ramp-Up',
-    body: 'Accommodation, leisure and dining expand under controlled occupancy.',
-  },
-  {
-    date: 'July 2027',
-    title: 'Grand Opening',
-    body: 'All floors 1–6 and the complete 262-key NJS Royale Beach Resort.',
+    name: 'Phase Two',
+    date: 'July 23, 2027',
+    isoDate: '2027-07-23',
+    title: 'Full Resort Opening',
+    body: 'The complete resort opens, including all accommodation and the remaining resort operations.',
+    final: true,
   },
 ]
 
 export default function RoadToOpening() {
   return (
     <section id="rollout" className="bg-[#0A1628] py-28 md:py-32 px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-14 md:mb-16">
           <p className="text-gold text-[10px] uppercase tracking-[4px] mb-4 font-[family-name:var(--font-inter)]">
-            A Deliberate Opening
+            The Opening Programme
           </p>
           <h2
             className="font-[family-name:var(--font-cormorant)] text-white leading-tight"
             style={{ fontSize: 'clamp(32px, 4vw, 52px)' }}
           >
-            The Road to Grand Opening
+            Opening in Two Phases
           </h2>
         </div>
 
-        <ol className="relative border-l border-gold/25 ml-3 sm:ml-6">
-          {phases.map((p, i) => (
-            <li key={p.title} className={`relative pl-8 sm:pl-10 ${i === phases.length - 1 ? '' : 'pb-12'}`}>
-              {/* node */}
-              <span
-                aria-hidden="true"
-                className={`absolute -left-[7px] top-1 h-3.5 w-3.5 rounded-full border ${
-                  p.title === 'Grand Opening'
-                    ? 'bg-gold border-gold'
-                    : 'bg-[#0A1628] border-gold/70'
-                }`}
-              />
-              <div className="text-gold text-[11px] uppercase tracking-[2.5px] font-[family-name:var(--font-inter)]">
-                {p.date}
-              </div>
-              <h3 className="mt-2 font-[family-name:var(--font-cormorant)] text-white text-2xl leading-snug">
+        <ol className="grid gap-6 md:grid-cols-2">
+          {phases.map((p) => (
+            <li
+              key={p.name}
+              className={`flex flex-col border p-8 sm:p-10 ${
+                p.final ? 'border-gold/50 bg-[#060E1A]/50' : 'border-gold/25'
+              }`}
+            >
+              <p className="text-gold/75 text-[10px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+                {p.name}
+              </p>
+              <p
+                className="mt-4 font-[family-name:var(--font-cormorant)] text-gold leading-none"
+                style={{ fontSize: 'clamp(30px, 3.4vw, 42px)' }}
+              >
+                <time dateTime={p.isoDate}>{p.date}</time>
+              </p>
+              <div aria-hidden="true" className="my-6 h-px w-12 bg-gold/30" />
+              <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl leading-snug">
                 {p.title}
               </h3>
-              <p className="mt-2 text-white/55 text-[15px] leading-relaxed font-[family-name:var(--font-inter)] max-w-xl">
+              <p className="mt-3 text-white/55 text-[15px] leading-relaxed font-[family-name:var(--font-inter)]">
                 {p.body}
               </p>
             </li>

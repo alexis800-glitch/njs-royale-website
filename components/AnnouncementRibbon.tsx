@@ -1,8 +1,9 @@
+// The two confirmed opening phases only. No intermediate stages, no third phase.
 const items = [
-  'Daycation opens December 12, 2026',
-  'Thursday to Sunday',
-  'Accommodation from February 2027',
-  'Grand Opening July 2027',
+  'Phase One · December 12, 2026',
+  'Second-Floor Pool Opening',
+  'Phase Two · July 23, 2027',
+  'Full Resort Opening',
 ]
 
 function Item({ label }: { label: string }) {
@@ -59,8 +60,8 @@ export default function AnnouncementRibbon() {
 
       {/* Accessible, non-visual copy (read once by screen readers) */}
       <p className="sr-only">
-        Daycation opens December 12, 2026, Thursday to Sunday. Accommodation opens
-        progressively from February 2027, with Grand Opening in July 2027.
+        Phase One opens the second-floor swimming-pool area on December 12, 2026. Phase Two,
+        the full resort opening including all accommodation, follows on July 23, 2027.
       </p>
 
       {/* Animated seamless marquee — only when motion is allowed (slow, smooth) */}

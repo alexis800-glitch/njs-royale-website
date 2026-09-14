@@ -4,6 +4,8 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { CalendarCheck, Bot, BarChart3, Zap } from 'lucide-react'
 
+// Planned software capabilities. These are platform releases, not part of either resort
+// opening phase — do not label them with, or tie them to, the resort's opening dates.
 const features = [
   {
     Icon: CalendarCheck,
@@ -84,7 +86,7 @@ export default function DigitalPlatform() {
                   className="text-gold/60 group-hover:text-gold/90 transition-colors duration-500 flex-shrink-0"
                 />
                 <span className="text-gold/35 text-[9px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
-                  Phase 2
+                  Future Capability
                 </span>
               </div>
               <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl mb-3 leading-snug">
@@ -97,9 +99,9 @@ export default function DigitalPlatform() {
           ))}
         </motion.div>
 
-        {/* Phase note */}
+        {/* Platform note */}
         <p className="text-white/25 text-[11px] text-center leading-relaxed italic font-[family-name:var(--font-inter)] max-w-2xl mx-auto">
-          Advanced booking workflows, PMS/Aiosell integration, dashboards, and AI concierge features will be activated in future phases.
+          Advanced booking workflows, PMS/Aiosell integration, dashboards, and AI concierge features will be activated in future platform releases.
         </p>
 
       </div>

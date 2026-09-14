@@ -3,9 +3,11 @@ import Link from 'next/link'
 import CookiePreferences from './CookiePreferences'
 
 // Subtle legal-link styling — deliberately lighter than the wordmark and copyright,
-// so the legal navigation never competes with the main footer content.
+// so the legal navigation never competes with the main footer content. The after:
+// layer gives each compact link a 25px-tall target without changing its layout; the
+// 8px row gap keeps those targets apart when the links wrap onto two rows.
 const legalLink =
-  'text-white/45 hover:text-gold text-[11px] tracking-wide transition-colors duration-300 font-[family-name:var(--font-inter)]'
+  "relative after:absolute after:inset-x-0 after:-inset-y-[4px] after:content-[''] text-white/45 hover:text-gold text-[11px] tracking-wide transition-colors duration-300 font-[family-name:var(--font-inter)]"
 
 export default function Footer() {
   return (
@@ -35,7 +37,7 @@ export default function Footer() {
         {/* Legal navigation — Privacy Policy · Terms of Service · Cookie Preferences */}
         <nav
           aria-label="Legal"
-          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 sm:gap-x-2.5 sm:gap-y-1"
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-2.5"
         >
           <Link href="/privacy" className={legalLink}>
             Privacy Policy

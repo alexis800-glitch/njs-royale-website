@@ -56,10 +56,10 @@ export default function BookCTA() {
           className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]"
           style={{ marginBottom: '3rem' }}
         >
-          Our beach resort daycation opens December 12, 2026, Thursday to Sunday.
-          Accommodation opens progressively from February 2027, with the complete resort
-          at Grand Opening in July 2027. Our online enquiry service is coming soon; for
-          now, we would be glad to help you plan your visit by phone or email.
+          Phase One opens our second-floor swimming-pool area on December 12, 2026. Phase Two,
+          the full resort opening including all accommodation, follows on July 23, 2027. Our
+          online enquiry service is coming soon; for now, we would be glad to help you plan
+          your visit by phone or email.
         </p>
 
         {/* Beach Resort brand mark */}
@@ -85,17 +85,17 @@ export default function BookCTA() {
               Call to Enquire
             </a>
             <a
-              href="#daycation"
+              href="#phase-one"
               className="w-full sm:w-auto sm:min-w-[190px] text-center border border-white/70 text-white px-6 py-[14px] text-[12px] uppercase tracking-[0.08em] font-medium hover:border-gold hover:text-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
-              Plan Your Day
+              About Phase One
             </a>
           </div>
         </div>
 
         <p className="text-white/30 text-[11px] text-center leading-relaxed font-[family-name:var(--font-inter)] mb-12 italic">
-          Online booking is not yet live. Accommodation opens progressively from February
-          2027; enquiries are warmly welcomed now.
+          Online booking is not yet live. Accommodation opens with Phase Two on July 23, 2027;
+          enquiries are warmly welcomed now.
         </p>
 
         <div className="border-t border-white/7 pt-12 grid gap-8 sm:grid-cols-2 max-w-2xl mx-auto">
@@ -109,7 +109,10 @@ export default function BookCTA() {
               </div>
               <div className="text-white/55 text-sm font-[family-name:var(--font-inter)]">
                 {href ? (
-                  <a href={href} className="hover:text-gold transition-colors duration-300">
+                  <a
+                    href={href}
+                    className="inline-flex items-center min-h-[44px] -my-[13.5px] hover:text-gold transition-colors duration-300"
+                  >
                     {value}
                   </a>
                 ) : (

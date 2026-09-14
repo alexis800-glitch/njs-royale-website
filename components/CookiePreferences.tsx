@@ -69,6 +69,18 @@ export default function CookiePreferences({ className }: { className?: string })
                   website.
                 </p>
               </div>
+
+              {/* Click-to-load location map */}
+              <div className="mt-4 border-t border-white/10 pt-5">
+                <p className="text-white/90 text-[13.5px] font-medium font-[family-name:var(--font-inter)]">
+                  Google Maps (only if you open it)
+                </p>
+                <p className="text-white/55 text-[12.5px] leading-relaxed mt-1.5 font-[family-name:var(--font-inter)]">
+                  The location map loads only after you choose &ldquo;View Interactive Map&rdquo;.
+                  Google may then receive technical information such as your IP address and device
+                  details, and may set its own cookies.
+                </p>
+              </div>
             </div>
 
             <div className="px-6 sm:px-8 py-4 border-t border-white/10 flex items-center justify-end">

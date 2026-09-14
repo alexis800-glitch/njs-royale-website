@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/terms' },
 }
 
-const LAST_UPDATED = '19 August 2026'
+const LAST_UPDATED = '14 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -60,7 +60,7 @@ export default function TermsOfService() {
 
         <p className="font-[family-name:var(--font-cormorant)] text-white/80 text-xl leading-relaxed">
           These Terms of Service (&ldquo;Terms&rdquo;) govern your use of the NJS Royale Beach Resort
-          website. They cover use of this website only. Terms relating to reservations, Daycation
+          website. They cover use of this website only. Terms relating to reservations,
           admission, payments, cancellations and other commercial arrangements are not part of these
           Terms and will be provided separately when those services become available.
         </p>
@@ -116,7 +116,7 @@ export default function TermsOfService() {
 
         <Section title="6. Reservations and commercial terms">
           <p>
-            Terms that apply to reservations, Daycation admission, stays, payments, cancellations, refunds
+            Terms that apply to reservations, admission, stays, payments, cancellations, refunds
             and other commercial matters are <span className="text-white/80">not set out on this website</span>.
             Where such services are offered, the applicable terms will be made available to you separately at
             the relevant time (for example, at the point of enquiry, reservation or purchase), and those
@@ -197,6 +197,8 @@ export default function TermsOfService() {
             Mosere-Kogo Village, via Eko Akete, Ibeju-Lekki, Lagos State, Nigeria
             <br />
             Telephone: <a href="tel:+2347075334158" className="text-gold hover:text-white transition-colors">0707 533 4158</a>
+            <br />
+            Email: <a href="mailto:info@njsbeachresort.com" className="text-gold hover:text-white transition-colors">info@njsbeachresort.com</a>
           </p>
         </Section>
       </article>

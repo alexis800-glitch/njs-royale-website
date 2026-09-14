@@ -23,7 +23,7 @@ const amenities = [
   {
     Icon: Umbrella,
     title: 'Leisure Park & Lounge',
-    desc: 'A coastal leisure park, lounge and pool — the resort’s first operating experience, open Thursday to Sunday from December.',
+    desc: 'A coastal leisure park and lounge by the Atlantic, designed for unhurried days by the water.',
   },
   {
     Icon: Sun,

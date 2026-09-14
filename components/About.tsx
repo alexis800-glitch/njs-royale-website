@@ -45,9 +45,11 @@ export default function About() {
             <p className="text-navy/58 text-lg leading-loose mb-8 font-[family-name:var(--font-inter)]">
               From the ocean-facing infinity pool that mirrors the sky to the signature restaurants perched above the waves, life here is lived at the water&apos;s edge.
             </p>
+            {/* The after: layer extends the clickable area to ~45px tall without moving
+                the underline or the text. */}
             <a
               href="#rooms"
-              className="text-navy border-b border-navy/30 pb-0.5 text-[13px] uppercase tracking-[3px] hover:text-gold hover:border-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
+              className="relative after:absolute after:inset-x-0 after:-inset-y-[13px] after:content-[''] text-navy border-b border-navy/30 pb-0.5 text-[13px] uppercase tracking-[3px] hover:text-gold hover:border-gold transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >
               Explore The Resort →
             </a>
