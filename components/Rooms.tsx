@@ -169,10 +169,11 @@ export default function Rooms() {
                     <Specs a={a} />
                   </div>
 
-                  {/* CTA */}
+                  {/* CTA — 45px-tall target; the negative margins cancel the added
+                      padding so the card keeps its previous spacing. */}
                   <a
                     href="#enquire"
-                    className="mt-1 flex items-center justify-between text-gold text-[11px] uppercase tracking-[2px] hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
+                    className="-mt-[10px] -mb-[14px] py-[14px] flex items-center justify-between text-gold text-[11px] uppercase tracking-[2px] hover:text-white transition-colors duration-300 font-[family-name:var(--font-inter)]"
                   >
                     Enquire
                     <ArrowRight size={13} strokeWidth={1.5} />

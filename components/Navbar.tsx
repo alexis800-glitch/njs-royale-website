@@ -11,6 +11,7 @@ const links = [
   { label: 'Dining',         href: '#amenities'   },
   { label: 'Wellness',       href: '#experiences' },
   { label: 'Gallery',        href: '#gallery'     },
+  { label: 'Location',       href: '#location'    },
   { label: 'Contact',        href: '#enquire'     },
 ]
 
@@ -66,12 +67,14 @@ export default function Navbar() {
 
           {/* ── Left: hamburger + Menu ── */}
           <div className="flex items-center gap-3 justify-self-start min-w-0">
+            {/* 44x44 hit area around the 22px icon; the negative margin keeps the
+                layout footprint of the previous 30px (34px on phones) button. */}
             <button
               ref={menuBtnRef}
               onClick={() => setMenuOpen(true)}
               aria-label="Open navigation menu"
               aria-expanded={menuOpen}
-              className={`${ink} hover:text-gold transition-colors duration-300 p-1 max-sm:p-1.5`}
+              className={`${ink} hover:text-gold transition-colors duration-300 p-[11px] -m-[7px] max-sm:-m-[5px]`}
             >
               <Menu size={22} strokeWidth={1.4} />
             </button>
@@ -128,10 +131,11 @@ export default function Navbar() {
       >
         {/* Top row (fixed) — close left · official crest + wordmark centred · equal space right */}
         <div className="shrink-0 grid grid-cols-[1fr_auto_1fr] items-center px-5 sm:px-7 pt-7 pb-6">
+          {/* 44x44 hit area; the negative margin keeps the previous 32px footprint. */}
           <button
             ref={closeRef}
             onClick={closeMenu}
-            className="justify-self-start text-navy/60 hover:text-gold transition-colors duration-300 p-1"
+            className="justify-self-start text-navy/60 hover:text-gold transition-colors duration-300 p-[10px] -m-[6px]"
             aria-label="Close navigation menu"
           >
             <X size={24} strokeWidth={1.25} />

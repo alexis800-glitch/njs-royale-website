@@ -109,7 +109,10 @@ export default function BookCTA() {
               </div>
               <div className="text-white/55 text-sm font-[family-name:var(--font-inter)]">
                 {href ? (
-                  <a href={href} className="hover:text-gold transition-colors duration-300">
+                  <a
+                    href={href}
+                    className="inline-flex items-center min-h-[44px] -my-[13.5px] hover:text-gold transition-colors duration-300"
+                  >
                     {value}
                   </a>
                 ) : (
