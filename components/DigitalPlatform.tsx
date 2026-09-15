@@ -77,22 +77,22 @@ export default function DigitalPlatform() {
             <motion.div
               key={title}
               variants={cardVariants}
-              className="group border border-gold/10 p-8 hover:border-gold/25 hover:bg-[#0A1628]/60 transition-all duration-500 cursor-default"
+              className="group border border-gold/25 p-8 hover:border-gold/45 hover:bg-[#0A1628]/60 transition-all duration-500 cursor-default"
             >
               <div className="flex items-center gap-3 mb-5">
                 <Icon
                   size={20}
                   strokeWidth={1.25}
-                  className="text-gold/60 group-hover:text-gold/90 transition-colors duration-500 flex-shrink-0"
+                  className="text-gold/85 group-hover:text-gold/90 transition-colors duration-500 flex-shrink-0"
                 />
-                <span className="text-gold/35 text-[9px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
+                <span className="text-gold/80 text-[10px] font-medium uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
                   Future Capability
                 </span>
               </div>
               <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl mb-3 leading-snug">
                 {title}
               </h3>
-              <p className="text-white/45 text-sm leading-relaxed font-[family-name:var(--font-inter)]">
+              <p className="text-white/65 text-sm leading-relaxed font-[family-name:var(--font-inter)]">
                 {desc}
               </p>
             </motion.div>
@@ -100,7 +100,7 @@ export default function DigitalPlatform() {
         </motion.div>
 
         {/* Platform note */}
-        <p className="text-white/25 text-[11px] text-center leading-relaxed italic font-[family-name:var(--font-inter)] max-w-2xl mx-auto">
+        <p className="text-white/55 text-[11px] text-center leading-relaxed italic font-[family-name:var(--font-inter)] max-w-2xl mx-auto">
           Advanced booking workflows, PMS/Aiosell integration, dashboards, and AI concierge features will be activated in future platform releases.
         </p>
 
