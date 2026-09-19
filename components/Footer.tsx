@@ -29,6 +29,16 @@ export default function Footer() {
           </span>
         </div>
 
+        {/* Primary link — Careers (kept more prominent than the legal links) */}
+        <nav aria-label="Careers">
+          <Link
+            href="/careers"
+            className="inline-flex min-h-[44px] items-center text-white/75 hover:text-gold text-[12px] uppercase tracking-[0.14em] transition-colors duration-300 font-[family-name:var(--font-inter)]"
+          >
+            Careers
+          </Link>
+        </nav>
+
         {/* Copyright */}
         <p className="text-white/40 text-[11px] font-[family-name:var(--font-inter)]">
           © {new Date().getFullYear()} NJS Royale Beach Resort. All rights reserved.
