@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import PhaseOneBanner from '@/components/PhaseOneBanner'
 import AnnouncementRibbon from '@/components/AnnouncementRibbon'
 import About from '@/components/About'
 import PhaseOne from '@/components/Daycation'
@@ -21,7 +22,10 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <Hero />
+      <div className="relative">
+        <Hero />
+        <PhaseOneBanner />
+      </div>
       <AnnouncementRibbon />
       <About />
       <PhaseOne />

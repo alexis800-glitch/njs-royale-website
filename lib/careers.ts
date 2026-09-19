@@ -18,9 +18,9 @@ export const EMPLOYMENT_TYPE = 'Full-time'
 export const CAREERS_LOCATION =
   'Mosere-Kogo Village, via Eko Akete, Ibeju-Lekki, Lagos State, Nigeria'
 
-export const APPLICATION_DEADLINE = 'October 31, 2026'
+export const APPLICATION_DEADLINE = 'October 15, 2026'
 /** End of the application window, expressed in Lagos time (WAT, UTC+01:00). */
-export const APPLICATION_DEADLINE_ISO = '2026-10-31T23:59:59+01:00'
+export const APPLICATION_DEADLINE_ISO = '2026-10-15T23:59:59+01:00'
 export const PHASE_ONE_OPENING = 'December 12, 2026'
 
 export const GENERAL_NOTE =
