@@ -18,12 +18,12 @@ import {
 export const metadata: Metadata = {
   title: 'Careers',
   description:
-    'Phase One recruitment at NJS Royale Beach Resort. Full-time restaurant, kitchen and administration roles supporting Yahweh Heights and Voyage Restaurant in Ibeju-Lekki, Lagos. Apply by October 31, 2026.',
+    'Phase One recruitment at NJS Royale Beach Resort. Full-time restaurant, kitchen and administration roles supporting Yahweh Heights and Voyage Restaurant in Ibeju-Lekki, Lagos. Apply by October 15, 2026.',
   alternates: { canonical: '/careers' },
   openGraph: {
     title: 'Careers at NJS Royale Beach Resort',
     description:
-      'Phase One Recruitment Vacancies — full-time roles across restaurant, kitchen and administration. Apply by October 31, 2026.',
+      'Phase One Recruitment Vacancies — full-time roles across restaurant, kitchen and administration. Apply by October 15, 2026.',
     url: '/careers',
   },
 }
