@@ -22,9 +22,11 @@ export default function Home() {
   return (
     <main>
       <Navbar />
-      <div className="relative">
-        <Hero />
+      {/* On mobile the banner is in normal flow below the fixed header (pt clears it)
+          and the hero follows; on desktop the banner overlays the top of the hero. */}
+      <div className="relative pt-[84px] sm:pt-0">
         <PhaseOneBanner />
+        <Hero />
       </div>
       <AnnouncementRibbon />
       <About />
