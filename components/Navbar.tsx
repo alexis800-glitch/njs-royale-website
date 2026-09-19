@@ -3,16 +3,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { Menu, X } from 'lucide-react'
 
+// Root-relative anchors so the menu also works from sub-pages such as /careers.
 const links = [
-  { label: 'Home',           href: '#'            },
-  { label: 'About',          href: '#about'       },
-  { label: 'Phase One',      href: '#phase-one'   },
-  { label: 'Rooms & Suites', href: '#rooms'       },
-  { label: 'Dining',         href: '#amenities'   },
-  { label: 'Wellness',       href: '#experiences' },
-  { label: 'Gallery',        href: '#gallery'     },
-  { label: 'Location',       href: '#location'    },
-  { label: 'Contact',        href: '#enquire'     },
+  { label: 'Home',           href: '/'            },
+  { label: 'About',          href: '/#about'      },
+  { label: 'Phase One',      href: '/#phase-one'  },
+  { label: 'Rooms & Suites', href: '/#rooms'      },
+  { label: 'Dining',         href: '/#amenities'  },
+  { label: 'Wellness',       href: '/#experiences'},
+  { label: 'Gallery',        href: '/#gallery'    },
+  { label: 'Careers',        href: '/careers'     },
+  { label: 'Location',       href: '/#location'   },
+  { label: 'Contact',        href: '/#enquire'    },
 ]
 
 export default function Navbar() {
@@ -85,7 +87,7 @@ export default function Navbar() {
 
           {/* ── Centre: official NJS Royale crest + wordmark, mathematically
                 centred by the grid's auto column ── */}
-          <a href="#" aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2 sm:gap-3.5 whitespace-nowrap">
+          <a href="/" aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2 sm:gap-3.5 whitespace-nowrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/njs-logos/njs-crest-mark.png"
@@ -106,7 +108,7 @@ export default function Navbar() {
                 the hero, restrained navy fill once solid (compact on mobile) ── */}
           <div className="flex items-center justify-self-end min-w-0">
             <a
-              href="#enquire"
+              href="/#enquire"
               className={`inline-flex items-center justify-center uppercase font-medium tracking-[0.08em] transition-colors duration-300 font-[family-name:var(--font-inter)] whitespace-nowrap text-[10px] px-3 py-2 min-h-[42px] max-[360px]:px-2.5 sm:text-[12px] sm:px-[26px] sm:py-2.5 sm:min-h-[46px] ${
                 scrolled
                   ? 'bg-navy text-[#f6f2e9] hover:bg-gold hover:text-navy'
@@ -140,7 +142,7 @@ export default function Navbar() {
           >
             <X size={24} strokeWidth={1.25} />
           </button>
-          <a href="#" onClick={closeMenu} aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2.5 whitespace-nowrap">
+          <a href="/" onClick={closeMenu} aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2.5 whitespace-nowrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/njs-logos/njs-crest-mark.png" alt="NJS Royale crest" className="h-9 sm:h-10 w-auto flex-shrink-0" />
             <span className="flex flex-col items-start leading-none">
@@ -171,7 +173,7 @@ export default function Navbar() {
           </nav>
           <div className="pl-[8vw] pr-6 pt-5 pb-12 flex flex-col items-start gap-5">
             <a
-              href="#enquire"
+              href="/#enquire"
               onClick={closeMenu}
               className="inline-block text-center bg-navy text-[#f6f2e9] w-[180px] px-6 py-[13px] text-[12px] uppercase tracking-[0.08em] font-medium hover:bg-gold hover:text-navy transition-colors duration-300 font-[family-name:var(--font-inter)]"
             >

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/privacy' },
 }
 
-const LAST_UPDATED = '14 September 2026'
+const LAST_UPDATED = '19 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -173,7 +173,28 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="12. Your rights">
+        <Section title="12. Recruitment and job applications">
+          <p>
+            If you apply for a role through our Careers section, you will email your CV and details to{' '}
+            <a href="mailto:careers@njsbeachresort.com" className="text-gold hover:text-white transition-colors">careers@njsbeachresort.com</a>.
+            Applications may contain your CV, contact information and other details you choose to share.
+          </p>
+          <p>We use recruitment information only to:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>assess your suitability for the role;</li>
+            <li>communicate with you about your application;</li>
+            <li>arrange interviews;</li>
+            <li>maintain necessary recruitment records.</li>
+          </ul>
+          <p>
+            Recruitment information is accessible only to authorised personnel involved in the
+            recruitment process. We retain it only for as long as necessary for recruitment purposes
+            and to meet applicable legal obligations, after which we take steps to delete or securely
+            dispose of it.
+          </p>
+        </Section>
+
+        <Section title="13. Your rights">
           <p>Subject to the conditions of the NDPA, you have the right to:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>request access to the personal data we hold about you;</li>
@@ -186,7 +207,7 @@ export default function PrivacyPolicy() {
           <p>To exercise any of these rights, please contact us using the details below.</p>
         </Section>
 
-        <Section title="13. Complaints and how to contact us">
+        <Section title="14. Complaints and how to contact us">
           <p>If you have any question about this policy or wish to exercise your rights, you can reach us at:</p>
           <p className="font-[family-name:var(--font-cormorant)] text-white/80 text-lg leading-relaxed">
             NJS Royale Beach Resort
@@ -203,7 +224,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="14. Changes to this policy">
+        <Section title="15. Changes to this policy">
           <p>
             We may update this Privacy Policy from time to time to reflect changes in our services or legal
             requirements. When we do, we will revise the &ldquo;Last updated&rdquo; date at the top of this
