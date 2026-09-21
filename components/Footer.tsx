@@ -21,6 +21,7 @@ export default function Footer() {
               src="/njs-logos/njs-royale-logo-gold-dark.jpg"
               alt="NJS Royale"
               fill
+              sizes="36px"
               className="object-cover"
             />
           </div>
