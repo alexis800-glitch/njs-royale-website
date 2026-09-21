@@ -49,25 +49,29 @@ export default function FirstLookPage() {
 
       {/* ── Hero ── */}
       <header className="relative isolate overflow-hidden border-b border-white/10 px-4 sm:px-10 pt-32 sm:pt-40 pb-16 sm:pb-20">
+        {/* Pool at sunset. On phones the crop centres on the sun's reflection across
+            the pool; from sm up the full composition (sun, pool, building) shows. */}
         <Image
-          src="/images/njs-rooftop-infinity-pool-atlantic-view.png"
+          src="/images/njs-hero-sunset-poster.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="-z-20 object-cover object-center opacity-35"
+          className="-z-20 object-cover object-[30%_50%] sm:object-[40%_50%] lg:object-center"
         />
+        {/* Navy veil: darkest behind the copy column and at the foot, where the hero
+            meets the navy page, so the photograph reads as atmosphere only. */}
         <div
           aria-hidden="true"
           className="-z-10 absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.70) 45%, #0A1628 100%), radial-gradient(70% 60% at 50% 0%, rgba(201,168,76,0.16) 0%, rgba(201,168,76,0) 60%)',
+              'radial-gradient(60% 55% at 50% 45%, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0) 100%), linear-gradient(180deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.74) 30%, rgba(10,22,40,0.76) 65%, #0A1628 100%)',
           }}
         />
 
         <div className="mx-auto max-w-3xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-navy/60 px-4 py-1.5 text-gold text-[10px] sm:text-[11px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
+          <p className="inline-flex items-center gap-2 rounded-full border border-gold/60 bg-navy/85 px-4 py-1.5 text-gold text-[10px] sm:text-[11px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
             <Sparkles aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.5} />
             {CAMPAIGN.pageLabel}
           </p>
@@ -90,7 +94,7 @@ export default function FirstLookPage() {
             {CAMPAIGN.tagline}
           </p>
 
-          <div className="mx-auto mt-8 max-w-2xl space-y-4 text-white/75 text-[15px] sm:text-[17px] leading-relaxed font-[family-name:var(--font-inter)]">
+          <div className="mx-auto mt-8 max-w-2xl space-y-4 text-sand text-[15px] sm:text-[17px] leading-relaxed font-[family-name:var(--font-inter)]">
             <p>
               Thank you for joining us for the First Look of NJS Royale Beach Resort. What you
               experienced was only the beginning.
