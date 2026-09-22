@@ -15,14 +15,18 @@ export default function ProofShell({
 }) {
   return (
     <main className="proof-page min-h-screen bg-[#1b2433] px-4 py-6 sm:py-10">
+      {/* Page size: A5 at the nearest whole-pixel size Chrome can print (560 × 794px,
+          148.2 × 210.1mm). An exact 148mm page is rounded up to 560px in the PDF,
+          which would leave an uncovered sliver at the right edge. */}
       <style>{`
-        @page { size: A5 portrait; margin: 0; }
+        @page { size: 560px 794px; margin: 0; }
         .proof-card { container-type: inline-size; width: min(148mm, 100%); aspect-ratio: 148 / 210;
           -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         @media print {
           html, body, .proof-page { background: #fff !important; padding: 0 !important; margin: 0 !important; }
           .proof-toolbar { display: none !important; }
-          .proof-card { width: 148mm; height: 210mm; aspect-ratio: auto; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+          .proof-card { width: 100vw; height: 100vh; aspect-ratio: auto; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+          .proof-card ~ .proof-card { break-before: page; }
         }
       `}</style>
 

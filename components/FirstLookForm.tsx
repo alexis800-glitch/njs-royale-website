@@ -2,7 +2,18 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { AlertCircle, Info } from 'lucide-react'
+import { Info } from 'lucide-react'
+import {
+  FieldError,
+  checkBase,
+  choiceBase,
+  hintBase,
+  inputBase,
+  isEmail,
+  isPhone,
+  labelBase,
+  radioBase,
+} from './previewForm'
 
 // PREVIEW ONLY. This form never transmits, emails, saves or stores anything:
 // there is no action, no fetch and no storage. Only the two radio groups carry a
@@ -59,11 +70,10 @@ function validate(v: Values): Errors {
   if (!v.code.trim()) e.code = 'Enter the invitation or reference code shown on your invitation.'
   if (!v.fullName.trim()) e.fullName = 'Enter your full name.'
   if (!v.email.trim()) e.email = 'Enter your email address.'
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email.trim()))
+  else if (!isEmail(v.email))
     e.email = 'Enter an email address in the format name@example.com.'
-  const digits = v.phone.replace(/\D/g, '')
   if (!v.phone.trim()) e.phone = 'Enter your mobile or WhatsApp number.'
-  else if (digits.length < 7 || digits.length > 15 || /[^\d\s()+-]/.test(v.phone))
+  else if (!isPhone(v.phone))
     e.phone = 'Enter a valid mobile or WhatsApp number, including the country code if outside Nigeria.'
   if (!v.attending) e.attending = 'Tell us whether you will attend on 12 December 2026.'
   if (v.attending === 'yes') {
@@ -72,27 +82,6 @@ function validate(v: Values): Errors {
   }
   if (!v.privacyAck) e.privacyAck = 'Please confirm that you have read the Privacy Policy.'
   return e
-}
-
-const inputBase =
-  'mt-2 block w-full min-h-[48px] rounded-md border bg-white/[0.04] px-4 text-white text-base placeholder:text-white/35 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy font-[family-name:var(--font-inter)]'
-const labelBase = 'block text-white text-[14px] font-medium font-[family-name:var(--font-inter)]'
-const hintBase = 'mt-1 text-white/55 text-[13px] leading-snug font-[family-name:var(--font-inter)]'
-const errorBase =
-  'mt-2 flex items-start gap-1.5 text-[#ffb4a8] text-[13px] leading-snug font-[family-name:var(--font-inter)]'
-const choiceBase =
-  'relative flex min-h-[48px] flex-1 cursor-pointer items-center gap-3 rounded-md border px-4 text-white text-[15px] transition-colors duration-200 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-navy font-[family-name:var(--font-inter)]'
-const radioBase = 'h-5 w-5 flex-shrink-0 accent-[#C9A84C] focus:outline-none'
-const checkBase = 'mt-0.5 h-5 w-5 flex-shrink-0 rounded accent-[#C9A84C] focus:outline-none'
-
-function FieldError({ id, message }: { id: string; message?: string }) {
-  if (!message) return null
-  return (
-    <p id={id} className={errorBase}>
-      <AlertCircle aria-hidden="true" className="mt-px h-4 w-4 flex-shrink-0" strokeWidth={2} />
-      <span>{message}</span>
-    </p>
-  )
 }
 
 export default function FirstLookForm() {

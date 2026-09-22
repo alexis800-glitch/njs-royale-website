@@ -1,14 +1,16 @@
 import Image from 'next/image'
 import type { Metadata } from 'next'
-import { CalendarDays, Check, Sparkles, Users } from 'lucide-react'
+import { Check, Sparkles, Users } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import FirstLookForm from '@/components/FirstLookForm'
+import CampaignJourney from '@/components/CampaignJourney'
 import {
   CAMPAIGN,
   FIRST_ESCAPE,
   GRAND_OPENING,
   GUEST_PRIVILEGES,
+  PRIVILEGES_HEADING,
   VERIFICATION_NOTE,
 } from '@/lib/firstLook'
 
@@ -17,30 +19,15 @@ import {
 export const metadata: Metadata = {
   title: 'The First Escape — First Look Guest Registration',
   description:
-    'NJS Royale — The First Escape. You saw it first. Now come experience it. Exclusive registration for First Look guests returning on 12 December 2026.',
+    'NJS Royale — The First Escape. You saw it first. Now watch the journey unfold: First Look, Phase I Opening on 12 December 2026, and the Grand Opening on 23 July 2027.',
   alternates: { canonical: '/first-look' },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
   openGraph: {
     title: 'NJS Royale — The First Escape',
-    description: 'You Saw It First. Now Come Experience It.',
+    description: 'You Saw It First. Now Watch the Journey Unfold.',
     url: '/first-look',
   },
 }
-
-const dates = [
-  {
-    kicker: 'The First Escape',
-    date: FIRST_ESCAPE.date,
-    detail: `From ${FIRST_ESCAPE.hours}`,
-    note: 'NJS Royale enters its first phase of hospitality.',
-  },
-  {
-    kicker: 'Grand Opening',
-    date: GRAND_OPENING.date,
-    detail: 'The complete resort unveiled',
-    note: 'The full NJS Royale Beach Resort experience.',
-  },
-]
 
 export default function FirstLookPage() {
   return (
@@ -100,12 +87,10 @@ export default function FirstLookPage() {
               experienced was only the beginning.
             </p>
             <p>
-              Join us again on{' '}
-              <strong className="font-semibold text-white">
-                {FIRST_ESCAPE.date}, from {FIRST_ESCAPE.hours}
-              </strong>
-              , as NJS Royale enters its first phase of hospitality&mdash;where rooftop leisure,
-              poolside moments, dining, music and the Atlantic come alive.
+              Return to experience NJS Royale in a whole new way as we officially open our Phase I
+              Daycation experience on <strong className="font-semibold text-white">{FIRST_ESCAPE.date}</strong>
+              &mdash;where rooftop leisure, poolside moments, dining, music and the Atlantic come alive.{' '}
+              {FIRST_ESCAPE.doors}
             </p>
             <p>
               Then return on <strong className="font-semibold text-white">{GRAND_OPENING.date}</strong>,
@@ -122,31 +107,23 @@ export default function FirstLookPage() {
         </div>
       </header>
 
-      {/* ── Dates ── */}
-      <section aria-labelledby="dates-heading" className="px-4 sm:px-8 py-14 sm:py-20">
-        <h2 id="dates-heading" className="sr-only">
-          Save the dates
+      {/* ── Journey: First Look → Phase I → Grand Opening ── */}
+      <section aria-labelledby="journey-heading" className="px-4 sm:px-8 py-14 sm:py-20">
+        <h2 id="journey-heading" className="sr-only">
+          The journey
         </h2>
-        <ul className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
-          {dates.map((d) => (
-            <li
-              key={d.kicker}
-              className="relative rounded-2xl border border-gold/30 bg-white/[0.03] p-6 sm:p-8 text-center"
-            >
-              <CalendarDays aria-hidden="true" className="mx-auto h-6 w-6 text-gold" strokeWidth={1.5} />
-              <p className="mt-3 text-gold text-[11px] uppercase tracking-[3px] font-[family-name:var(--font-inter)]">
-                {d.kicker}
-              </p>
-              <p className="mt-2 font-[family-name:var(--font-cormorant)] text-white text-[34px] sm:text-[40px] leading-tight">
-                {d.date}
-              </p>
-              <p className="mt-1 text-white text-[15px] font-medium font-[family-name:var(--font-inter)]">
-                {d.detail}
-              </p>
-              <p className="mt-2 text-white/60 text-sm font-[family-name:var(--font-inter)]">{d.note}</p>
-            </li>
-          ))}
-        </ul>
+        <CampaignJourney current="phase-one" showTagline={false} />
+        <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-gold/40 bg-white/[0.03] p-6 sm:p-8 text-center">
+          <p className="text-gold text-[11px] uppercase tracking-[3px] font-semibold font-[family-name:var(--font-inter)]">
+            {FIRST_ESCAPE.label}
+          </p>
+          <p className="mt-2 font-[family-name:var(--font-cormorant)] text-white text-[34px] sm:text-[42px] leading-tight">
+            {FIRST_ESCAPE.date}
+          </p>
+          <p className="mt-2 text-white text-[15px] font-medium font-[family-name:var(--font-inter)]">
+            {FIRST_ESCAPE.doors}
+          </p>
+        </div>
       </section>
 
       {/* ── Guest privilege (cream band) ── */}
@@ -160,7 +137,7 @@ export default function FirstLookPage() {
             className="mt-3 text-center font-[family-name:var(--font-cormorant)] text-navy leading-tight"
             style={{ fontSize: 'clamp(32px, 5vw, 48px)' }}
           >
-            Your First Look Guest Privilege
+            {PRIVILEGES_HEADING}
           </h2>
 
           <div className="mt-8 flex items-start gap-4 rounded-xl border border-navy/10 bg-white p-5 sm:p-6">
@@ -173,11 +150,11 @@ export default function FirstLookPage() {
           <p className="mt-8 text-navy/80 text-[15px] sm:text-base leading-relaxed font-[family-name:var(--font-inter)]">
             Verified First Look guests returning on {FIRST_ESCAPE.dateShort} will receive:
           </p>
-          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {GUEST_PRIVILEGES.map((p) => (
               <li
                 key={p}
-                className="flex items-center gap-3 rounded-xl border border-gold/50 bg-white px-4 py-4 text-navy text-[15px] font-medium font-[family-name:var(--font-inter)] sm:flex-col sm:text-center sm:py-6"
+                className="flex items-center gap-3 rounded-xl border border-gold/50 bg-white px-4 py-4 text-navy text-[15px] font-medium font-[family-name:var(--font-inter)]"
               >
                 <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-navy text-gold">
                   <Check aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
