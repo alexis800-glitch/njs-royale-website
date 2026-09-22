@@ -66,15 +66,17 @@ export default function FoundingGuestPage() {
 
       {/* ── Hero: the resort at night ── */}
       <section aria-labelledby="fg-title" className="relative isolate overflow-hidden px-4 sm:px-10 pt-16 sm:pt-24 pb-14 sm:pb-20">
-        {/* On phones the crop centres on the lit building; wider screens show the
-            full shoreline. */}
+        {/* The real hotel (Higgsfield 61b3f34b, the same photograph as the invitation
+            front). The crop is anchored on the entrance canopy (≈51% across) and the
+            façade's centre line (≈43% down): phones show the entrance and central
+            façade bays, wider screens progressively more of the hotel. */}
         <Image
-          src="/images/njs-hero-night-poster.jpg"
+          src="/images/njs-founding-guest-front-entrance-blue-hour.jpg"
           alt=""
           fill
           priority
           sizes="100vw"
-          className="-z-20 object-cover object-[50%_40%]"
+          className="-z-20 object-cover object-[51%_43%]"
         />
         <div
           aria-hidden="true"
