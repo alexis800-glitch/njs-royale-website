@@ -1,11 +1,13 @@
 // Meta Pixel configuration and the rules for where tracking may run at all.
 //
-// Phase 1 is browser-side only: consent, the Pixel and PageView. No Conversions
-// API calls and no /api/meta/* route yet, because production has no successful
-// form submission to report. When that workflow lands, the browser and server
-// events must share one event_id, and both must require marketing consent:
-//   CompleteRegistration — successful First Look / Founding Guest registrations
-//   Lead                 — a future general hotel enquiry form
+// Two events exist, and both require marketing consent:
+//   PageView             — browser only, on every trackable route
+//   CompleteRegistration — browser Pixel and Conversions API, sharing one
+//                          event_id so Meta deduplicates them, and sent only
+//                          after a First Look or Founding Guest registration has
+//                          been stored (see lib/registrations/service.ts)
+// `Lead` is deliberately unused. It is reserved for a future general enquiry
+// form, so that enquiries and registrations stay countable apart.
 
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? ''
 

@@ -8,6 +8,16 @@ export const metadata: Metadata = {
   alternates: { canonical: '/privacy' },
 }
 
+// LEGAL REVIEW REQUIRED before this policy is published to Production.
+//
+// Three passages state legal positions that NJS Royale — and, where needed, its
+// data-protection adviser — must confirm, not engineering:
+//   1. Section 2, "How long we keep it": a retention *rule* tied to the event, not
+//      a fixed period. A specific period has deliberately not been invented.
+//   2. Section 2 and section 11, the cross-border position: registrations are held
+//      in AWS eu-west-2 (London), which is a factual statement of where the Neon
+//      database sits; whether the NDPA transfer conditions are met is a legal one.
+//   3. Section 11, the transfer of advertising data to Meta Platforms Ireland.
 const LAST_UPDATED = '23 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -67,13 +77,20 @@ export default function PrivacyPolicy() {
 
         <Section title="1. Current state of data processing">
           <p>
-            At present, this website is an informational site. It does not operate an active enquiry or
-            contact form, does not process payments, and does not run a live online booking engine.
+            This website is mainly an informational site. It does not process payments and does not run a
+            live online booking engine, and it has no general enquiry or contact form.
+          </p>
+          <p>
+            Two pages do collect personal data: the First Look guest registration at{' '}
+            <span className="text-white/80">/first-look</span> and the Founding Guest activation at{' '}
+            <span className="text-white/80">/founding-guest</span>, both of which are reached from a
+            printed invitation. Section 2 sets out exactly what those forms collect, why, where it is
+            stored and for how long.
           </p>
           <p>
             We use one optional marketing tool, the Meta Pixel, and only if you accept it. It is switched
             off unless you choose &ldquo;Accept&rdquo;, and you can withdraw that choice at any time.
-            Section 11 explains exactly what it does and what Meta receives. If you decline, no Meta code
+            Section 12 explains exactly what it does and what Meta receives. If you decline, no Meta code
             loads and no Meta cookies are set.
           </p>
           <p>
@@ -82,11 +99,93 @@ export default function PrivacyPolicy() {
           </p>
           <p>
             Our homepage also offers an optional interactive Google Maps view of the resort&rsquo;s
-            location, which loads only if you choose to open it. Section 11 explains what that involves.
+            location, which loads only if you choose to open it. Section 12 explains what that involves.
           </p>
         </Section>
 
-        <Section title="2. Scope of this policy">
+        <Section title="2. Invitation registration (First Look and Founding Guest)">
+          <p>
+            If you were given an NJS Royale invitation, you can register your attendance on one of two
+            pages. Registration is optional, and both forms tell you at the point of collection what they
+            are for.
+          </p>
+
+          <p className="text-white/80">What we collect</p>
+          <p>
+            On the <span className="text-white/80">First Look guest</span> page: your invitation or
+            reference code; your full name; your email address; your mobile or WhatsApp number; whether
+            you will attend on 12 December 2026; how many people will attend (one or two); your
+            companion&rsquo;s full name if you are bringing one; and whether you have asked to hear about
+            the Grand Opening.
+          </p>
+          <p>
+            On the <span className="text-white/80">Founding Guest</span> page: your invitation or
+            reference code; the primary guest&rsquo;s full name; your email address; your mobile or
+            WhatsApp number; the second guest&rsquo;s full name; your confirmation of the stay from 23 to
+            25 July 2027; your expected arrival time; anything you add about your arrival; and whether you
+            have asked to receive NJS Royale updates.
+          </p>
+          <p>
+            With either form we also record which page you registered on, the date and time, your
+            browser&rsquo;s user-agent string, and a one-way hash of your IP address. The hash is used only
+            to limit automated submissions; we do not keep the address itself.
+          </p>
+
+          <p className="text-white/80">Why we use it</p>
+          <p>
+            To verify your invitation, confirm your RSVP, prepare your guest privileges and manage entry on
+            the day &mdash; and, for Founding Guests, to prepare your accommodation. If you are registering
+            a companion or second guest, please make sure they are content for you to give us their name.
+          </p>
+          <p>
+            We rely on your consent, given when you submit the form, and on taking steps at your request to
+            confirm your attendance. Updates about the Grand Opening or about NJS Royale are sent only if
+            you tick the optional box, which is never ticked for you; you can withdraw that consent at any
+            time by emailing{' '}
+            <a href="mailto:info@njsbeachresort.com" className="text-gold hover:text-white transition-colors">
+              info@njsbeachresort.com
+            </a>
+            .
+          </p>
+
+          <p className="text-white/80">Where it is stored</p>
+          <p>
+            Registrations are stored in a Postgres database provided by Neon, reached only from the server
+            side of this website, which is hosted by Vercel. The database is located in Amazon Web
+            Services&rsquo; Europe (London) region, <span className="text-white/80">eu-west-2</span>, so
+            registration data is stored in the United Kingdom. Both Neon and Vercel are processors acting
+            on our instructions; section 11 explains how we approach transfers outside Nigeria. We do not
+            sell your personal data, and we do not publish invitation lists or guest details on this
+            website.
+          </p>
+
+          <p className="text-white/80">How long we keep it</p>
+          <p>
+            We keep a registration until the event it relates to has taken place, and then only for as long
+            as we reasonably need it to deal with anything arising from it or to meet a legal or
+            record-keeping obligation. After that it is deleted or securely disposed of.
+          </p>
+
+          <p className="text-white/80">What Meta is told</p>
+          <p>
+            If &mdash; and only if &mdash; you have accepted optional marketing cookies, we also tell Meta
+            that a registration was completed, so that we can measure our advertising. We send a one-way
+            (SHA-256) hash of your email address and of your telephone number, never the address or the
+            number itself, together with your IP address, your browser&rsquo;s user-agent string and the
+            address of the registration page. We do not send your name, your invitation code, your
+            companion&rsquo;s name, your arrival time or anything you wrote in the notes. The same is sent
+            once from your browser and once from our server, sharing a single identifier so that Meta
+            records one registration rather than two.
+          </p>
+          <p>
+            If you declined marketing cookies, or never made a choice, nothing about your registration is
+            sent to Meta, and your registration works exactly the same way. If you withdraw consent later,
+            nothing further is sent. Section 12 explains the cookies themselves and how to change your
+            choice.
+          </p>
+        </Section>
+
+        <Section title="3. Scope of this policy">
           <p>
             We intend to add an online enquiry / contact form in the future. The remainder of this policy
             explains how personal data will be handled once that form is activated, so that our approach is
@@ -94,7 +193,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="3. Information we may collect">
+        <Section title="4. Information we may collect">
           <p>When the enquiry form is activated, we expect to collect only the information you choose to provide, which may include:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>your name;</li>
@@ -104,7 +203,7 @@ export default function PrivacyPolicy() {
           <p>We will not require more information than is necessary to respond to your enquiry.</p>
         </Section>
 
-        <Section title="4. How and why we use your data">
+        <Section title="5. How and why we use your data">
           <p>We will use the information you provide to:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>respond to your enquiry and communicate with you;</li>
@@ -114,7 +213,7 @@ export default function PrivacyPolicy() {
           <p>We will not use your enquiry details for unrelated marketing without your consent.</p>
         </Section>
 
-        <Section title="5. Lawful basis for processing">
+        <Section title="6. Lawful basis for processing">
           <p>Where we process your personal data, we rely on one or more of the lawful bases recognised under the NDPA, namely:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li><span className="text-white/80">Your consent</span> — given when you submit an enquiry or otherwise ask us to contact you;</li>
@@ -123,11 +222,11 @@ export default function PrivacyPolicy() {
           </ul>
         </Section>
 
-        <Section title="6. Data minimisation">
+        <Section title="7. Data minimisation">
           <p>We collect only the personal data that is adequate, relevant and limited to what is necessary for the purpose of responding to your enquiry.</p>
         </Section>
 
-        <Section title="7. Retention">
+        <Section title="8. Retention">
           <p>
             We keep personal data only for as long as necessary to deal with your enquiry and for a
             reasonable period afterwards, or for as long as required to meet any legal or record-keeping
@@ -135,7 +234,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="8. Security">
+        <Section title="9. Security">
           <p>
             We take reasonable technical and organisational measures to protect personal data against loss,
             misuse and unauthorised access, alteration or disclosure. No method of transmission or storage
@@ -143,24 +242,35 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="9. Service providers and processors">
+        <Section title="10. Service providers and processors">
+          <p>We currently use the following providers:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li><span className="text-white/80">Vercel</span> &mdash; hosting for this website;</li>
+            <li><span className="text-white/80">Neon</span> &mdash; the Postgres database in which invitation registrations are stored;</li>
+            <li><span className="text-white/80">Meta Platforms</span> &mdash; advertising measurement, only where you have accepted optional marketing cookies (sections 2 and 12);</li>
+            <li><span className="text-white/80">Google</span> &mdash; the interactive location map, only if you choose to open it (section 12).</li>
+          </ul>
           <p>
-            We use a third-party provider to host this website. When the enquiry form is activated, we may
-            use trusted service providers to help us receive and manage enquiries on our behalf. Where we
-            do, those providers are permitted to process personal data only in accordance with our
-            instructions and applicable data-protection obligations.
+            These providers are permitted to process personal data only in accordance with our instructions
+            and applicable data-protection obligations. If we later use a provider to help us receive and
+            manage general enquiries, we will update this section before doing so.
           </p>
         </Section>
 
-        <Section title="10. International transfers">
+        <Section title="11. International transfers">
           <p>
-            Some of our service providers may store or process data outside Nigeria. Where personal data is
-            transferred outside Nigeria, we take steps intended to ensure it continues to receive an
-            appropriate level of protection consistent with the NDPA.
+            Some of our service providers store or process data outside Nigeria. In particular, invitation
+            registrations are held in the United Kingdom, in Amazon Web Services&rsquo; Europe (London)
+            region (<span className="text-white/80">eu-west-2</span>), and Meta Platforms Ireland processes
+            the advertising measurement data described in section 12.
+          </p>
+          <p>
+            Where personal data is transferred outside Nigeria, we take steps intended to ensure it
+            continues to receive an appropriate level of protection consistent with the NDPA.
           </p>
         </Section>
 
-        <Section title="11. Cookies, marketing and maps">
+        <Section title="12. Cookies, marketing and maps">
           <p>
             <span className="text-white/80">Essential cookies.</span> A small number of cookies are needed
             for the website to work. They do not track you across other websites and cannot be switched off.
@@ -170,6 +280,12 @@ export default function PrivacyPolicy() {
             Platforms so that we can measure how our advertising on Facebook and Instagram performs. It is
             optional and is <span className="text-white/80">not loaded unless you accept it</span> in the
             cookie banner or under &ldquo;Cookie Preferences&rdquo; in the footer.
+          </p>
+          <p>
+            If you have accepted it, two things are measured: the pages you view, and the completion of an
+            invitation registration. Registrations are also reported to Meta from our server, using hashed
+            identifiers only; section 2 sets out precisely what is and is not sent. Nothing is reported to
+            Meta if you declined, and nothing further is reported once you withdraw.
           </p>
           <p>If you accept, Meta may set the following cookies in your browser:</p>
           <ul className="list-disc pl-5 space-y-1">
@@ -213,7 +329,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="12. Recruitment and job applications">
+        <Section title="13. Recruitment and job applications">
           <p>
             If you apply for a role through our Careers section, you will email your CV and details to{' '}
             <a href="mailto:careers@njsbeachresort.com" className="text-gold hover:text-white transition-colors">careers@njsbeachresort.com</a>.
@@ -234,7 +350,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="13. Your rights">
+        <Section title="14. Your rights">
           <p>Subject to the conditions of the NDPA, you have the right to:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>request access to the personal data we hold about you;</li>
@@ -247,7 +363,7 @@ export default function PrivacyPolicy() {
           <p>To exercise any of these rights, please contact us using the details below.</p>
         </Section>
 
-        <Section title="14. Complaints and how to contact us">
+        <Section title="15. Complaints and how to contact us">
           <p>If you have any question about this policy or wish to exercise your rights, you can reach us at:</p>
           <p className="font-[family-name:var(--font-cormorant)] text-white/80 text-lg leading-relaxed">
             NJS Royale Beach Resort
@@ -264,7 +380,7 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="15. Changes to this policy">
+        <Section title="16. Changes to this policy">
           <p>
             We may update this Privacy Policy from time to time to reflect changes in our services or legal
             requirements. When we do, we will revise the &ldquo;Last updated&rdquo; date at the top of this
