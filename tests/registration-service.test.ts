@@ -6,6 +6,7 @@ import type { LogEntry, RequestContext, ServiceDeps } from '../lib/registrations
 import { RATE_LIMIT_MAX, handleRegistration } from '../lib/registrations/service.ts'
 import type { SaveInput, SavedRegistration } from '../lib/registrations/store.ts'
 import { CONSENT_VERSION } from '../lib/meta/config.ts'
+import { errorCategory } from '../lib/registrations/errors.ts'
 
 // The whole point of these tests: Meta is downstream of storage, and consent is
 // checked on the server. Nothing below talks to Postgres or to Meta.
@@ -365,4 +366,23 @@ test('logs carry operational detail only — never personal data or a token', as
   const names = deps.logs.map((entry) => entry.event)
   assert.ok(names.includes('registration_stored'))
   assert.ok(names.includes('CompleteRegistration'))
+})
+
+test('error categories are machine codes, never messages', () => {
+  const pgError = Object.assign(new Error('relation "registrations" does not exist'), {
+    code: '42P01',
+  })
+  assert.equal(errorCategory(pgError), '42P01')
+
+  const dnsError = Object.assign(new Error('getaddrinfo ENOTFOUND db.example.com'), {
+    code: 'ENOTFOUND',
+  })
+  const category = errorCategory(dnsError)
+  assert.equal(category, 'ENOTFOUND')
+  // The host in the message must never reach a log line.
+  assert.ok(!category.includes('db.example.com'))
+
+  assert.equal(errorCategory(new TypeError('boom')), 'TypeError')
+  assert.equal(errorCategory('a string'), 'unknown')
+  assert.equal(errorCategory(null), 'unknown')
 })

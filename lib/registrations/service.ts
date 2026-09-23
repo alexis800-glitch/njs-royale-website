@@ -14,6 +14,7 @@ import { CONSENT_VERSION } from '../meta/config.ts'
 import type { FieldErrors, RegistrationKind } from './validate.ts'
 import { REGISTRATION_KINDS, validateRegistration } from './validate.ts'
 import type { RegistrationStore } from './store.ts'
+import { errorCategory } from './errors.ts'
 
 /** Registrations accepted from one IP hash per window before we start refusing. */
 export const RATE_LIMIT_MAX = 5
@@ -151,11 +152,7 @@ export async function handleRegistration(
     } catch (error) {
       // The store is unreachable, so the registration cannot be saved either.
       // Say so plainly rather than letting the error escape as a bare 500.
-      log({
-        event: 'registration_failed',
-        kind: registrationKind,
-        category: error instanceof Error ? error.name : 'unknown',
-      })
+      log({ event: 'registration_failed', kind: registrationKind, category: errorCategory(error) })
       return storageUnavailable()
     }
     if (recent >= RATE_LIMIT_MAX) {
@@ -196,11 +193,7 @@ export async function handleRegistration(
     })
   } catch (error) {
     // Never log the registration itself — only that storing it failed.
-    log({
-      event: 'registration_failed',
-      kind: registrationKind,
-      category: error instanceof Error ? error.name : 'unknown',
-    })
+    log({ event: 'registration_failed', kind: registrationKind, category: errorCategory(error) })
     return storageUnavailable()
   }
 
@@ -238,10 +231,7 @@ export async function handleRegistration(
       },
     })
   } catch (error) {
-    outcome = {
-      status: 'failed',
-      category: error instanceof Error ? error.name : 'unknown',
-    }
+    outcome = { status: 'failed', category: errorCategory(error) }
   }
 
   log({

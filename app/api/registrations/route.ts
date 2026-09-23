@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { sendCompleteRegistration } from '@/lib/meta/capi'
 import { handleRegistration } from '@/lib/registrations/service'
 import { connectionString, hashIp, postgresStore } from '@/lib/registrations/store'
+import { errorCategory } from '@/lib/registrations/errors'
 
 // Registration endpoint for /first-look and /founding-guest.
 //
@@ -141,12 +142,7 @@ export async function POST(request: Request) {
       },
     )
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        event: 'registration_failed',
-        category: error instanceof Error ? error.name : 'unknown',
-      }),
-    )
+    console.error(JSON.stringify({ event: 'registration_failed', category: errorCategory(error) }))
     return json(503, {
       ok: false,
       errors: {},
