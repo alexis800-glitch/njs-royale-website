@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/privacy' },
 }
 
-const LAST_UPDATED = '19 September 2026'
+const LAST_UPDATED = '23 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -68,9 +68,13 @@ export default function PrivacyPolicy() {
         <Section title="1. Current state of data processing">
           <p>
             At present, this website is an informational site. It does not operate an active enquiry or
-            contact form, does not use analytics or tracking cookies, does not process payments, and does
-            not run a live online booking engine. As a result, we currently do not collect personal data
-            through this website.
+            contact form, does not process payments, and does not run a live online booking engine.
+          </p>
+          <p>
+            We use one optional marketing tool, the Meta Pixel, and only if you accept it. It is switched
+            off unless you choose &ldquo;Accept&rdquo;, and you can withdraw that choice at any time.
+            Section 11 explains exactly what it does and what Meta receives. If you decline, no Meta code
+            loads and no Meta cookies are set.
           </p>
           <p>
             If you contact us using the telephone number or email address provided, we will receive the
@@ -156,11 +160,47 @@ export default function PrivacyPolicy() {
           </p>
         </Section>
 
-        <Section title="11. Cookies, analytics and maps">
+        <Section title="11. Cookies, marketing and maps">
           <p>
-            This website does not currently set analytics or advertising cookies, and does not use
-            third-party tracking or marketing tools. If this changes, we will update this policy and, where
-            required, ask for your consent before any non-essential cookies are used.
+            <span className="text-white/80">Essential cookies.</span> A small number of cookies are needed
+            for the website to work. They do not track you across other websites and cannot be switched off.
+          </p>
+          <p>
+            <span className="text-white/80">Meta Pixel (optional).</span> We use the Meta Pixel from Meta
+            Platforms so that we can measure how our advertising on Facebook and Instagram performs. It is
+            optional and is <span className="text-white/80">not loaded unless you accept it</span> in the
+            cookie banner or under &ldquo;Cookie Preferences&rdquo; in the footer.
+          </p>
+          <p>If you accept, Meta may set the following cookies in your browser:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li><span className="text-white/80">_fbp</span> — identifies your browser so that visits and advert performance can be measured. Typically expires after about 90 days.</li>
+            <li><span className="text-white/80">_fbc</span> — records that you arrived from a Meta advert. Set only if you click such an advert, and typically expires after about 90 days.</li>
+          </ul>
+          <p>
+            When the Pixel is active, Meta receives your IP address, browser and device details, the page
+            address you are viewing and the cookie identifiers above. We do not send Meta your name,
+            telephone number or email address through this website, and the Pixel does not read anything
+            you type into a form.
+          </p>
+          <p>
+            <span className="text-white/80">Your control.</span> You may accept or decline when first
+            asked, and you can change or withdraw your choice at any time under &ldquo;Cookie
+            Preferences&rdquo; in the footer. Withdrawing stops any further tracking and deletes the Meta
+            cookies that your browser allows us to remove. It cannot undo processing that already took
+            place while consent was in force, and you may also clear cookies in your browser settings or
+            use Meta&rsquo;s own advertising controls in your Facebook or Instagram account.
+          </p>
+          <p>
+            <span className="text-white/80">Lawful basis and transfers.</span> We rely on your consent for
+            this processing. Meta Platforms Ireland Limited acts as the recipient of this data and may
+            process it outside Nigeria, including in the European Union and the United States, under its own
+            terms and privacy policy. Where personal data is transferred outside Nigeria, we take steps
+            intended to ensure it continues to receive an appropriate level of protection consistent with
+            the NDPA.
+          </p>
+          <p>
+            <span className="text-white/80">Where it does not run.</span> The Pixel does not run on internal
+            or draft pages, or on print and proof pages used for producing printed material.
           </p>
           <p>
             <span className="text-white/80">Google Maps.</span> The location section on our homepage
