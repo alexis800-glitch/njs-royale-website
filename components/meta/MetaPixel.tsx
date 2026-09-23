@@ -32,7 +32,13 @@ function loadPixel(pixelId: string) {
   script.src = 'https://connect.facebook.net/en_US/fbevents.js'
   document.head.appendChild(script)
 
-  // Initialise without automatic PageView: this component decides when a route
+  // Turn off Meta's automatic configuration before init. Without this the Pixel
+  // collects button and metadata signals on its own, which we cannot route-filter:
+  // it would keep gathering on excluded proof and print routes once loaded.
+  // Every event we send is explicit.
+  window.fbq?.('set', 'autoConfig', false, pixelId)
+
+  // Initialise without an automatic PageView: this component decides when a route
   // is trackable, and Meta's automatic first PageView cannot be route-filtered.
   window.fbq?.('init', pixelId)
 }
@@ -42,6 +48,7 @@ function MetaPixelInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const loadedRef = useRef(false)
+  const revokedRef = useRef(false)
   const lastTrackedRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -54,6 +61,15 @@ function MetaPixelInner() {
     if (!loadedRef.current) {
       loadPixel(META_PIXEL_ID)
       loadedRef.current = true
+    } else if (revokedRef.current) {
+      // Consent was withdrawn earlier in this session and has now been given
+      // again. The script is still loaded but revoked, so grant before sending.
+      try {
+        window.fbq?.('consent', 'grant')
+      } catch {
+        // Pixel missing: the next load will initialise afresh.
+      }
+      revokedRef.current = false
     }
 
     // One PageView per distinct route, so a re-render never double-counts.
@@ -69,6 +85,7 @@ function MetaPixelInner() {
   useEffect(() => {
     if (marketing === 'granted' || !loadedRef.current) return
     lastTrackedRef.current = null
+    revokedRef.current = true
     try {
       window.fbq?.('consent', 'revoke')
     } catch {
