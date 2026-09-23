@@ -37,7 +37,7 @@ const CONTEXT: RequestContext = {
   now: NOW,
 }
 
-function makeStore(options: { failSave?: boolean; recentCount?: number } = {}) {
+function makeStore(options: { failSave?: boolean; recentCount?: number; failRateLimit?: boolean } = {}) {
   const rows: SaveInput[] = []
   const bySubmission = new Map<string, { id: string; createdAt: Date }>()
   const metaOutcomes: Array<{ id: string; status: string }> = []
@@ -55,6 +55,7 @@ function makeStore(options: { failSave?: boolean; recentCount?: number } = {}) {
       return { ...saved, duplicate: false }
     },
     async countRecentByIpHash(): Promise<number> {
+      if (options.failRateLimit) throw new Error('relation "registrations" does not exist')
       return options.recentCount ?? 0
     },
     async recordMetaOutcome(id: string, status: string): Promise<void> {
@@ -224,6 +225,25 @@ test('storage failure: the guest is told it failed, and Meta hears nothing', asy
   assert.equal(response.body.ok, false)
   assert.match(String(response.body.message), /could not save/i)
   assert.equal(deps.metaEvents.length, 0, 'a registration that was not stored is not a conversion')
+})
+
+test('a database error during the rate-limit check is reported, not thrown', async () => {
+  // This is the path that produced a bare 500 with an empty body on Preview when
+  // the schema was missing: the query ran before anything was wrapped.
+  const store = makeStore({ failRateLimit: true })
+  const deps = makeDeps(store)
+
+  const response = await handleRegistration(request(), CONTEXT, deps)
+
+  assert.equal(response.status, 503)
+  assert.equal(response.body.ok, false)
+  assert.match(String(response.body.message), /could not save/i)
+  assert.equal(store.rows.length, 0)
+  assert.equal(deps.metaEvents.length, 0, 'a registration that was never stored is not a conversion')
+  // The failure is logged, without the registration itself.
+  const serialised = JSON.stringify(deps.logs)
+  assert.ok(serialised.includes('registration_failed'))
+  assert.ok(!serialised.includes('Ada Lovelace'))
 })
 
 test('a Meta failure still leaves the guest with a successful registration', async () => {

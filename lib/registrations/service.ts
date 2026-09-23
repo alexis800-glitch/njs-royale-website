@@ -79,6 +79,19 @@ function badRequest(errors: FieldErrors, message?: string): ServiceResponse {
   return { status: 400, body: { ok: false, errors, message } }
 }
 
+/** The store is unreachable. The guest is told the truth and given the telephone number. */
+function storageUnavailable(): ServiceResponse {
+  return {
+    status: 503,
+    body: {
+      ok: false,
+      errors: {},
+      message:
+        'We could not save your registration just now. Please try again, or call us on 0707 533 4158.',
+    },
+  }
+}
+
 export async function handleRegistration(
   request: RegistrationRequest,
   context: RequestContext,
@@ -132,7 +145,19 @@ export async function handleRegistration(
   const ipHash = deps.hashIp(context.ip)
   if (ipHash) {
     const since = new Date(context.now - RATE_LIMIT_WINDOW_MS)
-    const recent = await deps.store.countRecentByIpHash(ipHash, since)
+    let recent: number
+    try {
+      recent = await deps.store.countRecentByIpHash(ipHash, since)
+    } catch (error) {
+      // The store is unreachable, so the registration cannot be saved either.
+      // Say so plainly rather than letting the error escape as a bare 500.
+      log({
+        event: 'registration_failed',
+        kind: registrationKind,
+        category: error instanceof Error ? error.name : 'unknown',
+      })
+      return storageUnavailable()
+    }
     if (recent >= RATE_LIMIT_MAX) {
       log({ event: 'registration_rejected', kind: registrationKind, category: 'rate_limited' })
       return {
@@ -176,15 +201,7 @@ export async function handleRegistration(
       kind: registrationKind,
       category: error instanceof Error ? error.name : 'unknown',
     })
-    return {
-      status: 503,
-      body: {
-        ok: false,
-        errors: {},
-        message:
-          'We could not save your registration just now. Please try again, or call us on 0707 533 4158.',
-      },
-    }
+    return storageUnavailable()
   }
 
   log({

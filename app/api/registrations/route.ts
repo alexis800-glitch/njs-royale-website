@@ -110,32 +110,50 @@ export async function POST(request: Request) {
 
   const proto = request.headers.get('x-forwarded-proto') ?? 'https'
 
-  const result = await handleRegistration(
-    {
-      kind: payload.kind,
-      submissionId: payload.submissionId,
-      fields: payload.fields,
-      consent: payload.consent,
-      honeypot: payload.honeypot,
-      renderedAt: payload.renderedAt,
-    },
-    {
-      origin: `${proto}://${host}`,
-      ip: clientIp(request),
-      userAgent: request.headers.get('user-agent'),
-      fbp: readCookie(request, '_fbp'),
-      fbc: readCookie(request, '_fbc'),
-      now: Date.now(),
-    },
-    {
-      store: postgresStore,
-      sendMeta: sendCompleteRegistration,
-      newEventId: () => randomUUID(),
-      hashIp,
-      // Operational fields only: never a name, email, telephone, hash or token.
-      log: (entry) => console.log(JSON.stringify(entry)),
-    },
-  )
+  // Defence in depth: whatever goes wrong below, the guest gets a JSON answer and
+  // a telephone number, never an unhandled crash with an empty body.
+  let result
+  try {
+    result = await handleRegistration(
+      {
+        kind: payload.kind,
+        submissionId: payload.submissionId,
+        fields: payload.fields,
+        consent: payload.consent,
+        honeypot: payload.honeypot,
+        renderedAt: payload.renderedAt,
+      },
+      {
+        origin: `${proto}://${host}`,
+        ip: clientIp(request),
+        userAgent: request.headers.get('user-agent'),
+        fbp: readCookie(request, '_fbp'),
+        fbc: readCookie(request, '_fbc'),
+        now: Date.now(),
+      },
+      {
+        store: postgresStore,
+        sendMeta: sendCompleteRegistration,
+        newEventId: () => randomUUID(),
+        hashIp,
+        // Operational fields only: never a name, email, telephone, hash or token.
+        log: (entry) => console.log(JSON.stringify(entry)),
+      },
+    )
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        event: 'registration_failed',
+        category: error instanceof Error ? error.name : 'unknown',
+      }),
+    )
+    return json(503, {
+      ok: false,
+      errors: {},
+      message:
+        'We could not save your registration just now. Please try again, or call us on 0707 533 4158.',
+    })
+  }
 
   return json(result.status, result.body)
 }
