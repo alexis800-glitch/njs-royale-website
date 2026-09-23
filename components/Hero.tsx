@@ -62,10 +62,8 @@ export default function Hero() {
     videoRef.current?.play().catch(() => {/* ignore; effect will retry */})
   }
 
-  // --consent-height is 0px unless the consent banner is on screen, in which case
-  // the hero shortens so the banner cannot cover the call to action.
   return (
-    <section className="relative h-[calc(100vh-var(--consent-height,0px))] max-sm:h-auto max-sm:min-h-[calc(100svh-var(--consent-height,0px))] overflow-hidden">
+    <section className="relative h-screen max-sm:h-auto max-sm:min-h-[100svh] overflow-hidden">
 
       {/* ── Primary background: Night Atlantic Approach hero video ── */}
       {showVideo ? (
@@ -126,7 +124,7 @@ export default function Hero() {
       />
 
       {/* Hero content — restrained centred composition, lifted slightly so the pool / bar / façade stay visible */}
-      <div className="relative z-20 h-full max-sm:min-h-[calc(100svh-var(--consent-height,0px))] flex flex-col justify-center items-center text-center px-6 max-sm:pt-[104px] max-sm:pb-16">
+      <div className="relative z-20 h-full max-sm:min-h-[100svh] flex flex-col justify-center items-center text-center px-6 max-sm:pt-[104px] max-sm:pb-16">
         <div
           className="w-full max-w-[1000px] flex flex-col items-center -translate-y-[2vh] sm:-translate-y-[7vh]"
           style={{ textShadow: '0 1px 3px rgba(6,14,26,0.72), 0 2px 28px rgba(6,14,26,0.72)' }}
