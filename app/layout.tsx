@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter } from 'next/font/google'
 import './globals.css'
+import ConsentProvider from '@/components/consent/ConsentProvider'
+import ConsentBanner from '@/components/consent/ConsentBanner'
+import MetaPixel from '@/components/meta/MetaPixel'
 import { MAP_LINK_URL, RESORT_COORDINATES } from '@/lib/location'
 
 const cormorant = Cormorant_Garamond({
@@ -99,7 +102,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(resortSchema) }}
         />
-        {children}
+        {/* Marketing consent gates the Meta Pixel: nothing Meta-related loads,
+            and no Meta cookie is set, until the visitor accepts. */}
+        <ConsentProvider>
+          {children}
+          <ConsentBanner />
+          <MetaPixel />
+        </ConsentProvider>
       </body>
     </html>
   )
