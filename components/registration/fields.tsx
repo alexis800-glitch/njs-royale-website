@@ -1,4 +1,5 @@
 import { AlertCircle } from 'lucide-react'
+import { HONEYPOT_FIELD, HONEYPOT_LABEL } from '@/lib/registrations/honeypot'
 
 // Shared building blocks for the registration forms (/first-look and
 // /founding-guest): field styling, accessible error messages, the client-side
@@ -35,10 +36,15 @@ export const isPhone = (v: string) => {
 /**
  * Spam honeypot.
  *
- * Hidden from sight and from assistive technology, and skipped by the keyboard,
- * so no guest can reach it; automated form-fillers fill it anyway. A non-empty
- * value is refused by the server. Positioned off-screen rather than
- * `display: none`, because some bots skip hidden inputs.
+ * Off-screen, clipped, hidden from assistive technology and skipped by the
+ * keyboard, so no guest can see or reach it; automated form-fillers fill it
+ * anyway, and the server refuses anything non-empty.
+ *
+ * Its name, id and label are deliberately meaningless. An earlier version called
+ * itself "company", which browser autofill and password managers recognise and
+ * filled for real guests — silently blocking every registration made with
+ * autofill. The vendor opt-out attributes below are belt and braces on top of a
+ * name that gives autofill nothing to match.
  */
 export function Honeypot({
   value,
@@ -49,15 +55,19 @@ export function Honeypot({
   onChange: (value: string) => void
   idPrefix: string
 }) {
+  const id = `${idPrefix}-${HONEYPOT_FIELD}`
   return (
     <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
-      <label htmlFor={`${idPrefix}-company`}>Company (leave blank)</label>
+      <label htmlFor={id}>{HONEYPOT_LABEL}</label>
       <input
-        id={`${idPrefix}-company`}
+        id={id}
+        name={HONEYPOT_FIELD}
         type="text"
-        name="company"
         tabIndex={-1}
         autoComplete="off"
+        data-1p-ignore="true"
+        data-lpignore="true"
+        data-form-type="other"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />

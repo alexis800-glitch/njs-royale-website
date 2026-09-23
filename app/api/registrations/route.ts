@@ -121,7 +121,7 @@ export async function POST(request: Request) {
         submissionId: payload.submissionId,
         fields: payload.fields,
         consent: payload.consent,
-        honeypot: payload.honeypot,
+        formToken: payload.formToken,
         renderedAt: payload.renderedAt,
       },
       {

@@ -81,7 +81,7 @@ export default function FoundingGuestForm() {
   const [values, setValues] = useState<Values>(INITIAL)
   const [errors, setErrors] = useState<Errors>({})
   const [attempted, setAttempted] = useState(false)
-  const [honeypot, setHoneypot] = useState('')
+  const [formToken, setFormToken] = useState('')
   const [hydrated, setHydrated] = useState(false)
   const noticeRef = useRef<HTMLDivElement>(null)
   const { submit, submitting, succeeded, message } = useRegistrationSubmit('founding-guest')
@@ -113,7 +113,7 @@ export default function FoundingGuestForm() {
       return
     }
 
-    const result = await submit({ ...values }, honeypot)
+    const result = await submit({ ...values }, formToken)
     // Entered values are kept; only the errors change, so nothing is retyped.
     if (!result.ok && result.errors) {
       setErrors(result.errors as Errors)
@@ -376,7 +376,7 @@ export default function FoundingGuestForm() {
           </label>
         </div>
 
-        <Honeypot idPrefix="fg" value={honeypot} onChange={setHoneypot} />
+        <Honeypot idPrefix="fg" value={formToken} onChange={setFormToken} />
 
         <button
           type="submit"

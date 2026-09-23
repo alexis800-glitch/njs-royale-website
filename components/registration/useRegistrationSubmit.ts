@@ -60,7 +60,7 @@ export function useRegistrationSubmit(kind: RegistrationKind) {
   if (renderedAt.current === 0 && typeof window !== 'undefined') renderedAt.current = Date.now()
 
   const submit = useCallback(
-    async (fields: Record<string, unknown>, honeypot: string): Promise<SubmitResult> => {
+    async (fields: Record<string, unknown>, formToken: string): Promise<SubmitResult> => {
       if (inFlight.current) return { ok: false }
       inFlight.current = true
       setState('submitting')
@@ -78,7 +78,8 @@ export function useRegistrationSubmit(kind: RegistrationKind) {
             fields,
             // Echoed for the server to re-check; it does not trust a bare flag.
             consent: readConsentRecord(),
-            honeypot,
+            // Neutrally named on the wire too, matching the field itself.
+            formToken,
             renderedAt: renderedAt.current,
           }),
         })

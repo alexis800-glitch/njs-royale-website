@@ -36,8 +36,8 @@ export type RegistrationRequest = {
   fields?: unknown
   /** The consent record the browser holds, echoed back for the server to check. */
   consent?: unknown
-  /** Hidden field: a human leaves it empty. */
-  honeypot?: unknown
+  /** The hidden honeypot field (see lib/registrations/honeypot.ts). Humans leave it empty. */
+  formToken?: unknown
   /** When the form was rendered, in epoch milliseconds. */
   renderedAt?: unknown
 }
@@ -121,7 +121,7 @@ export async function handleRegistration(
   // A filled honeypot is a bot. Nothing is stored and no Meta event is sent; we
   // do not pretend to have accepted it, because a silent discard is exactly what
   // a genuine guest must never get.
-  if (typeof request.honeypot === 'string' && request.honeypot.trim() !== '') {
+  if (typeof request.formToken === 'string' && request.formToken.trim() !== '') {
     log({ event: 'registration_rejected', kind: registrationKind, category: 'honeypot' })
     return badRequest({}, 'This registration could not be accepted. Please try again.')
   }

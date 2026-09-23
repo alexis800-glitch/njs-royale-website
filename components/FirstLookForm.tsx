@@ -90,7 +90,7 @@ export default function FirstLookForm() {
   const [values, setValues] = useState<Values>(INITIAL)
   const [errors, setErrors] = useState<Errors>({})
   const [attempted, setAttempted] = useState(false)
-  const [honeypot, setHoneypot] = useState('')
+  const [formToken, setFormToken] = useState('')
   const [hydrated, setHydrated] = useState(false)
   const noticeRef = useRef<HTMLDivElement>(null)
   const { submit, submitting, succeeded, message } = useRegistrationSubmit('first-look')
@@ -128,7 +128,7 @@ export default function FirstLookForm() {
       return
     }
 
-    const result = await submit({ ...values }, honeypot)
+    const result = await submit({ ...values }, formToken)
     // Entered values are kept; only the errors change, so nothing is retyped.
     if (!result.ok && result.errors) {
       setErrors(result.errors as Errors)
@@ -403,7 +403,7 @@ export default function FirstLookForm() {
           </div>
         </div>
 
-        <Honeypot idPrefix="fl" value={honeypot} onChange={setHoneypot} />
+        <Honeypot idPrefix="fl" value={formToken} onChange={setFormToken} />
 
         <button
           type="submit"

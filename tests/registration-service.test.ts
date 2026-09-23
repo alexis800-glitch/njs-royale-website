@@ -7,6 +7,7 @@ import { RATE_LIMIT_MAX, handleRegistration } from '../lib/registrations/service
 import type { SaveInput, SavedRegistration } from '../lib/registrations/store.ts'
 import { CONSENT_VERSION } from '../lib/meta/config.ts'
 import { errorCategory } from '../lib/registrations/errors.ts'
+import { AUTOFILL_TOKENS, HONEYPOT_FIELD, HONEYPOT_LABEL, attractsAutofill } from '../lib/registrations/honeypot.ts'
 
 // The whole point of these tests: Meta is downstream of storage, and consent is
 // checked on the server. Nothing below talks to Postgres or to Meta.
@@ -92,7 +93,7 @@ const request = (overrides: Record<string, unknown> = {}) => ({
   submissionId: SUBMISSION_ID,
   fields: FIELDS,
   consent: GRANTED,
-  honeypot: '',
+  formToken: '',
   renderedAt: NOW - 30_000,
   ...overrides,
 })
@@ -299,7 +300,7 @@ test('submitting twice stores one registration and sends one conversion', async 
 test('a filled honeypot is refused outright', async () => {
   const store = makeStore()
   const deps = makeDeps(store)
-  const response = await handleRegistration(request({ honeypot: 'Acme Ltd' }), CONTEXT, deps)
+  const response = await handleRegistration(request({ formToken: 'Acme Ltd' }), CONTEXT, deps)
 
   assert.equal(response.status, 400)
   assert.equal(store.rows.length, 0)
@@ -385,4 +386,40 @@ test('error categories are machine codes, never messages', () => {
   assert.equal(errorCategory(new TypeError('boom')), 'TypeError')
   assert.equal(errorCategory('a string'), 'unknown')
   assert.equal(errorCategory(null), 'unknown')
+})
+
+// ── The honeypot must never attract autofill ──────────────────────────────────
+
+test('the honeypot name and label give browser autofill nothing to match', () => {
+  // Regression: the field was once called "company" and labelled
+  // "Company (leave blank)". Browsers filled it for real guests, and every
+  // registration made with autofill was refused.
+  assert.equal(attractsAutofill('company'), true, 'the old name must be recognised as unsafe')
+  assert.equal(attractsAutofill('Company (leave blank)'), true)
+
+  assert.equal(attractsAutofill(HONEYPOT_FIELD), false, `${HONEYPOT_FIELD} must not attract autofill`)
+  assert.equal(attractsAutofill(HONEYPOT_LABEL), false, `"${HONEYPOT_LABEL}" must not attract autofill`)
+
+  // Both forms build the id as `${prefix}-${HONEYPOT_FIELD}`.
+  for (const prefix of ['fl', 'fg']) {
+    assert.equal(attractsAutofill(`${prefix}-${HONEYPOT_FIELD}`), false)
+  }
+
+  // And the guard itself has to be meaningful.
+  assert.ok(AUTOFILL_TOKENS.length > 10)
+  for (const token of ['company', 'email', 'name', 'tel', 'address', 'password']) {
+    assert.ok(AUTOFILL_TOKENS.includes(token), `${token} should be treated as an autofill magnet`)
+  }
+})
+
+test('a filled honeypot is still refused, whatever it is called', async () => {
+  const store = makeStore()
+  const deps = makeDeps(store)
+  const response = await handleRegistration(request({ formToken: 'filled by a bot' }), CONTEXT, deps)
+
+  assert.equal(response.status, 400)
+  assert.equal(store.rows.length, 0)
+  assert.equal(deps.metaEvents.length, 0)
+  const logged = JSON.stringify(deps.logs)
+  assert.ok(logged.includes('honeypot'), 'the log still names the reason clearly for maintainers')
 })
