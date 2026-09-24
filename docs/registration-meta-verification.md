@@ -20,6 +20,36 @@ outcome: Meta counts **one** registration, not two. This is the evidence that th
 shared `event_id` works end to end; it cannot be observed from the application
 side, where a successful Conversions API send only ever reports `status: "sent"`.
 
+### Automatic website matching — verified OFF
+
+Also checked in Events Manager for dataset **1030394620034055** on **24 September
+2026: automatic website matching is OFF.**
+
+This is compliance evidence, not housekeeping. Automatic advanced matching is a
+dataset-level setting that, when on, has Meta's own script read form fields in the
+browser — email addresses and telephone numbers among them — hash them and send
+them, without the site asking it to and without appearing anywhere in this
+codebase. Had it been on, it would have reintroduced in the browser precisely the
+exposure removed from the server in `9f75341`: contact details reaching Meta for a
+person who may never have typed their own.
+
+With it off, the position is consistent on both sides:
+
+| Path | Contact details sent to Meta |
+|---|---|
+| Conversions API (server) | None. `CapiIdentifiers` has no email or telephone field. |
+| Pixel (browser), our own events | None. We send `PageView` and `CompleteRegistration` with an event id and nothing else. |
+| Pixel (browser), Meta's automatic collection | None. `autoConfig` is set to `false` before `init`, **and** automatic website matching is off at the dataset. |
+
+The `autoConfig: false` call and the dataset setting are independent controls and
+both are needed: the first stops Meta's script collecting on its own in this
+site's pages, the second stops it at the account level for every page in the
+dataset. Belt and braces, deliberately.
+
+**If this setting is ever turned on, the privacy policy becomes inaccurate**, since
+it states that we send Meta no email address or telephone number at all. Re-check
+it after any change to the dataset's settings.
+
 ## Automated verification
 
 - **51 unit tests** (`npm test`) — validation, normalisation, consent forgery, the honeypot-autofill rule, the IP-salt fail-safe, the absence
@@ -138,6 +168,11 @@ Tests that hold this in place:
 
 The privacy policy states this plainly: we do not send Meta the email address or
 telephone number at all, not even hashed, and it explains why.
+
+Confirmed on the Meta side as well: **automatic website matching is OFF** for the
+dataset, verified 24 September 2026 — see above. Without that, Meta's own script
+could have collected contact details in the browser regardless of what this
+codebase sends.
 
 See `lib/meta/consent.ts`.
 
