@@ -14,10 +14,19 @@ export const FOUNDING_GUEST_CANONICAL_URL = 'https://www.njsbeachresort.com/foun
 export const FOUNDING_GUEST_DISPLAY_URL = 'www.njsbeachresort.com/founding-guest'
 export const FOUNDING_GUEST_QR_SRC = '/founding-guest/njs-founding-guest-qr.svg'
 
-// Invitation copy and the stay, exactly as confirmed by Mrs Shuler. Breakfast is
-// confirmed for the morning after the Grand Opening only.
+// Invitation copy and the stay, as confirmed by Mrs Shuler. Breakfast is confirmed
+// for the morning after the Grand Opening only.
+//
+// CORRECTED 24 September 2026: this sentence described 23 July 2027 as the
+// unveiling of the "complete NJS Royale Beach Resort". That understated Phase One,
+// which opens the resort itself on 12 December 2026 (see lib/opening.ts); 23 July
+// 2027 opens the guest rooms and accommodation.
+//
+// ⚠ THE PRINTED FOUNDING GUEST INVITATION STILL CARRIES THE OLD WORDING. The same
+// correction must be made to the physical card before it goes to final printing,
+// or the card and this website will contradict each other.
 export const FOUNDING_GUEST_INVITATION =
-  'You were among the distinguished guests who witnessed NJS Royale before its doors fully opened. It would be our honour to welcome you back for the unveiling of the complete NJS Royale Beach Resort on 23 July 2027.'
+  'You were among the distinguished guests who witnessed NJS Royale before its doors fully opened. It would be our honour to welcome you back for the opening of NJS Royale’s guest rooms and accommodation on 23 July 2027.'
 
 export const STAY_BENEFIT = {
   heading: 'Complimentary Two-Night Stay for Two',

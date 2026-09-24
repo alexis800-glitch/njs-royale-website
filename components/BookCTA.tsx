@@ -56,10 +56,11 @@ export default function BookCTA() {
           className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]"
           style={{ marginBottom: '3rem' }}
         >
-          Phase One opens our second-floor swimming-pool area on December 12, 2026. Phase Two,
-          the full resort opening including all accommodation, follows on July 23, 2027. Our
-          online enquiry service is coming soon; for now, we would be glad to help you plan
-          your visit by phone or email.
+          NJS Royale opens December 12, 2026. Come experience the resort before the rooms
+          open &mdash; Yahweh Heights, Voyage and Royale Horizon, the resort lounges, live
+          entertainment and the private beach. Guest rooms and accommodation open with Phase
+          Two on July 23, 2027. Our online enquiry service is coming soon; for now, we would
+          be glad to help you plan your visit by phone or email.
         </p>
 
         {/* Beach Resort brand mark */}

@@ -1,7 +1,8 @@
 // NJS Royale Beach Resort — accommodation catalogue (data-driven).
 //
-// These are accommodation CATEGORIES, not individual rooms. The full resort will
-// contain 262 keys when all accommodation opens with Phase Two (July 23, 2027).
+// These are accommodation CATEGORIES, not individual rooms. The resort will contain
+// 262 keys when guest rooms and accommodation open with Phase Two (July 23, 2027).
+// Phase One, on December 12, 2026, opens the resort itself — see lib/opening.ts.
 //
 // IMPORTANT: only fields confirmed by the client are populated. Everything not yet
 // supplied is intentionally `null` (or an empty array) so the UI can hide it or show
