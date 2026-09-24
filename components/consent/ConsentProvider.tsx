@@ -10,7 +10,7 @@ import { CONSENT_STORAGE_KEY, CONSENT_VERSION, META_COOKIES } from '@/lib/meta/c
 // 'denied'   — the visitor actively declined; no Meta code loads, no Meta cookies
 export type ConsentState = 'unknown' | 'granted' | 'denied'
 
-type StoredConsent = { version: number; marketing: boolean; decidedAt: string }
+export type StoredConsent = { version: number; marketing: boolean; decidedAt: string }
 
 type ConsentContextValue = {
   /** Current choice. 'unknown' until the visitor decides (or while hydrating). */
@@ -25,18 +25,33 @@ type ConsentContextValue = {
 
 const ConsentContext = createContext<ConsentContextValue | null>(null)
 
-function readStored(): ConsentState {
+/**
+ * The stored consent record, or null if there is no usable one.
+ *
+ * Registrations echo this record to the server, which re-checks it before sending
+ * anything to Meta. That is why the whole record is returned and not just a
+ * boolean: the server will not act on a bare flag.
+ */
+export function readConsentRecord(): StoredConsent | null {
   try {
     const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY)
-    if (!raw) return 'unknown'
+    if (!raw) return null
     const parsed = JSON.parse(raw) as Partial<StoredConsent>
-    if (parsed?.version !== CONSENT_VERSION || typeof parsed.marketing !== 'boolean') return 'unknown'
-    return parsed.marketing ? 'granted' : 'denied'
+    if (parsed?.version !== CONSENT_VERSION) return null
+    if (typeof parsed.marketing !== 'boolean' || typeof parsed.decidedAt !== 'string') return null
+    return { version: parsed.version, marketing: parsed.marketing, decidedAt: parsed.decidedAt }
   } catch {
-    // Private mode, blocked storage or corrupt JSON: treat as undecided, which
-    // keeps tracking off until the visitor actively accepts.
-    return 'unknown'
+    // Private mode, blocked storage or corrupt JSON.
+    return null
   }
+}
+
+function readStored(): ConsentState {
+  // Absent or unusable record: treat as undecided, which keeps tracking off
+  // until the visitor actively accepts.
+  const record = readConsentRecord()
+  if (!record) return 'unknown'
+  return record.marketing ? 'granted' : 'denied'
 }
 
 function writeStored(marketing: boolean) {
