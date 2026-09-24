@@ -11,11 +11,24 @@
 // consent being transmitted *accidentally*: a default value, a stale record left
 // in a browser, version drift after the purposes change, a client bug.
 //
-// What it does not do: withstand a forger. Anyone can craft a request whose
-// consent record looks exactly right, and no client-supplied signal can fix that
-// — including a signed token, because any token the browser can obtain an
-// attacker can obtain in the same way. The saving grace is that the only person
-// whose data a forger can cause to be sent is the forger's own.
+// What it does not do, first: withstand a forger. Anyone can craft a request
+// whose consent record looks exactly right, and no client-supplied signal can fix
+// that — including a signed token, because any token the browser can obtain an
+// attacker can obtain in the same way.
+//
+// What it does not do, second, and this is the one that matters: prove that the
+// person filling the form owns the email address and telephone number they typed.
+// Someone can enter a third party's contact details, assert consent, and cause us
+// to send the SHA-256 of that person's email and telephone to Meta — who can match
+// a hash back to the person. Hashing protects those values in transit and at rest;
+// it does not make that person's participation consensual.
+//
+// That is a residual risk, not a solved problem, and it is not engineering's to
+// accept. It must either be accepted explicitly by NJS Royale's data-protection
+// adviser, or removed by stronger protection: verifying ownership of the contact
+// details or of the invitation before any Meta event, or omitting `em` and `ph`
+// from the Conversions API payload entirely and matching on `_fbp` / `_fbc`, IP
+// and user agent alone. See docs/registration-meta-verification.md.
 
 import { CONSENT_VERSION } from './config.ts'
 

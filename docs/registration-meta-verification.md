@@ -22,9 +22,9 @@ side, where a successful Conversions API send only ever reports `status: "sent"`
 
 ## Automated verification
 
-- **50 unit tests** (`npm test`) — validation, normalisation, SHA-256 hashing,
-  consent forgery, the honeypot-autofill rule, the rate-limit value and boundary,
-  and the full service matrix: declined consent, validation failure, storage
+- **53 unit tests** (`npm test`) — validation, normalisation, SHA-256 hashing,
+  consent forgery, the honeypot-autofill rule, the IP-salt fail-safe, the
+  rate-limit value and boundary, and the full service matrix: declined consent, validation failure, storage
   failure, Meta failure, duplicate submission, honeypot, too-fast, rate limit and
   log hygiene.
 - **Browser suite** against the Preview deployment — durable storage with the row
@@ -89,12 +89,40 @@ client-supplied and **cannot be authenticated**.
 
 The server validates that the record is complete, at the current consent version,
 and carries a plausible decision time, and refuses to send anything to Meta
-otherwise. That prevents *accidental* transmission — defaults, stale records,
-version drift after the purposes change, client bugs. It is **not** a defence
-against a deliberately crafted request, and no client-supplied signal could be:
-a signed token would be obtainable by an attacker exactly as the browser obtains
-it. The mitigating factor is that the only data a forger can cause to be sent is
-their own.
+otherwise. **That prevents accidental transmission** — defaults, stale records,
+version drift after the purposes change, client bugs.
+
+It does **not** authenticate consent. A deliberately crafted request can carry a
+consent record that looks entirely correct, and no client-supplied signal could
+prevent that: a signed token would be obtainable by an attacker exactly as the
+browser obtains it.
+
+It also does **not** prove ownership of the submitted contact details. Someone can
+enter a third party's email address and telephone number, assert consent, and cause
+the SHA-256 of that person's details to be sent to Meta, who can match a hash back
+to the person. Hashing protects those values in transit and at rest; it does not
+make that person's participation consensual.
+
+### Residual risk — requires a decision before Production
+
+This is the substantive open item, and it is **not engineering's to accept**. One
+of the following must happen before Production:
+
+1. **NJS Royale's data-protection adviser explicitly accepts the residual risk**,
+   on the record, understanding that a third party's contact details can be
+   submitted and hashed to Meta without that person's knowledge.
+2. **Ownership is verified before any Meta event** — for example a confirmation
+   link to the submitted email address, or validation of the invitation code
+   against an issued-invitation list, with the Conversions API event sent only
+   after that check passes.
+3. **`em` and `ph` are omitted from the Conversions API payload**, matching on
+   `_fbp` / `_fbc`, IP address and user agent alone. This removes the exposure
+   completely and is a small change; it lowers Meta's match quality, which is a
+   marketing trade-off rather than a technical obstacle.
+
+Option 3 is the cheapest way to close the risk outright if the adviser is not
+comfortable accepting it. Nothing here has been chosen; the code currently sends
+hashed email and telephone, per the original brief.
 
 See `lib/meta/consent.ts`.
 
@@ -103,6 +131,8 @@ See `lib/meta/consent.ts`.
 - **Legal review** of the privacy policy — the retention rule and the
   cross-border passages. Flagged in a comment above `LAST_UPDATED` in
   `app/privacy/page.tsx`.
+- **A decision on the consent residual risk** above: explicit acceptance, verified
+  ownership, or dropping the email and telephone hashes from the Conversions API.
 - **Production database has no schema.** Running `npm run db:migrate` against it
   is a deliberate, separate step at launch.
 - Vercel flags `readable-secret` on the integration-managed Production database
