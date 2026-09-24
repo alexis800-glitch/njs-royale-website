@@ -96,7 +96,7 @@ export default function Rooms() {
           <p className="text-white/55 text-base leading-relaxed font-[family-name:var(--font-inter)]">
             A collection of {RESORT_KEYS} rooms, suites and residences across eleven
             accommodation categories, from Royale Rooms to the Presidential Suite.
-            Accommodation opens with Phase Two, the full resort opening, on July 23, 2027.
+            Guest rooms and accommodation open with Phase Two on July 23, 2027.
             Rates shown are opening rates, per night.
           </p>
         </div>

@@ -4,15 +4,19 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 import { Building2, CalendarDays, Waves } from 'lucide-react'
+import { PHASE_ONE_DATE, PHASE_ONE_INCLUDES, PHASE_TWO_DATE } from '@/lib/opening'
 
-// Phase One of the two-phase opening. The scope is exactly what NJS has confirmed:
-// the second-floor swimming-pool area and its associated support spaces. Do not add
-// other facilities here (beach, rooftop, leisure clubs, cabanas, events, operating
-// days or admission) unless they are separately confirmed.
+// Phase One of the two-phase opening.
+//
+// Phase One is the resort opening to guests — the venues, the lounges, the
+// entertainment and the beach — not the second-floor pool area alone, as this
+// section previously said. Only guest rooms and accommodation wait for Phase Two.
+// The scope lives in lib/opening.ts; do not add facilities that are not listed
+// there unless they are separately confirmed.
 const facts = [
-  { Icon: CalendarDays, label: 'Phase One', value: 'December 12, 2026' },
-  { Icon: Waves, label: 'Opening First', value: 'Second-floor pool area' },
-  { Icon: Building2, label: 'Phase Two', value: 'July 23, 2027' },
+  { Icon: CalendarDays, label: 'Phase One', value: PHASE_ONE_DATE },
+  { Icon: Waves, label: 'Opening First', value: 'The resort experience' },
+  { Icon: Building2, label: 'Phase Two', value: PHASE_TWO_DATE },
 ]
 
 export default function PhaseOne() {
@@ -56,16 +60,28 @@ export default function PhaseOne() {
             className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-6"
             style={{ fontSize: 'clamp(34px, 4.4vw, 54px)' }}
           >
-            The Second-Floor Pool
+            Experience the Resort
             <br />
-            <em className="text-gold italic">Opens First</em>
+            <em className="text-gold italic">Before the Rooms Open</em>
           </h2>
-          <p className="text-navy/60 leading-relaxed mb-8 font-[family-name:var(--font-inter)] max-w-lg">
-            NJS Royale opens in two phases. Phase One, on December 12, 2026, opens the
-            resort&apos;s second-floor swimming-pool area on the ocean-facing terrace, together
-            with its associated support spaces. Accommodation and the remaining resort
-            operations follow with Phase Two, the full resort opening, on July 23, 2027.
+          <p className="text-navy/60 leading-relaxed mb-7 font-[family-name:var(--font-inter)] max-w-lg">
+            NJS Royale opens on {PHASE_ONE_DATE}. Come experience the resort before the rooms
+            open &mdash; its restaurants and lounges, its live entertainment, the ocean-facing
+            pool terrace and the private beach on the Atlantic. Guest rooms and accommodation
+            open with Phase Two on {PHASE_TWO_DATE}.
           </p>
+
+          <ul className="mb-8 grid grid-cols-1 gap-x-8 gap-y-2.5 sm:grid-cols-2">
+            {PHASE_ONE_INCLUDES.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-3 text-navy/75 text-[15px] font-[family-name:var(--font-inter)]"
+              >
+                <span aria-hidden="true" className="h-1.5 w-1.5 flex-shrink-0 rotate-45 bg-gold" />
+                {item}
+              </li>
+            ))}
+          </ul>
 
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 border-t border-navy/10 pt-7">
             {facts.map(({ Icon, label, value }) => (

@@ -94,7 +94,7 @@ export default function FirstLookPage() {
             </p>
             <p>
               Then return on <strong className="font-semibold text-white">{GRAND_OPENING.date}</strong>,
-              as we unveil the complete NJS Royale Beach Resort experience.
+              as we open our guest rooms and accommodation.
             </p>
           </div>
 

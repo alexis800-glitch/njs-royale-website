@@ -1,21 +1,24 @@
 // The confirmed opening programme: exactly two phases. Do not add intermediate stages
-// or a third phase, and keep Phase One to the scope NJS has confirmed.
+// or a third phase. Phase One opens the resort to guests; only the rooms wait for
+// Phase Two. Dates and scope come from lib/opening.ts.
+
+import { PHASE_ONE_DATE, PHASE_ONE_ISO, PHASE_TWO_DATE, PHASE_TWO_ISO } from '@/lib/opening'
 
 const phases = [
   {
     name: 'Phase One',
-    date: 'December 12, 2026',
-    isoDate: '2026-12-12',
-    title: 'Second-Floor Pool Opening',
-    body: 'The second-floor swimming-pool area opens, together with its associated support spaces.',
+    date: PHASE_ONE_DATE,
+    isoDate: PHASE_ONE_ISO,
+    title: 'The Resort Opens',
+    body: 'Yahweh Heights, Voyage and Royale Horizon open, with the resort lounges, live entertainment and the private beach. Come experience the resort before the rooms open.',
     final: false,
   },
   {
     name: 'Phase Two',
-    date: 'July 23, 2027',
-    isoDate: '2027-07-23',
-    title: 'Full Resort Opening',
-    body: 'The complete resort opens, including all accommodation and the remaining resort operations.',
+    date: PHASE_TWO_DATE,
+    isoDate: PHASE_TWO_ISO,
+    title: 'Guest Rooms & Accommodation',
+    body: 'Guest rooms and accommodation open across eleven categories, from Royale Rooms to the Presidential Suite.',
     final: true,
   },
 ]
