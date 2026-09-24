@@ -233,9 +233,8 @@ export async function handleRegistration(
       eventId,
       eventTime: Math.floor(context.now / 1000),
       eventSourceUrl: `${context.origin}${PATH_BY_KIND[registrationKind]}`,
+      // No email or telephone: see lib/meta/capi.ts. We hold them; Meta does not.
       identifiers: {
-        email: validation.record.email,
-        phone: validation.record.phone,
         fbp: context.fbp,
         fbc: context.fbc,
         clientIpAddress: context.ip,

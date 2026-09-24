@@ -1,10 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { hashIdentifier, sha256Hex } from '../lib/meta/hash.ts'
 import { buildEvent, buildUserData, sendCompleteRegistration } from '../lib/meta/capi.ts'
 import { hasValidMarketingConsent } from '../lib/meta/consent.ts'
 import { CONSENT_VERSION, META_PIXEL_ID } from '../lib/meta/config.ts'
+import { createHash } from 'node:crypto'
 
 // The Pixel ID is read once, when lib/meta/config is first loaded, so it has to be
 // in the environment before this file is imported. `npm test` sets it; this check
@@ -17,62 +17,62 @@ test('the suite is running with a Pixel ID configured', () => {
   )
 })
 
+// Values that must never reach Meta, in any form.
 const EMAIL = 'ada@example.com'
 const PHONE = '2348031234567'
-// Independently known SHA-256 values for the normalised identifiers used here.
-const EMAIL_SHA256 = sha256Hex(EMAIL)
-const PHONE_SHA256 = sha256Hex(PHONE)
+const sha256 = (v: string) => createHash('sha256').update(v, 'utf8').digest('hex')
 
-// ── Hashing ───────────────────────────────────────────────────────────────────
+const IDENTIFIERS = {
+  fbp: 'fb.1.1700000000000.1234567890',
+  fbc: 'fb.1.1700000000000.abc123',
+  clientIpAddress: '102.89.1.1',
+  clientUserAgent: 'Mozilla/5.0',
+}
 
-test('sha256Hex matches the published test vector', () => {
-  assert.equal(
-    sha256Hex('abc'),
-    'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
-  )
-})
+// ── No contact details reach Meta ─────────────────────────────────────────────
 
-test('a hashed identifier is 64 lowercase hex characters and is not the input', () => {
-  const hashed = hashIdentifier(EMAIL)
-  assert.match(hashed ?? '', /^[0-9a-f]{64}$/)
-  assert.notEqual(hashed, EMAIL)
-})
+test('user data carries cookies, IP and user agent — and nothing else', () => {
+  const userData = buildUserData(IDENTIFIERS)
 
-test('an absent identifier is omitted rather than hashed as an empty string', () => {
-  assert.equal(hashIdentifier(''), undefined)
-  assert.equal(hashIdentifier(null), undefined)
-  assert.equal(hashIdentifier(undefined), undefined)
-  // The hash of "" is a real, constant value; sending it would match nobody.
-  assert.notEqual(hashIdentifier(''), sha256Hex(''))
-})
-
-// ── What is sent to Meta ──────────────────────────────────────────────────────
-
-test('user data carries hashed identifiers, never the raw ones', () => {
-  const userData = buildUserData({
-    email: EMAIL,
-    phone: PHONE,
-    fbp: 'fb.1.1700000000000.1234567890',
-    fbc: 'fb.1.1700000000000.abc123',
-    clientIpAddress: '102.89.1.1',
-    clientUserAgent: 'Mozilla/5.0',
-  })
-
-  assert.deepEqual(userData.em, [EMAIL_SHA256])
-  assert.deepEqual(userData.ph, [PHONE_SHA256])
-  assert.equal(userData.fbp, 'fb.1.1700000000000.1234567890')
-  assert.equal(userData.fbc, 'fb.1.1700000000000.abc123')
+  assert.deepEqual(Object.keys(userData).sort(), [
+    'client_ip_address',
+    'client_user_agent',
+    'fbc',
+    'fbp',
+  ])
+  assert.equal(userData.fbp, IDENTIFIERS.fbp)
+  assert.equal(userData.fbc, IDENTIFIERS.fbc)
   assert.equal(userData.client_ip_address, '102.89.1.1')
   assert.equal(userData.client_user_agent, 'Mozilla/5.0')
+})
 
-  const serialised = JSON.stringify(userData)
-  assert.ok(!serialised.includes(EMAIL), 'raw email must not appear')
-  assert.ok(!serialised.includes(PHONE), 'raw telephone must not appear')
+test('there is no em and no ph, hashed or otherwise', () => {
+  // The decisive regression test for the review finding: nothing in a
+  // registration proves the person owns the address they typed, so we send no
+  // contact details at all rather than hashes of someone else's.
+  const event = buildEvent({
+    eventId: '11111111-2222-4333-8444-555555555555',
+    eventTime: 1_700_000_000,
+    eventSourceUrl: 'https://example.vercel.app/first-look',
+    identifiers: IDENTIFIERS,
+  })
+  const userData = event.user_data as Record<string, unknown>
+
+  assert.equal('em' in userData, false, 'no hashed email field')
+  assert.equal('ph' in userData, false, 'no hashed telephone field')
+
+  const serialised = JSON.stringify(event)
+  assert.ok(!serialised.includes(EMAIL), 'no raw email')
+  assert.ok(!serialised.includes(PHONE), 'no raw telephone')
+  assert.ok(!serialised.includes(sha256(EMAIL)), 'no hashed email')
+  assert.ok(!serialised.includes(sha256(PHONE)), 'no hashed telephone')
+
+  // Nothing hash-shaped at all, so a future identifier cannot slip in unnoticed.
+  assert.ok(!/[0-9a-f]{64}/.test(serialised), 'no SHA-256-shaped value anywhere')
 })
 
 test('missing cookies and identifiers are left out entirely', () => {
-  const userData = buildUserData({ email: null, phone: null, fbp: null, fbc: null })
-  assert.deepEqual(Object.keys(userData), [])
+  assert.deepEqual(Object.keys(buildUserData({ fbp: null, fbc: null })), [])
 })
 
 test('the event carries only the fields Meta needs', () => {
@@ -80,7 +80,7 @@ test('the event carries only the fields Meta needs', () => {
     eventId: '11111111-2222-4333-8444-555555555555',
     eventTime: 1_700_000_000,
     eventSourceUrl: 'https://example.vercel.app/first-look',
-    identifiers: { email: EMAIL, phone: PHONE },
+    identifiers: IDENTIFIERS,
   })
 
   assert.equal(event.event_name, 'CompleteRegistration')
@@ -98,12 +98,12 @@ test('the event carries only the fields Meta needs', () => {
   ])
 })
 
-test('invitation codes, names and notes never reach Meta', () => {
+test('invitation codes, names and notes never reach Meta either', () => {
   const event = buildEvent({
     eventId: 'abc',
     eventTime: 1,
     eventSourceUrl: 'https://example.test/founding-guest',
-    identifiers: { email: EMAIL, phone: PHONE },
+    identifiers: IDENTIFIERS,
   })
   const serialised = JSON.stringify(event)
   for (const secret of ['NJS-FG-001', 'Ada Lovelace', 'Charles Babbage', 'Arriving from Abuja']) {
@@ -128,7 +128,7 @@ const event = {
   eventId: '11111111-2222-4333-8444-555555555555',
   eventTime: 1_700_000_000,
   eventSourceUrl: 'https://example.vercel.app/first-look',
-  identifiers: { email: EMAIL, phone: PHONE },
+  identifiers: IDENTIFIERS,
 }
 
 test('the access token is sent in the body, never in the URL', async () => {
@@ -147,6 +147,13 @@ test('the access token is sent in the body, never in the URL', async () => {
   const body = JSON.parse(String(calls[0].init.body))
   assert.equal(body.access_token, 'test-token-value')
   assert.equal(body.data.length, 1)
+
+  // The payload actually put on the wire carries no contact details.
+  const wire = String(calls[0].init.body)
+  assert.ok(!wire.includes(EMAIL) && !wire.includes(PHONE), 'no raw contact details on the wire')
+  assert.ok(!wire.includes(sha256(EMAIL)) && !wire.includes(sha256(PHONE)), 'no hashes on the wire')
+  assert.equal('em' in body.data[0].user_data, false)
+  assert.equal('ph' in body.data[0].user_data, false)
 })
 
 test('the test event code is used only when it is configured', async () => {

@@ -1,10 +1,23 @@
 // Meta Conversions API — the server half of a deduplicated CompleteRegistration.
 //
 // The browser Pixel and this module send the same event with the same event_id, so
-// Meta counts one registration rather than two. Only the identifiers Meta needs to
-// match a person are sent, and email and telephone are normalised and SHA-256
-// hashed here, never transmitted in the clear. Invitation codes, companion names,
-// arrival times and notes are stored by us and never sent to Meta.
+// Meta counts one registration rather than two.
+//
+// NO CONTACT DETAILS ARE SENT, hashed or otherwise. This is deliberate and should
+// not be undone without the decision being retaken.
+//
+// Nothing in a registration proves that the person filling the form owns the email
+// address and telephone number they typed. Someone can enter a third party's
+// details, assert consent, and — if we sent them — cause the SHA-256 of that
+// person's email and telephone to reach Meta, who can match a hash back to the
+// person. Hashing protects the values in transit and at rest; it does not make
+// that person's participation consensual. So we send none of it, and Meta matches
+// on the browser's own Meta cookies, the IP address and the user agent instead.
+// The cost is match quality; the benefit is that no one can be reported to Meta
+// because somebody else typed their address.
+//
+// Invitation codes, names, companion names, arrival times and notes are likewise
+// never sent: we store those, Meta does not need them.
 //
 // This module never throws at its caller and never blocks a registration: a Meta
 // failure is reported back as a category, logged without personal data, and
@@ -12,18 +25,15 @@
 // logged, or included in a URL, and never reaches the browser.
 
 import { META_PIXEL_ID } from './config.ts'
-import { hashIdentifier } from './hash.ts'
 
 const GRAPH_VERSION = 'v21.0'
 
 /** Meta must never delay a registration; the request is abandoned after this. */
 const REQUEST_TIMEOUT_MS = 2000
 
+// Deliberately has no email or telephone field: see the note at the top of this
+// file. The type is the guard — you cannot pass contact details to this module.
 export type CapiIdentifiers = {
-  /** Normalised email (trimmed, lowercased). Hashed before sending. */
-  email?: string | null
-  /** Normalised telephone (digits with country code). Hashed before sending. */
-  phone?: string | null
   /** Meta browser cookies, when the visitor's browser has them. */
   fbp?: string | null
   fbc?: string | null
@@ -53,17 +63,13 @@ type MetaPayload = {
 }
 
 /**
- * Build the `user_data` object. Absent identifiers are omitted rather than sent
- * empty, because a hash of "" matches nobody and only pollutes match quality.
+ * Build the `user_data` object.
+ *
+ * Absent identifiers are omitted rather than sent empty. There is no `em` and no
+ * `ph`: contact details are never sent to Meta, hashed or otherwise.
  */
 export function buildUserData(identifiers: CapiIdentifiers): Record<string, unknown> {
   const userData: Record<string, unknown> = {}
-
-  const em = hashIdentifier(identifiers.email)
-  if (em) userData.em = [em]
-
-  const ph = hashIdentifier(identifiers.phone)
-  if (ph) userData.ph = [ph]
 
   if (identifiers.fbp) userData.fbp = identifiers.fbp
   if (identifiers.fbc) userData.fbc = identifiers.fbc

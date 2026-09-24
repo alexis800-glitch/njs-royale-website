@@ -18,6 +18,9 @@ export const metadata: Metadata = {
 //      in AWS eu-west-2 (London), which is a factual statement of where the Neon
 //      database sits; whether the NDPA transfer conditions are met is a legal one.
 //   3. Section 11, the transfer of advertising data to Meta Platforms Ireland.
+//      Note that no contact details are sent to Meta at all, hashed or otherwise
+//      (see lib/meta/capi.ts), so this transfer covers cookies, IP address and
+//      user agent only.
 const LAST_UPDATED = '23 September 2026'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -169,13 +172,20 @@ export default function PrivacyPolicy() {
           <p className="text-white/80">What Meta is told</p>
           <p>
             If &mdash; and only if &mdash; you have accepted optional marketing cookies, we also tell Meta
-            that a registration was completed, so that we can measure our advertising. We send a one-way
-            (SHA-256) hash of your email address and of your telephone number, never the address or the
-            number itself, together with your IP address, your browser&rsquo;s user-agent string and the
-            address of the registration page. We do not send your name, your invitation code, your
-            companion&rsquo;s name, your arrival time or anything you wrote in the notes. The same is sent
-            once from your browser and once from our server, sharing a single identifier so that Meta
-            records one registration rather than two.
+            that a registration was completed, so that we can measure our advertising. What we send is
+            limited to your IP address, your browser&rsquo;s user-agent string, the address of the
+            registration page, and the Meta cookies described in section 12 if your browser has them.
+          </p>
+          <p>
+            <span className="text-white/80">
+              We do not send Meta your email address or telephone number at all
+            </span>
+            , not even in hashed form, and we do not send your name, your invitation code, your
+            companion&rsquo;s name, your arrival time or anything you wrote in the notes. We made that
+            choice deliberately: a registration form cannot show that the person filling it in owns the
+            contact details they type, so sending those details could identify someone who never asked to
+            be included. The same event is sent once from your browser and once from our server, sharing a
+            single identifier so that Meta records one registration rather than two.
           </p>
           <p>
             If you declined marketing cookies, or never made a choice, nothing about your registration is
@@ -283,9 +293,9 @@ export default function PrivacyPolicy() {
           </p>
           <p>
             If you have accepted it, two things are measured: the pages you view, and the completion of an
-            invitation registration. Registrations are also reported to Meta from our server, using hashed
-            identifiers only; section 2 sets out precisely what is and is not sent. Nothing is reported to
-            Meta if you declined, and nothing further is reported once you withdraw.
+            invitation registration. Registrations are also reported to Meta from our server, carrying no
+            contact details of any kind; section 2 sets out precisely what is and is not sent. Nothing is
+            reported to Meta if you declined, and nothing further is reported once you withdraw.
           </p>
           <p>If you accept, Meta may set the following cookies in your browser:</p>
           <ul className="list-disc pl-5 space-y-1">

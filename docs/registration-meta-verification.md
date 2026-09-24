@@ -22,9 +22,9 @@ side, where a successful Conversions API send only ever reports `status: "sent"`
 
 ## Automated verification
 
-- **53 unit tests** (`npm test`) — validation, normalisation, SHA-256 hashing,
-  consent forgery, the honeypot-autofill rule, the IP-salt fail-safe, the
-  rate-limit value and boundary, and the full service matrix: declined consent, validation failure, storage
+- **51 unit tests** (`npm test`) — validation, normalisation, consent forgery, the honeypot-autofill rule, the IP-salt fail-safe, the absence
+  of contact details from the Meta payload, the rate-limit value and boundary, and
+  the full service matrix: declined consent, validation failure, storage
   failure, Meta failure, duplicate submission, honeypot, too-fast, rate limit and
   log hygiene.
 - **Browser suite** against the Preview deployment — durable storage with the row
@@ -103,26 +103,41 @@ the SHA-256 of that person's details to be sent to Meta, who can match a hash ba
 to the person. Hashing protects those values in transit and at rest; it does not
 make that person's participation consensual.
 
-### Residual risk — requires a decision before Production
+### Residual risk — CLOSED by not sending contact details
 
-This is the substantive open item, and it is **not engineering's to accept**. One
-of the following must happen before Production:
+Option 3 below was chosen and implemented. `em` and `ph` are no longer sent to the
+Conversions API at all: the payload carries the Meta cookies (`_fbp` / `_fbc`),
+the IP address and the user agent, and nothing else. `CapiIdentifiers` has no
+email or telephone field, so contact details cannot be passed to that module even
+by mistake, and `lib/meta/hash.ts` was deleted rather than left as dead code
+waiting to be rewired.
 
-1. **NJS Royale's data-protection adviser explicitly accepts the residual risk**,
-   on the record, understanding that a third party's contact details can be
-   submitted and hashed to Meta without that person's knowledge.
-2. **Ownership is verified before any Meta event** — for example a confirmation
-   link to the submitted email address, or validation of the invitation code
-   against an issued-invitation list, with the Conversions API event sent only
-   after that check passes.
-3. **`em` and `ph` are omitted from the Conversions API payload**, matching on
-   `_fbp` / `_fbc`, IP address and user agent alone. This removes the exposure
-   completely and is a small change; it lowers Meta's match quality, which is a
-   marketing trade-off rather than a technical obstacle.
+The options considered were:
 
-Option 3 is the cheapest way to close the risk outright if the adviser is not
-comfortable accepting it. Nothing here has been chosen; the code currently sends
-hashed email and telephone, per the original brief.
+1. NJS Royale's data-protection adviser explicitly accepts the residual risk.
+2. Ownership is verified before any Meta event — a confirmation link to the
+   submitted address, or validation of the invitation code against an issued list.
+3. **`em` and `ph` are omitted from the Conversions API payload.** ← chosen
+
+Option 3 removes the exposure outright rather than documenting it, and needs no
+new infrastructure. The cost is Meta match quality, which is a marketing
+trade-off. Option 2 remains available later if match quality proves inadequate,
+and would make sending contact details defensible because ownership would then
+have been demonstrated.
+
+Tests that hold this in place:
+
+- `there is no em and no ph, hashed or otherwise` — asserts the built event has no
+  `em` or `ph` field, contains neither the raw email nor the raw telephone, neither
+  of their SHA-256 hashes, and **no SHA-256-shaped value anywhere**, so a future
+  identifier cannot slip in unnoticed.
+- `the access token is sent in the body, never in the URL` — additionally asserts
+  the payload actually put on the wire carries no contact details and no hashes.
+- `user data carries cookies, IP and user agent — and nothing else` — pins the
+  exact key set.
+
+The privacy policy states this plainly: we do not send Meta the email address or
+telephone number at all, not even hashed, and it explains why.
 
 See `lib/meta/consent.ts`.
 
@@ -131,8 +146,8 @@ See `lib/meta/consent.ts`.
 - **Legal review** of the privacy policy — the retention rule and the
   cross-border passages. Flagged in a comment above `LAST_UPDATED` in
   `app/privacy/page.tsx`.
-- **A decision on the consent residual risk** above: explicit acceptance, verified
-  ownership, or dropping the email and telephone hashes from the Conversions API.
+- ~~A decision on the consent residual risk~~ — **closed**: email and telephone
+  hashes were dropped from the Conversions API entirely (see above).
 - **Production database has no schema.** Running `npm run db:migrate` against it
   is a deliberate, separate step at launch.
 - Vercel flags `readable-secret` on the integration-managed Production database
