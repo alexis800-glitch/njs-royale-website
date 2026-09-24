@@ -76,7 +76,8 @@ export function useRegistrationSubmit(kind: RegistrationKind) {
             kind,
             submissionId: submissionId.current,
             fields,
-            // Echoed for the server to re-check; it does not trust a bare flag.
+            // Echoed so the server can check the record is complete and current.
+            // It cannot prove the record genuine; see lib/meta/consent.ts.
             consent: readConsentRecord(),
             // Neutrally named on the wire too, matching the field itself.
             formToken,

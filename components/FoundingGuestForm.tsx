@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { AlertCircle, Check, Loader2 } from 'lucide-react'
 import {
   FieldError,
@@ -375,6 +376,22 @@ export default function FoundingGuestForm() {
             </span>
           </label>
         </div>
+
+        {/* Point-of-collection privacy notice, next to the button that sends it. */}
+        <p className="border-t border-white/10 pt-6 text-white/60 text-[13px] leading-relaxed font-[family-name:var(--font-inter)]">
+          We use these details to confirm your Founding Guest reservation and prepare your stay.
+          See our{' '}
+          <Link
+            href="/privacy"
+            target="_blank"
+            rel="noopener"
+            className="text-gold underline underline-offset-2 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-sm"
+          >
+            Privacy Policy
+            <span className="sr-only"> (opens in a new tab)</span>
+          </Link>{' '}
+          for what we collect, where it is stored and how long we keep it.
+        </p>
 
         <Honeypot idPrefix="fg" value={formToken} onChange={setFormToken} />
 

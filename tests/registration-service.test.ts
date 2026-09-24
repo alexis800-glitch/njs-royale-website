@@ -7,6 +7,8 @@ import { RATE_LIMIT_MAX, handleRegistration } from '../lib/registrations/service
 import type { SaveInput, SavedRegistration } from '../lib/registrations/store.ts'
 import { CONSENT_VERSION } from '../lib/meta/config.ts'
 import { errorCategory } from '../lib/registrations/errors.ts'
+import { MIN_SALT_LENGTH, hashIp, resetSaltReportingForTests } from '../lib/registrations/ipHash.ts'
+import { createHash } from 'node:crypto'
 import { AUTOFILL_TOKENS, HONEYPOT_FIELD, HONEYPOT_LABEL, attractsAutofill } from '../lib/registrations/honeypot.ts'
 
 // The whole point of these tests: Meta is downstream of storage, and consent is
@@ -438,4 +440,52 @@ test('a filled honeypot is still refused, whatever it is called', async () => {
   assert.equal(deps.metaEvents.length, 0)
   const logged = JSON.stringify(deps.logs)
   assert.ok(logged.includes('honeypot'), 'the log still names the reason clearly for maintainers')
+})
+
+// ── The IP hash must never be stored unsalted ─────────────────────────────────
+
+test('a missing or weak salt stores no hash at all, rather than a reversible one', () => {
+  const reports: Array<Record<string, string>> = []
+  const report = (entry: Record<string, string>) => reports.push(entry)
+
+  resetSaltReportingForTests()
+  assert.equal(hashIp('102.89.1.1', undefined, report), null, 'no salt: store nothing')
+  assert.deepEqual(reports[0], { event: 'registration_config', category: 'missing_ip_salt' })
+
+  resetSaltReportingForTests()
+  reports.length = 0
+  assert.equal(hashIp('102.89.1.1', 'short', report), null, 'weak salt: store nothing')
+  assert.deepEqual(reports[0], { event: 'registration_config', category: 'weak_ip_salt' })
+
+  // Crucially: never the unsalted hash, which an attacker reverses by running
+  // the whole IPv4 space through SHA-256.
+  const unsalted = createHash('sha256').update(':102.89.1.1', 'utf8').digest('hex')
+  resetSaltReportingForTests()
+  assert.notEqual(hashIp('102.89.1.1', undefined, () => {}), unsalted)
+})
+
+test('a proper salt produces a hash that is not the address and not unsalted', () => {
+  const salt = 'a'.repeat(MIN_SALT_LENGTH)
+  const hashed = hashIp('102.89.1.1', salt, () => {})
+  assert.match(hashed ?? '', /^[0-9a-f]{64}$/)
+  assert.ok(!String(hashed).includes('102.89.1.1'))
+  assert.notEqual(hashed, createHash('sha256').update(':102.89.1.1', 'utf8').digest('hex'))
+  // Same address and salt must give the same hash, or rate limiting cannot count.
+  assert.equal(hashIp('102.89.1.1', salt, () => {}), hashed)
+  // A different salt must give a different hash.
+  assert.notEqual(hashIp('102.89.1.1', 'b'.repeat(MIN_SALT_LENGTH), () => {}), hashed)
+})
+
+test('with no usable salt a registration still succeeds, unlimited but unhashed', async () => {
+  const store = makeStore()
+  const deps = makeDeps(store)
+  resetSaltReportingForTests()
+  // The real hashIp, with no salt configured.
+  deps.hashIp = (ip) => hashIp(ip, undefined, () => {})
+
+  const response = await handleRegistration(request(), CONTEXT, deps)
+
+  assert.equal(response.status, 200, 'a guest must not be blocked by our misconfiguration')
+  assert.equal(store.rows.length, 1)
+  assert.equal(store.rows[0].ipHash, null, 'nothing reversible is written down')
 })

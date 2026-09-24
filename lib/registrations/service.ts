@@ -179,7 +179,9 @@ export async function handleRegistration(
     }
   }
 
-  // ── Consent, checked on the server ──────────────────────────────────────────
+  // ── Consent ─────────────────────────────────────────────────────────────────
+  // Validated, not authenticated: the record is client-supplied and cannot be
+  // proven genuine. See lib/meta/consent.ts.
   const marketingConsent = hasValidMarketingConsent(request.consent, context.now)
   const consentRecord = (request.consent ?? {}) as { decidedAt?: unknown }
   const eventId = deps.newEventId()

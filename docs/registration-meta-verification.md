@@ -45,31 +45,58 @@ Server logs were checked directly in Vercel: they carry only `event`, `kind`,
 | Browser autofill filled the honeypot (`company`), silently refusing every guest who used autofill | `6999b6c` — neutral field name and label, vendor opt-outs, and a regression test |
 | Rate limit of 5 per IP per hour too tight for shared NAT addresses | `7b27e67` — raised to 20, with a boundary test |
 
-## Preview database isolation — OUTSTANDING, required before Production
+## Preview database isolation — RESOLVED
 
-Neon's Vercel integration has **automatic preview branching** enabled. On the
-first push to a Git branch it creates a Neon branch and injects **branch-scoped**
-`DATABASE_URL` / `DATABASE_URL_UNPOOLED` into Vercel. A branch-scoped Preview
-variable **overrides** a target-wide Preview variable, so any manually configured
-Preview database is silently ignored.
+**The problem.** Neon's Vercel integration had automatic preview branching enabled.
+On the first push to a Git branch it created a Neon branch and injected
+**branch-scoped** `DATABASE_URL` / `DATABASE_URL_UNPOOLED` into Vercel. A
+branch-scoped Preview variable **overrides** a target-wide one, so the Preview
+database that had been configured deliberately was silently ignored — which is
+also why registrations first failed with `42P01`: right server, right credentials,
+a database nobody had migrated.
 
-Neon branches are copy-on-write clones **including the parent's data**. The parent
-is the project's default branch, which is the Production database. That is
-harmless today, because Production has no `registrations` table and no rows — but
-once Production holds real guest registrations, **every future preview branch
-would contain a copy of them**, reachable by anyone who can open a Preview
-deployment.
+The real risk was not the failure but the mechanism. Neon branches are
+copy-on-write clones **including the parent's data**, and the parent is the
+project's default branch — Production. Harmless while Production was empty; once
+it holds guest registrations, every future preview branch would have contained a
+copy, reachable by anyone able to open a Preview deployment.
 
-This must be resolved before Production carries data. Either:
+**What was done.**
 
-1. **Turn automatic preview branching off** in the Neon integration, delete the
-   branch-scoped Vercel variables, and let Preview fall through to a dedicated,
-   schema-only preview database; or
-2. **Point preview branching at a schema-only parent branch** rather than at
-   Production, so clones inherit the schema and no guest data.
+1. The **Neon–Vercel integration is disconnected**, so no further branch-scoped
+   variables can be created and no preview branch will be cloned from Production.
+2. The two stale branch-scoped variables were neutralised: renamed to
+   `UNUSED_NEON_AUTOBRANCH_DATABASE_URL` and
+   `UNUSED_NEON_AUTOBRANCH_DATABASE_URL_UNPOOLED` so they no longer shadow
+   `DATABASE_URL`, **and their values overwritten** so no live credential for the
+   old auto-created branch remains in Vercel. They are inert and can be deleted
+   from the dashboard at any time.
+3. Preview now resolves the manually configured, target-wide `DATABASE_URL`,
+   pointing at a dedicated preview branch that has never held Production data.
+4. Confirmed by redeploying and registering successfully against Preview. Had the
+   override still applied, the connection string would have been the placeholder
+   text and the endpoint would have returned 503.
 
-Option 1 is the simpler guarantee. Both require a change in the Neon console,
-which cannot be made through the Vercel API.
+**Standing rule.** `DATABASE_URL` is set manually, per environment. If the Neon
+integration is ever reconnected, automatic preview branching must stay off, or its
+parent must be a schema-only branch — never Production.
+
+## Consent: what the server can and cannot check
+
+Worth stating plainly, because it is easy to overclaim. Marketing consent is given
+in the browser, so the consent record submitted with a registration is
+client-supplied and **cannot be authenticated**.
+
+The server validates that the record is complete, at the current consent version,
+and carries a plausible decision time, and refuses to send anything to Meta
+otherwise. That prevents *accidental* transmission — defaults, stale records,
+version drift after the purposes change, client bugs. It is **not** a defence
+against a deliberately crafted request, and no client-supplied signal could be:
+a signed token would be obtainable by an attacker exactly as the browser obtains
+it. The mitigating factor is that the only data a forger can cause to be sent is
+their own.
+
+See `lib/meta/consent.ts`.
 
 ## Also outstanding
 

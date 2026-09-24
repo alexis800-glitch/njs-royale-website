@@ -5,7 +5,6 @@
 // route reports success to the guest from that fact and nothing else.
 
 import { Pool } from 'pg'
-import { createHash } from 'node:crypto'
 import type { RegistrationRecord } from './validate.ts'
 
 export type SavedRegistration = {
@@ -66,17 +65,8 @@ function getPool(): Pool {
   return pool
 }
 
-/**
- * Pseudonymise the caller's IP before storing it. We keep a hash only so that
- * rate limiting works across serverless instances; the address itself is never
- * written down. Set REGISTRATION_IP_SALT so the hash cannot be reversed by
- * running every possible address through SHA-256.
- */
-export function hashIp(ip: string | null): string | null {
-  if (!ip) return null
-  const salt = process.env.REGISTRATION_IP_SALT || ''
-  return createHash('sha256').update(`${salt}:${ip}`, 'utf8').digest('hex')
-}
+// Re-exported so callers have one obvious place to reach for it.
+export { hashIp } from './ipHash.ts'
 
 const INSERT = `
   insert into registrations (

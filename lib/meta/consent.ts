@@ -1,10 +1,21 @@
-// Server-side check of the marketing consent the browser reports.
+// The marketing consent record that accompanies a registration.
 //
-// The browser is the only place a person can give consent, so it is also the only
-// place the answer can come from. What the server refuses to do is take a bare
-// "true" on trust: the request must carry the whole consent record the banner
-// wrote, at the current version, with a decision time that makes sense. A crafted
-// request that simply sets a flag does not produce a Conversions API event.
+// Consent is given in the browser, so the browser is the only place the answer can
+// come from — and this check therefore **cannot authenticate it**. Be clear about
+// what it does and does not do.
+//
+// What it does: reject anything that is not a complete, current, plausibly-timed
+// consent record. A missing record, a bare `true`, a record from a superseded
+// consent version, a decision timestamp in the future or years in the past — none
+// of these produce a Meta event. That is worth having, because it is what stops
+// consent being transmitted *accidentally*: a default value, a stale record left
+// in a browser, version drift after the purposes change, a client bug.
+//
+// What it does not do: withstand a forger. Anyone can craft a request whose
+// consent record looks exactly right, and no client-supplied signal can fix that
+// — including a signed token, because any token the browser can obtain an
+// attacker can obtain in the same way. The saving grace is that the only person
+// whose data a forger can cause to be sent is the forger's own.
 
 import { CONSENT_VERSION } from './config.ts'
 
@@ -24,6 +35,9 @@ export type ConsentClaim = {
  * True only for a complete, current, plausibly-timed grant of marketing consent.
  * Everything else — missing, malformed, stale, denied, or from an older consent
  * version — means no Meta event is sent.
+ *
+ * This is a validity check, not an authenticity one. See the note at the top of
+ * this file before describing it as enforcement.
  */
 export function hasValidMarketingConsent(claim: unknown, now: number = Date.now()): boolean {
   if (!claim || typeof claim !== 'object') return false
