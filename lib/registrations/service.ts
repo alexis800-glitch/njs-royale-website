@@ -16,8 +16,18 @@ import { REGISTRATION_KINDS, validateRegistration } from './validate.ts'
 import type { RegistrationStore } from './store.ts'
 import { errorCategory } from './errors.ts'
 
-/** Registrations accepted from one IP hash per window before we start refusing. */
-export const RATE_LIMIT_MAX = 5
+/**
+ * Registrations accepted from one IP hash per window before we start refusing.
+ *
+ * Counted per IP, and an IP is not a person: a household, an office, a hotel
+ * lobby or a coach party all share one NAT address, and on the day itself a group
+ * of guests registering together would look like one visitor. The limit is set
+ * well above any plausible genuine burst, because refusing a real guest is far
+ * worse than admitting a few extra rows a spammer would have to work for. The
+ * honeypot, the time-to-submit check and the same-origin rule do the real work of
+ * stopping automation; this is a backstop against volume.
+ */
+export const RATE_LIMIT_MAX = 20
 export const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000
 
 /** A human takes longer than this to fill the form in; a script does not. */

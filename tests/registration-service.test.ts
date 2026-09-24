@@ -317,6 +317,13 @@ test('a submission faster than a human is refused', async () => {
   assert.equal(deps.metaEvents.length, 0)
 })
 
+test('the rate limit is set to the agreed 20 per IP per hour', () => {
+  // A deliberate product decision, pinned so it cannot drift unnoticed: an IP is
+  // shared by households, offices and hotel lobbies, so the limit has to sit well
+  // above any genuine burst.
+  assert.equal(RATE_LIMIT_MAX, 20)
+})
+
 test('too many registrations from one address are rate limited', async () => {
   const store = makeStore({ recentCount: RATE_LIMIT_MAX })
   const deps = makeDeps(store)
@@ -325,6 +332,15 @@ test('too many registrations from one address are rate limited', async () => {
   assert.equal(response.status, 429)
   assert.equal(store.rows.length, 0)
   assert.equal(deps.metaEvents.length, 0)
+})
+
+test('a registration just below the limit is still accepted', async () => {
+  const store = makeStore({ recentCount: RATE_LIMIT_MAX - 1 })
+  const deps = makeDeps(store)
+  const response = await handleRegistration(request(), CONTEXT, deps)
+
+  assert.equal(response.status, 200, 'the limit must not refuse the 20th registration')
+  assert.equal(store.rows.length, 1)
 })
 
 test('an unknown form or a malformed submission id is refused', async () => {
