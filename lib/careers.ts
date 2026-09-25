@@ -46,8 +46,14 @@ export interface Department {
   blurb: string
 }
 
-/** Departments in display order. */
+/** Departments in display order. Marketing leads: it is the current recruitment drive. */
 export const DEPARTMENTS: readonly Department[] = [
+  {
+    id: 'marketing',
+    name: 'Marketing',
+    blurb:
+      'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 12, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
+  },
   {
     id: 'restaurant-front-of-house',
     name: 'Restaurant and Front-of-House',
@@ -65,12 +71,6 @@ export const DEPARTMENTS: readonly Department[] = [
     name: 'HR and Administration',
     blurb:
       'People and administration support for recruitment, records and staff development across the operation.',
-  },
-  {
-    id: 'marketing',
-    name: 'Marketing',
-    blurb:
-      'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 12, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
   },
 ] as const
 
