@@ -33,7 +33,7 @@ export function generateMetadata({ params }: Params): Metadata {
   const dept = getDepartment(jobItem.department)
   return {
     title: jobItem.title,
-    description: `${jobItem.title} (${EMPLOYMENT_TYPE}) at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} Apply by ${APPLICATION_DEADLINE}.`,
+    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} Apply by ${APPLICATION_DEADLINE}.`,
     alternates: { canonical: `/careers/${jobItem.slug}` },
     openGraph: {
       title: `${jobItem.title} — Careers at NJS Royale Beach Resort`,
@@ -65,7 +65,8 @@ export default function JobDetailPage({ params }: Params) {
     description: descriptionHtml,
     datePosted: DATE_POSTED,
     validThrough: APPLICATION_DEADLINE_ISO,
-    employmentType: 'FULL_TIME',
+    // Omitted where NJS has not stated one, rather than defaulting to full-time.
+    ...(jobItem.employmentType === EMPLOYMENT_TYPE ? { employmentType: 'FULL_TIME' } : {}),
     directApply: false,
     hiringOrganization: {
       '@type': 'Organization',
@@ -121,8 +122,13 @@ export default function JobDetailPage({ params }: Params) {
 
           <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-[2px] text-white/55 font-[family-name:var(--font-inter)]">
             <span>{dept.name}</span>
-            <span aria-hidden="true" className="text-white/25">·</span>
-            <span className="text-gold">{EMPLOYMENT_TYPE}</span>
+            {/* Shown only where an employment type was stated. */}
+            {jobItem.employmentType && (
+              <>
+                <span aria-hidden="true" className="text-white/25">·</span>
+                <span className="text-gold">{jobItem.employmentType}</span>
+              </>
+            )}
           </p>
 
           <h1
