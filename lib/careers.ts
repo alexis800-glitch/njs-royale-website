@@ -1,12 +1,18 @@
 // NJS Royale Beach Resort — Phase One recruitment data.
 //
 // This file is the single source of truth for the Careers section. Every summary,
-// responsibility and requirement is transcribed from the authoritative document
-// "Job Descriptions for Yahweh Heights and Voyage Vacancies". Wording is preserved;
-// the document's decorative "=====" separators and loose formatting are not.
+// responsibility and requirement is transcribed from an authoritative source:
+//   - the 19 operational roles, from "Job Descriptions for Yahweh Heights and
+//     Voyage Vacancies";
+//   - the 3 Phase I Marketing Team roles, from the marketing team brief.
+// Wording is preserved; the documents' decorative separators are not.
 //
 // Confirmed facts (no salary is displayed or invented):
-//   19 job titles · 57 available positions · 3 departments.
+//   22 job titles · 61 available positions · 4 departments.
+//
+// Nothing here is invented. Where a fact was not supplied it is absent rather than
+// guessed — the marketing roles carry no employment type because none was stated,
+// and their requirements repeat only the candidate profile that was given.
 
 export const APPLY_EMAIL = 'careers@njsbeachresort.com'
 
@@ -32,6 +38,7 @@ export type DepartmentId =
   | 'restaurant-front-of-house'
   | 'kitchen'
   | 'hr-administration'
+  | 'marketing'
 
 export interface Department {
   id: DepartmentId
@@ -39,8 +46,14 @@ export interface Department {
   blurb: string
 }
 
-/** Departments in display order. */
+/** Departments in display order. Marketing leads: it is the current recruitment drive. */
 export const DEPARTMENTS: readonly Department[] = [
+  {
+    id: 'marketing',
+    name: 'Marketing',
+    blurb:
+      'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 12, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
+  },
   {
     id: 'restaurant-front-of-house',
     name: 'Restaurant and Front-of-House',
@@ -66,7 +79,11 @@ export interface Job {
   title: string
   department: DepartmentId
   positions: number
-  employmentType: string
+  /**
+   * Null where NJS has not stated one. The UI omits the label entirely rather
+   * than assuming full-time, and the JobPosting schema omits the field.
+   */
+  employmentType: string | null
   location: string
   applicationDeadline: string
   summary: string
@@ -76,11 +93,14 @@ export interface Job {
 
 // Common fields shared by every vacancy, applied through a small builder so each
 // record still carries the full typed shape.
-type JobSeed = Omit<Job, 'employmentType' | 'location' | 'applicationDeadline'>
+type JobSeed = Omit<Job, 'employmentType' | 'location' | 'applicationDeadline'> & {
+  /** Omit to inherit the default; pass null when no employment type was stated. */
+  employmentType?: string | null
+}
 
 const job = (seed: JobSeed): Job => ({
   ...seed,
-  employmentType: EMPLOYMENT_TYPE,
+  employmentType: seed.employmentType === undefined ? EMPLOYMENT_TYPE : seed.employmentType,
   location: CAREERS_LOCATION,
   applicationDeadline: APPLICATION_DEADLINE,
 })
@@ -491,6 +511,82 @@ export const CAREERS: readonly Job[] = [
       'HR certification is an advantage.',
     ],
   }),
+
+  // ── Marketing (Phase I Marketing Team) ─────────────────────────────────────
+  // No employment type was stated for these roles, so none is shown. The
+  // requirements repeat only the supplied candidate profile: no degree, salary,
+  // benefit, reporting line or closing date beyond the general one is invented.
+  job({
+    slug: 'marketing-campaign-manager',
+    title: 'Marketing & Campaign Manager',
+    department: 'marketing',
+    positions: 2,
+    employmentType: null,
+    summary:
+      'Owns the NJS Royale campaign programme: brand and commercial strategy, the December 12, 2026 launch, and the budgets, agencies and partnerships behind them.',
+    responsibilities: [
+      'Develop the overall NJS Royale brand and commercial marketing strategy.',
+      'Plan and execute the December 12, 2026 launch campaign.',
+      'Manage how Yahweh Heights, Voyage, Royale Horizon and Royale Pulse sit beneath the NJS Royale master brand.',
+      'Oversee the marketing budget.',
+      'Manage agencies and external partners.',
+      'Review and approve campaigns, photography, video, copy and influencer partnerships.',
+      'Oversee public relations, digital marketing, social media and commercial partnerships.',
+      'Coordinate with Food & Beverage, Events, Reservations and Operations.',
+      'Produce weekly marketing performance reports.',
+      'Build the February and July campaigns without weakening or distracting from the December launch.',
+    ],
+    requirements: [
+      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'Demonstrable ownership of significant campaigns or launches.',
+    ],
+  }),
+  job({
+    slug: 'content-producer-videographer-video-editor',
+    title: 'Content Producer, Videographer & Video Editor',
+    department: 'marketing',
+    positions: 1,
+    employmentType: null,
+    summary:
+      'Produces and edits the photography and video that carry the NJS Royale brand, from resort and event coverage to the content published across its channels.',
+    responsibilities: [
+      'Produce photography and video across the resort, its venues and its events.',
+      'Edit video and stills to a consistent, premium standard.',
+      'Cover the December 12, 2026 launch and the resort events that follow.',
+      'Create content for social media and publish it across the resort\u2019s channels.',
+      'Manage the content calendar.',
+      'Maintain brand consistency across Yahweh Heights, Voyage, Royale Horizon and Royale Pulse beneath the NJS Royale master brand.',
+      'Work with agencies and external partners on commissioned production.',
+      'Coordinate with Food & Beverage, Events, Reservations and Operations on content requirements.',
+    ],
+    requirements: [
+      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'A strong portfolio, with relevant production and editing experience.',
+    ],
+  }),
+  job({
+    slug: 'crm-reservations-marketing-manager',
+    title: 'CRM & Reservations Marketing Manager',
+    department: 'marketing',
+    positions: 1,
+    employmentType: null,
+    summary:
+      'Runs the CRM programme and the marketing that turns enquiries into confirmed reservations, working closely with Reservations and Operations.',
+    responsibilities: [
+      'Plan and deliver CRM campaigns across the guest lifecycle.',
+      'Segment and maintain the guest database.',
+      'Develop guest communications that reflect the NJS Royale brand.',
+      'Convert enquiries into confirmed reservations.',
+      'Run email, SMS and WhatsApp campaigns where appropriate.',
+      'Support the December 12, 2026 launch campaign through direct guest communication.',
+      'Produce weekly CRM and reservations marketing performance reports.',
+      'Coordinate with Reservations, Operations, Food & Beverage and Events.',
+    ],
+    requirements: [
+      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'Practical CRM, database marketing, guest communication or reservations-funnel experience.',
+    ],
+  }),
 ] as const
 
 // ── Derived data ─────────────────────────────────────────────────────────────
@@ -514,11 +610,11 @@ export const departmentPositions = (id: DepartmentId): number =>
 // Programmatic confirmation of the confirmed recruitment totals. These run when the
 // module is first imported (at build time), so a miscount fails the build loudly
 // rather than shipping wrong figures.
-if (TOTAL_TITLES !== 19) {
-  throw new Error(`Careers data integrity error: expected 19 job titles, found ${TOTAL_TITLES}.`)
+if (TOTAL_TITLES !== 22) {
+  throw new Error(`Careers data integrity error: expected 22 job titles, found ${TOTAL_TITLES}.`)
 }
-if (TOTAL_POSITIONS !== 57) {
-  throw new Error(`Careers data integrity error: expected 57 positions, found ${TOTAL_POSITIONS}.`)
+if (TOTAL_POSITIONS !== 61) {
+  throw new Error(`Careers data integrity error: expected 61 positions, found ${TOTAL_POSITIONS}.`)
 }
 if (new Set(CAREERS.map((j) => j.slug)).size !== CAREERS.length) {
   throw new Error('Careers data integrity error: duplicate slug detected.')

@@ -6,7 +6,6 @@ import Footer from '@/components/Footer'
 import {
   APPLICATION_DEADLINE,
   DEPARTMENTS,
-  EMPLOYMENT_TYPE,
   GENERAL_NOTE,
   TOTAL_DEPARTMENTS,
   TOTAL_POSITIONS,
@@ -18,12 +17,12 @@ import {
 export const metadata: Metadata = {
   title: 'Careers',
   description:
-    'Phase One recruitment at NJS Royale Beach Resort. Full-time restaurant, kitchen and administration roles supporting Yahweh Heights and Voyage Restaurant in Ibeju-Lekki, Lagos. Apply by October 15, 2026.',
+    'Phase One recruitment at NJS Royale Beach Resort. Restaurant, kitchen and administration roles supporting Yahweh Heights and Voyage Restaurant, and the Phase I Marketing Team, in Ibeju-Lekki, Lagos. Apply by October 15, 2026.',
   alternates: { canonical: '/careers' },
   openGraph: {
     title: 'Careers at NJS Royale Beach Resort',
     description:
-      'Phase One Recruitment Vacancies — full-time roles across restaurant, kitchen and administration. Apply by October 15, 2026.',
+      'Phase One Recruitment Vacancies — roles across restaurant, kitchen, administration and the Phase I Marketing Team. Apply by October 15, 2026.',
     url: '/careers',
   },
 }
@@ -63,9 +62,10 @@ export default function CareersPage() {
             Phase One Recruitment Vacancies
           </p>
           <p className="mx-auto mt-6 max-w-2xl text-white/70 text-[15px] sm:text-base leading-relaxed font-[family-name:var(--font-inter)]">
-            We are recruiting full-time team members to support{' '}
-            <span className="text-white">Yahweh Heights and Voyage Restaurant</span> as NJS Royale
-            Beach Resort opens its Phase One on December 12, 2026, at Ibeju-Lekki, Lagos.
+            We are recruiting team members to support{' '}
+            <span className="text-white">Yahweh Heights and Voyage Restaurant</span>, and to build
+            the <span className="text-white">Phase I Marketing Team</span>, as NJS Royale Beach
+            Resort opens on December 12, 2026, at Ibeju-Lekki, Lagos.
           </p>
           <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-5 py-2 text-[13px] sm:text-sm text-white font-[family-name:var(--font-inter)]">
             Application deadline:{' '}
@@ -124,8 +124,13 @@ export default function CareersPage() {
                     <div className="group flex h-full flex-col rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-colors duration-300 hover:border-gold/40 focus-within:border-gold/40">
                       <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-[1.5px] text-white/50 font-[family-name:var(--font-inter)]">
                         <span>{dept.name}</span>
-                        <span aria-hidden="true" className="text-white/25">·</span>
-                        <span className="text-gold">{EMPLOYMENT_TYPE}</span>
+                        {/* Shown only where an employment type was stated. */}
+                        {jobItem.employmentType && (
+                          <>
+                            <span aria-hidden="true" className="text-white/25">·</span>
+                            <span className="text-gold">{jobItem.employmentType}</span>
+                          </>
+                        )}
                       </div>
 
                       <h3 className="font-[family-name:var(--font-cormorant)] text-white text-2xl leading-snug break-words">
