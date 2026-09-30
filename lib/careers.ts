@@ -4,15 +4,22 @@
 // responsibility and requirement is transcribed from an authoritative source:
 //   - the 19 operational roles, from "Job Descriptions for Yahweh Heights and
 //     Voyage Vacancies";
-//   - the 3 Phase I Marketing Team roles, from the marketing team brief.
+//   - the 3 Phase I Marketing Team roles, from the marketing team brief;
+//   - the Resort Security Officer posting, from NJS Royale's instructions of
+//     September 30, 2026: fourteen positions, seven on day shift and seven on
+//     night shift, to guard and secure the resort, with the schedule, minimum
+//     qualification and screening conditions supplied separately the same day.
 // Wording is preserved; the documents' decorative separators are not.
 //
 // Confirmed facts (no salary is displayed or invented):
-//   22 job titles · 61 available positions · 4 departments.
+//   23 job titles · 75 available positions · 5 departments.
 //
 // Nothing here is invented. Where a fact was not supplied it is absent rather than
 // guessed — the marketing roles carry no employment type because none was stated,
-// and their requirements repeat only the candidate profile that was given.
+// and their requirements repeat only the candidate profile that was given. The
+// security posting states no exact shift hours because NJS Royale will communicate
+// them during recruitment, and it carries no age, gender, salary or guarantor
+// condition because none was given and none may be assumed.
 
 export const APPLY_EMAIL = 'careers@njsbeachresort.com'
 
@@ -39,6 +46,7 @@ export type DepartmentId =
   | 'kitchen'
   | 'hr-administration'
   | 'marketing'
+  | 'security'
 
 export interface Department {
   id: DepartmentId
@@ -53,6 +61,12 @@ export const DEPARTMENTS: readonly Department[] = [
     name: 'Marketing',
     blurb:
       'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 12, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
+  },
+  {
+    id: 'security',
+    name: 'Security',
+    blurb:
+      'Internal security for the resort. Resort Security Officers guard and secure NJS Royale Beach Resort and its grounds, on day and night shifts.',
   },
   {
     id: 'restaurant-front-of-house',
@@ -587,6 +601,30 @@ export const CAREERS: readonly Job[] = [
       'Practical CRM, database marketing, guest communication or reservations-funnel experience.',
     ],
   }),
+
+  // ── Security ───────────────────────────────────────────────────────────────
+  job({
+    slug: 'resort-security-officer',
+    title: 'Resort Security Officer',
+    department: 'security',
+    positions: 14,
+    summary:
+      'Internal security for NJS Royale Beach Resort. Resort Security Officers guard and secure the resort and its grounds. Fourteen positions are available — seven on day shift and seven on night shift — worked on a rotational basis, with exact hours communicated during recruitment. Applicants may indicate a preferred shift; allocation depends on operational requirements.',
+    responsibilities: [
+      'Guard and secure NJS Royale Beach Resort and its grounds.',
+      'Patrol the resort and its grounds on the assigned shift.',
+      'Observe, record and report incidents.',
+      'Provide internal security cover by day or at night, on rotational shifts.',
+    ],
+    requirements: [
+      'SSCE/WAEC or equivalent.',
+      'Previous security, guarding or hospitality experience preferred.',
+      'Good observation, communication and incident-reporting skills.',
+      'Honest, disciplined, alert and physically capable of patrol duties.',
+      'Willingness to work weekends and public holidays.',
+      'Appointment is subject to satisfactory reference and background checks.',
+    ],
+  }),
 ] as const
 
 // ── Derived data ─────────────────────────────────────────────────────────────
@@ -610,11 +648,11 @@ export const departmentPositions = (id: DepartmentId): number =>
 // Programmatic confirmation of the confirmed recruitment totals. These run when the
 // module is first imported (at build time), so a miscount fails the build loudly
 // rather than shipping wrong figures.
-if (TOTAL_TITLES !== 22) {
-  throw new Error(`Careers data integrity error: expected 22 job titles, found ${TOTAL_TITLES}.`)
+if (TOTAL_TITLES !== 23) {
+  throw new Error(`Careers data integrity error: expected 23 job titles, found ${TOTAL_TITLES}.`)
 }
-if (TOTAL_POSITIONS !== 61) {
-  throw new Error(`Careers data integrity error: expected 61 positions, found ${TOTAL_POSITIONS}.`)
+if (TOTAL_POSITIONS !== 75) {
+  throw new Error(`Careers data integrity error: expected 75 positions, found ${TOTAL_POSITIONS}.`)
 }
 if (new Set(CAREERS.map((j) => j.slug)).size !== CAREERS.length) {
   throw new Error('Careers data integrity error: duplicate slug detected.')

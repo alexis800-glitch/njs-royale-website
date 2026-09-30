@@ -50,13 +50,18 @@ export default function JobDetailPage({ params }: Params) {
   const dept = getDepartment(jobItem.department)
   const positionsLabel = `${jobItem.positions} ${jobItem.positions === 1 ? 'position' : 'positions'}`
 
+  // Requirements are omitted entirely when NJS has stated none, rather than
+  // emitting an empty list into the JobPosting structured data.
   const descriptionHtml =
     `<p>${jobItem.summary}</p>` +
     `<p><strong>Key responsibilities</strong></p><ul>` +
     jobItem.responsibilities.map((r) => `<li>${r}</li>`).join('') +
-    `</ul><p><strong>Requirements</strong></p><ul>` +
-    jobItem.requirements.map((r) => `<li>${r}</li>`).join('') +
-    `</ul>`
+    `</ul>` +
+    (jobItem.requirements.length > 0
+      ? `<p><strong>Requirements</strong></p><ul>` +
+        jobItem.requirements.map((r) => `<li>${r}</li>`).join('') +
+        `</ul>`
+      : '')
 
   const jobPostingLd = {
     '@context': 'https://schema.org',
@@ -183,6 +188,7 @@ export default function JobDetailPage({ params }: Params) {
           </ul>
         </section>
 
+        {jobItem.requirements.length > 0 && (
         <section aria-labelledby="requirements" className="mt-10">
           <h2
             id="requirements"
@@ -199,6 +205,7 @@ export default function JobDetailPage({ params }: Params) {
             ))}
           </ul>
         </section>
+        )}
 
         {/* Application panel */}
         <section
