@@ -8,8 +8,9 @@ import {
   DEPARTMENTS,
   GENERAL_NOTE,
   TOTAL_DEPARTMENTS,
-  TOTAL_POSITIONS,
-  TOTAL_TITLES,
+  OPEN_POSITIONS,
+  OPEN_TITLES,
+  isJobOpen,
   departmentPositions,
   jobsByDepartment,
 } from '@/lib/careers'
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
 }
 
 const stats = [
-  { icon: Briefcase, value: TOTAL_TITLES, label: 'Job titles' },
-  { icon: Users, value: TOTAL_POSITIONS, label: 'Available positions' },
+  { icon: Briefcase, value: OPEN_TITLES, label: 'Open roles' },
+  { icon: Users, value: OPEN_POSITIONS, label: 'Available positions' },
   { icon: LayoutGrid, value: TOTAL_DEPARTMENTS, label: 'Departments' },
 ]
 
@@ -113,7 +114,7 @@ export default function CareersPage() {
                   {dept.blurb}
                 </p>
                 <p className="mt-2 text-gold text-[11px] uppercase tracking-[2px] font-[family-name:var(--font-inter)]">
-                  {jobs.length} {jobs.length === 1 ? 'role' : 'roles'} · {departmentPositions(dept.id)}{' '}
+                  {jobs.filter(isJobOpen).length} open {jobs.filter(isJobOpen).length === 1 ? 'role' : 'roles'} · {departmentPositions(dept.id)}{' '}
                   {departmentPositions(dept.id) === 1 ? 'position' : 'positions'}
                 </p>
               </div>
@@ -138,8 +139,9 @@ export default function CareersPage() {
                       </h3>
 
                       <p className="mt-1.5 text-[12px] text-white/70 font-[family-name:var(--font-inter)]">
-                        {jobItem.positions}{' '}
-                        {jobItem.positions === 1 ? 'position available' : 'positions available'}
+                        {isJobOpen(jobItem)
+                          ? `${jobItem.positions} ${jobItem.positions === 1 ? 'position available' : 'positions available'}`
+                          : 'Applications temporarily closed'}
                       </p>
 
                       <p className="mt-3 flex-1 text-white/65 text-sm leading-relaxed font-[family-name:var(--font-inter)]">

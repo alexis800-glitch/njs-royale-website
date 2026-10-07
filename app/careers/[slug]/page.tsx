@@ -14,6 +14,7 @@ import {
   applyMailtoHref,
   getDepartment,
   getJob,
+  isJobOpen,
 } from '@/lib/careers'
 
 const SITE_URL = 'https://www.njsbeachresort.com'
@@ -33,7 +34,7 @@ export function generateMetadata({ params }: Params): Metadata {
   const dept = getDepartment(jobItem.department)
   return {
     title: jobItem.title,
-    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} Apply by ${APPLICATION_DEADLINE}.`,
+    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${isJobOpen(jobItem) ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications temporarily closed.'}`,
     alternates: { canonical: `/careers/${jobItem.slug}` },
     openGraph: {
       title: `${jobItem.title} — Careers at NJS Royale Beach Resort`,
@@ -47,6 +48,7 @@ export default function JobDetailPage({ params }: Params) {
   const jobItem = getJob(params.slug)
   if (!jobItem) notFound()
 
+  const applicationsOpen = isJobOpen(jobItem)
   const dept = getDepartment(jobItem.department)
   const positionsLabel = `${jobItem.positions} ${jobItem.positions === 1 ? 'position' : 'positions'}`
 
@@ -95,19 +97,19 @@ export default function JobDetailPage({ params }: Params) {
   }
 
   const meta = [
-    { icon: Users, text: positionsLabel + ' available' },
+    { icon: Users, text: applicationsOpen ? positionsLabel + ' available' : 'Applications temporarily closed' },
     { icon: MapPin, text: CAREERS_LOCATION },
-    { icon: CalendarClock, text: `Apply by ${APPLICATION_DEADLINE}` },
+    ...(applicationsOpen ? [{ icon: CalendarClock, text: `Apply by ${APPLICATION_DEADLINE}` }] : []),
   ]
 
   return (
     <main className="bg-navy min-h-screen">
       <Navbar />
 
-      <script
+      {applicationsOpen && <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingLd) }}
-      />
+      />}
 
       {/* Hero */}
       <header className="border-b border-white/10 px-6 sm:px-10 pt-28 sm:pt-36 pb-10 sm:pb-12">
@@ -201,7 +203,7 @@ export default function JobDetailPage({ params }: Params) {
         </section>
 
         {/* Application panel */}
-        <section
+        {applicationsOpen ? <section
           aria-labelledby="how-to-apply"
           className="mt-12 rounded-xl border border-gold/25 bg-white/[0.03] p-6 sm:p-8"
         >
@@ -235,7 +237,16 @@ export default function JobDetailPage({ params }: Params) {
             This opens your email app with the subject “Application – {jobItem.title}” already filled
             in. Please attach your CV before sending.
           </p>
-        </section>
+        </section> : (
+          <section className="mt-12 rounded-xl border border-gold/25 bg-white/[0.03] p-6 sm:p-8" aria-labelledby="applications-closed">
+            <h2 id="applications-closed" className="font-[family-name:var(--font-cormorant)] text-white text-2xl sm:text-3xl mb-3">
+              Applications temporarily closed
+            </h2>
+            <p className="text-white/75 text-[15px] leading-relaxed font-[family-name:var(--font-inter)]">
+              We have received sufficient applications for this role and are not accepting further applications at this time. Thank you for your interest in NJS Royale Beach Resort.
+            </p>
+          </section>
+        )}
 
         <div className="mt-12 border-t border-white/10 pt-8">
           <Link

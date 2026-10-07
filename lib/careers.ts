@@ -591,6 +591,20 @@ export const CAREERS: readonly Job[] = [
 
 // ── Derived data ─────────────────────────────────────────────────────────────
 
+// Temporarily paused after sufficient applications were received. Remove a slug
+// from this set when recruitment for that role resumes.
+const CLOSED_JOB_SLUGS: ReadonlySet<string> = new Set([
+  'restaurant-manager',
+  'sous-chef',
+])
+
+export const isJobOpen = (jobItem: Job): boolean =>
+  !CLOSED_JOB_SLUGS.has(jobItem.slug)
+
+export const OPEN_CAREERS = CAREERS.filter(isJobOpen)
+export const OPEN_TITLES = OPEN_CAREERS.length
+export const OPEN_POSITIONS = OPEN_CAREERS.reduce((sum, j) => sum + j.positions, 0)
+
 export const TOTAL_TITLES = CAREERS.length
 export const TOTAL_POSITIONS = CAREERS.reduce((sum, j) => sum + j.positions, 0)
 export const TOTAL_DEPARTMENTS = DEPARTMENTS.length
@@ -605,7 +619,7 @@ export const jobsByDepartment = (id: DepartmentId): Job[] =>
   CAREERS.filter((j) => j.department === id)
 
 export const departmentPositions = (id: DepartmentId): number =>
-  jobsByDepartment(id).reduce((sum, j) => sum + j.positions, 0)
+  jobsByDepartment(id).filter(isJobOpen).reduce((sum, j) => sum + j.positions, 0)
 
 // Programmatic confirmation of the confirmed recruitment totals. These run when the
 // module is first imported (at build time), so a miscount fails the build loudly
