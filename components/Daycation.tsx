@@ -66,7 +66,7 @@ export default function PhaseOne() {
           </h2>
           <p className="text-navy/60 leading-relaxed mb-7 font-[family-name:var(--font-inter)] max-w-lg">
             NJS Royale opens on {PHASE_ONE_DATE}. Come experience the resort before the rooms
-            open &mdash; its restaurants and lounges, its live entertainment, the ocean-facing
+            open, with its restaurants and lounges, its live entertainment, the ocean-facing
             pool terrace and the private beach on the Atlantic. Guest rooms and accommodation
             open with Phase Two on {PHASE_TWO_DATE}.
           </p>

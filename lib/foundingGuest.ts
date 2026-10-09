@@ -30,7 +30,7 @@ export const FOUNDING_GUEST_INVITATION =
 
 export const STAY_BENEFIT = {
   heading: 'Complimentary Two-Night Stay for Two',
-  dates: '23–25 July 2027',
+  dates: '23 to 25 July 2027',
   includes: 'Includes the NJS Grand Opening celebration and breakfast the following morning.',
 } as const
 

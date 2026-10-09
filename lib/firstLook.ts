@@ -3,7 +3,7 @@
 // lib/foundingGuest.ts and is never imported by the /first-look page.
 
 export const CAMPAIGN = {
-  name: 'NJS Royale — The First Escape',
+  name: 'NJS Royale, The First Escape',
   tagline: 'You Saw It First. Now Watch the Journey Unfold.',
   pageLabel: 'Exclusive First Look Guest Registration',
 } as const
@@ -51,7 +51,7 @@ export const ADMISSION_NOTE =
 export const VERIFICATION_NOTE =
   'Registration does not by itself guarantee entry or benefits. Invitations and guest privileges remain subject to invitation verification and RSVP confirmation.'
 
-export const DRAFT_PROOF_LABEL = 'DRAFT FOR REVIEW — NOT FOR DISTRIBUTION'
+export const DRAFT_PROOF_LABEL = 'DRAFT FOR REVIEW, NOT FOR DISTRIBUTION'
 
 // Proof routes are review material only: they 404 on the Production deployment.
 // VERCEL_ENV is a system variable Vercel sets on every build; it is unset locally.

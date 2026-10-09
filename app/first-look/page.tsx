@@ -17,13 +17,13 @@ import {
 // Kept out of search engines (and out of the sitemap) until the registration
 // workflow is approved.
 export const metadata: Metadata = {
-  title: 'The First Escape — First Look Guest Registration',
+  title: 'The First Escape, First Look Guest Registration',
   description:
-    'NJS Royale — The First Escape. You saw it first. Now watch the journey unfold: First Look, Phase I Opening on 12 December 2026, and the Grand Opening on 23 July 2027.',
+    'NJS Royale, The First Escape. You saw it first. Now watch the journey unfold: First Look, Phase I Opening on 12 December 2026, and the Grand Opening on 23 July 2027.',
   alternates: { canonical: '/first-look' },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
   openGraph: {
-    title: 'NJS Royale — The First Escape',
+    title: 'NJS Royale, The First Escape',
     description: 'You Saw It First. Now Watch the Journey Unfold.',
     url: '/first-look',
   },
@@ -89,7 +89,7 @@ export default function FirstLookPage() {
             <p>
               Return to experience NJS Royale in a whole new way as we officially open our Phase I
               Daycation experience on <strong className="font-semibold text-white">{FIRST_ESCAPE.date}</strong>
-              &mdash;where rooftop leisure, poolside moments, dining, music and the Atlantic come alive.{' '}
+              , where rooftop leisure, poolside moments, dining, music and the Atlantic come alive.{' '}
               {FIRST_ESCAPE.doors}
             </p>
             <p>

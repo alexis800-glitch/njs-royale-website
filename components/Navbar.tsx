@@ -87,7 +87,7 @@ export default function Navbar() {
 
           {/* ── Centre: official NJS Royale crest + wordmark, mathematically
                 centred by the grid's auto column ── */}
-          <a href="/" aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2 sm:gap-3.5 whitespace-nowrap">
+          <a href="/" aria-label="NJS Royale home" className="justify-self-center flex items-center gap-2 sm:gap-3.5 whitespace-nowrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/njs-logos/njs-crest-mark.png"
@@ -142,7 +142,7 @@ export default function Navbar() {
           >
             <X size={24} strokeWidth={1.25} />
           </button>
-          <a href="/" onClick={closeMenu} aria-label="NJS Royale — home" className="justify-self-center flex items-center gap-2.5 whitespace-nowrap">
+          <a href="/" onClick={closeMenu} aria-label="NJS Royale home" className="justify-self-center flex items-center gap-2.5 whitespace-nowrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/njs-logos/njs-crest-mark.png" alt="NJS Royale crest" className="h-9 sm:h-10 w-auto flex-shrink-0" />
             <span className="flex flex-col items-start leading-none">

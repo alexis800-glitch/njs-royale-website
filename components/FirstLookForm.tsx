@@ -161,7 +161,7 @@ export default function FirstLookForm() {
             </span>
             <div>
               <p className="font-[family-name:var(--font-cormorant)] text-[26px] leading-tight">
-                Thank you &mdash; your RSVP is registered.
+                Thank you. Your RSVP is registered.
               </p>
               <p className="mt-2 text-[15px] leading-relaxed">
                 We have your details for {FIRST_ESCAPE.date}. We will be in touch to confirm your
@@ -327,7 +327,7 @@ export default function FirstLookForm() {
                     aria-invalid={!!errors.party}
                     className={radioBase}
                   />
-                  {opt === '1' ? '1 — just me' : '2 — me and a companion'}
+                  {opt === '1' ? '1 (just me)' : '2 (me and a companion)'}
                 </label>
               ))}
             </div>

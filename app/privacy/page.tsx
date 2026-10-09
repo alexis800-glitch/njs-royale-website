@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
     <main className="bg-navy min-h-screen">
       {/* Header */}
       <header className="flex items-center justify-between px-6 sm:px-10 py-6 border-b border-white/10">
-        <Link href="/" className="flex items-center gap-3" aria-label="NJS Royale Beach Resort — home">
+        <Link href="/" className="flex items-center gap-3" aria-label="NJS Royale Beach Resort home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/njs-logos/njs-crest-mark.png" alt="NJS Royale crest" className="h-10 w-auto" />
           <span className="flex flex-col leading-none">
@@ -137,7 +137,7 @@ export default function PrivacyPolicy() {
           <p className="text-white/80">Why we use it</p>
           <p>
             To verify your invitation, confirm your RSVP, prepare your guest privileges and manage entry on
-            the day &mdash; and, for Founding Guests, to prepare your accommodation. If you are registering
+            the day. For Founding Guests, we also use it to prepare your accommodation. If you are registering
             a companion or second guest, please make sure they are content for you to give us their name.
           </p>
           <p>
@@ -171,7 +171,7 @@ export default function PrivacyPolicy() {
 
           <p className="text-white/80">What Meta is told</p>
           <p>
-            If &mdash; and only if &mdash; you have accepted optional marketing cookies, we also tell Meta
+            If, and only if, you have accepted optional marketing cookies, we also tell Meta
             that a registration was completed, so that we can measure our advertising. What we send is
             limited to your IP address, your browser&rsquo;s user-agent string, the address of the
             registration page, and the Meta cookies described in section 12 if your browser has them.
@@ -226,9 +226,9 @@ export default function PrivacyPolicy() {
         <Section title="6. Lawful basis for processing">
           <p>Where we process your personal data, we rely on one or more of the lawful bases recognised under the NDPA, namely:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li><span className="text-white/80">Your consent</span> — given when you submit an enquiry or otherwise ask us to contact you;</li>
-            <li><span className="text-white/80">Steps taken at your request</span> — to respond to your enquiry and take steps prior to any potential agreement;</li>
-            <li><span className="text-white/80">Our legitimate interests</span> — in responding to enquiries and operating the resort, where these are not overridden by your rights.</li>
+            <li><span className="text-white/80">Your consent</span>, given when you submit an enquiry or otherwise ask us to contact you;</li>
+            <li><span className="text-white/80">Steps taken at your request</span>, to respond to your enquiry and take steps prior to any potential agreement;</li>
+            <li><span className="text-white/80">Our legitimate interests</span>, in responding to enquiries and operating the resort, where these are not overridden by your rights.</li>
           </ul>
         </Section>
 
@@ -255,10 +255,10 @@ export default function PrivacyPolicy() {
         <Section title="10. Service providers and processors">
           <p>We currently use the following providers:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li><span className="text-white/80">Vercel</span> &mdash; hosting for this website;</li>
-            <li><span className="text-white/80">Neon</span> &mdash; the Postgres database in which invitation registrations are stored;</li>
-            <li><span className="text-white/80">Meta Platforms</span> &mdash; advertising measurement, only where you have accepted optional marketing cookies (sections 2 and 12);</li>
-            <li><span className="text-white/80">Google</span> &mdash; the interactive location map, only if you choose to open it (section 12).</li>
+            <li><span className="text-white/80">Vercel</span>, which hosts this website;</li>
+            <li><span className="text-white/80">Neon</span>, the Postgres database in which invitation registrations are stored;</li>
+            <li><span className="text-white/80">Meta Platforms</span>, for advertising measurement, only where you have accepted optional marketing cookies (sections 2 and 12);</li>
+            <li><span className="text-white/80">Google</span>, for the interactive location map, only if you choose to open it (section 12).</li>
           </ul>
           <p>
             These providers are permitted to process personal data only in accordance with our instructions
@@ -299,8 +299,8 @@ export default function PrivacyPolicy() {
           </p>
           <p>If you accept, Meta may set the following cookies in your browser:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li><span className="text-white/80">_fbp</span> — identifies your browser so that visits and advert performance can be measured. Typically expires after about 90 days.</li>
-            <li><span className="text-white/80">_fbc</span> — records that you arrived from a Meta advert. Set only if you click such an advert, and typically expires after about 90 days.</li>
+            <li><span className="text-white/80">_fbp</span>, which identifies your browser so that visits and advert performance can be measured. Typically expires after about 90 days.</li>
+            <li><span className="text-white/80">_fbc</span>, which records that you arrived from a Meta advert. Set only if you click such an advert, and typically expires after about 90 days.</li>
           </ul>
           <p>
             When the Pixel is active, Meta receives your IP address, browser and device details, the page

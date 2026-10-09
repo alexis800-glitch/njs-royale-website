@@ -18,7 +18,7 @@ export const APPLY_EMAIL = 'careers@njsbeachresort.com'
 
 /** Builds the Apply-by-email link with an encoded, position-specific subject. */
 export const applyMailtoHref = (title: string): string =>
-  `mailto:${APPLY_EMAIL}?subject=${encodeURIComponent(`Application – ${title}`)}`
+  `mailto:${APPLY_EMAIL}?subject=${encodeURIComponent(`Application for ${title}`)}`
 
 export const EMPLOYMENT_TYPE = 'Full-time'
 export const CAREERS_LOCATION =
@@ -537,7 +537,7 @@ export const CAREERS: readonly Job[] = [
       'Build the February and July campaigns without weakening or distracting from the December launch.',
     ],
     requirements: [
-      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'Ideally 2 to 6 or more years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
       'Demonstrable ownership of significant campaigns or launches.',
     ],
   }),
@@ -560,7 +560,7 @@ export const CAREERS: readonly Job[] = [
       'Coordinate with Food & Beverage, Events, Reservations and Operations on content requirements.',
     ],
     requirements: [
-      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'Ideally 2 to 6 or more years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
       'A strong portfolio, with relevant production and editing experience.',
     ],
   }),
@@ -583,7 +583,7 @@ export const CAREERS: readonly Job[] = [
       'Coordinate with Reservations, Operations, Food & Beverage and Events.',
     ],
     requirements: [
-      'Ideally 2\u20136+ years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
+      'Ideally 2 to 6 or more years of relevant experience in luxury hospitality, lifestyle, entertainment, premium consumer brands or destination marketing.',
       'Practical CRM, database marketing, guest communication or reservations-funnel experience.',
     ],
   }),

@@ -99,7 +99,7 @@ export default function ArrivalExperience() {
           >
             Guests arrive from the coastal road through a gated entrance set behind a
             landscaped setback, into generous on-site parking screened by a travertine
-            and bronze perimeter fence — the resort revealed only once you are inside it.
+            and bronze perimeter fence, the resort revealed only once you are inside it.
           </motion.p>
 
           <motion.div

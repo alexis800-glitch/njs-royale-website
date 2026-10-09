@@ -15,7 +15,7 @@ import {
 // a private-page header instead of the site navigation, and a framed, centred
 // composition. Kept out of search engines (and the sitemap) until approved.
 export const metadata: Metadata = {
-  title: 'NJS Royale Founding Guest — Invitation Activation',
+  title: 'NJS Royale Founding Guest, Invitation Activation',
   description: 'Private activation page for NJS Royale Founding Guest invitations.',
   alternates: { canonical: '/founding-guest' },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
@@ -50,7 +50,7 @@ export default function FoundingGuestPage() {
         <Link
           href="/"
           className="flex min-h-[44px] items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-          aria-label="NJS Royale Beach Resort — home"
+          aria-label="NJS Royale Beach Resort home"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/njs-logos/njs-crest-mark.png" alt="" className="h-10 w-auto" />

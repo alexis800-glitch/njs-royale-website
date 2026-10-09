@@ -130,7 +130,7 @@ const validFoundingGuest = {
   phone: '+2348031234567',
   secondName: 'Charles Babbage',
   attendance: true,
-  arrival: 'Afternoon (12:00 noon – 4:00 p.m.)',
+  arrival: 'Afternoon (12:00 noon to 4:00 p.m.)',
   arrivalNotes: 'Arriving from Abuja.',
   conditionsAck: true,
   updates: false,

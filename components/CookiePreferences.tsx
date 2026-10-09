@@ -52,7 +52,7 @@ export default function CookiePreferences({ className }: { className?: string })
   }, [open])
 
   const granted = marketing === 'granted'
-  const statusLabel = !ready ? '—' : granted ? 'Allowed' : marketing === 'denied' ? 'Not allowed' : 'Not set'
+  const statusLabel = !ready ? 'Checking' : granted ? 'Allowed' : marketing === 'denied' ? 'Not allowed' : 'Not set'
 
   return (
     <>

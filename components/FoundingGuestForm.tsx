@@ -57,8 +57,8 @@ const FIELD_ORDER: Field[] = ['code', 'primaryName', 'email', 'phone', 'secondNa
 
 const ARRIVAL_OPTIONS = [
   'Morning (before 12:00 noon)',
-  'Afternoon (12:00 noon – 4:00 p.m.)',
-  'Early evening (4:00 p.m. – 7:00 p.m.)',
+  'Afternoon (12:00 noon to 4:00 p.m.)',
+  'Early evening (4:00 p.m. to 7:00 p.m.)',
   'Later in the evening (after 7:00 p.m.)',
 ]
 

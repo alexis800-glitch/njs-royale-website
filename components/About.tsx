@@ -68,7 +68,7 @@ export default function About() {
             <div className="relative aspect-[4/5] overflow-hidden">
               <Image
                 src="/images/double-height-grand-lounge-01.png"
-                alt="NJS Royale — grand double-height lounge interior"
+                alt="NJS Royale grand double-height lounge interior"
                 fill
                 className="object-cover transition-transform duration-700 hover:scale-105"
               />
