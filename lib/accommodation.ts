@@ -74,17 +74,17 @@ const base = {
 }
 
 export const accommodation: AccommodationCategory[] = [
-  { ...base, id: 'royale-room-resort-side', tier: 'room', category: 'Royale Room', name: 'Royale Room — Standard', view: 'Resort Side', openingRate: 250000 },
-  { ...base, id: 'royale-room-pool-terrace', tier: 'room', category: 'Royale Room', name: 'Royale Room — Pool Terrace View', view: 'Pool Terrace View', openingRate: 275000 },
-  { ...base, id: 'royale-room-coastal', tier: 'room', category: 'Royale Room', name: 'Royale Room — Coastal View', view: 'Coastal View', openingRate: 300000 },
-  { ...base, id: 'royale-room-ocean', tier: 'room', category: 'Royale Room', name: 'Royale Room — Ocean View', view: 'Ocean View', openingRate: 325000 },
-  { ...base, id: 'royale-two-bedroom-coastal', tier: 'multi-bedroom', category: 'Royale Two-Bedroom', name: 'Royale Two-Bedroom — Coastal View', view: 'Coastal View', openingRate: 450000 },
-  { ...base, id: 'royale-two-bedroom-ocean', tier: 'multi-bedroom', category: 'Royale Two-Bedroom', name: 'Royale Two-Bedroom — Ocean View', view: 'Ocean View', openingRate: 500000 },
-  { ...base, id: 'royale-suite-coastal', tier: 'suite', category: 'Royale Suite', name: 'Royale Suite — Coastal View', view: 'Coastal View', openingRate: 500000 },
-  { ...base, id: 'royale-suite-ocean', tier: 'suite', category: 'Royale Suite', name: 'Royale Suite — Ocean View', view: 'Ocean View', openingRate: 575000 },
-  { ...base, id: 'executive-suite-ocean', tier: 'suite', category: 'Executive Suite', name: 'Executive Suite — Ocean View', view: 'Ocean View', openingRate: 750000 },
+  { ...base, id: 'royale-room-resort-side', tier: 'room', category: 'Royale Room', name: 'Royale Room, Standard', view: 'Resort Side', openingRate: 250000 },
+  { ...base, id: 'royale-room-pool-terrace', tier: 'room', category: 'Royale Room', name: 'Royale Room, Pool Terrace View', view: 'Pool Terrace View', openingRate: 275000 },
+  { ...base, id: 'royale-room-coastal', tier: 'room', category: 'Royale Room', name: 'Royale Room, Coastal View', view: 'Coastal View', openingRate: 300000 },
+  { ...base, id: 'royale-room-ocean', tier: 'room', category: 'Royale Room', name: 'Royale Room, Ocean View', view: 'Ocean View', openingRate: 325000 },
+  { ...base, id: 'royale-two-bedroom-coastal', tier: 'multi-bedroom', category: 'Royale Two-Bedroom', name: 'Royale Two-Bedroom, Coastal View', view: 'Coastal View', openingRate: 450000 },
+  { ...base, id: 'royale-two-bedroom-ocean', tier: 'multi-bedroom', category: 'Royale Two-Bedroom', name: 'Royale Two-Bedroom, Ocean View', view: 'Ocean View', openingRate: 500000 },
+  { ...base, id: 'royale-suite-coastal', tier: 'suite', category: 'Royale Suite', name: 'Royale Suite, Coastal View', view: 'Coastal View', openingRate: 500000 },
+  { ...base, id: 'royale-suite-ocean', tier: 'suite', category: 'Royale Suite', name: 'Royale Suite, Ocean View', view: 'Ocean View', openingRate: 575000 },
+  { ...base, id: 'executive-suite-ocean', tier: 'suite', category: 'Executive Suite', name: 'Executive Suite, Ocean View', view: 'Ocean View', openingRate: 750000 },
   { ...base, id: 'grand-suite', tier: 'signature', category: 'Grand Suite', name: 'Grand Suite', view: null, openingRate: 1250000 },
-  { ...base, id: 'presidential-suite-ocean', tier: 'signature', category: 'Presidential Suite', name: 'Presidential Suite — Ocean View', view: 'Ocean View', openingRate: 2000000 },
+  { ...base, id: 'presidential-suite-ocean', tier: 'signature', category: 'Presidential Suite', name: 'Presidential Suite, Ocean View', view: 'Ocean View', openingRate: 2000000 },
 ]
 
 /** Format a whole-naira amount, e.g. 250000 -> "₦250,000". */

@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   normaliseEmail,
@@ -7,7 +8,12 @@ import {
   sanitiseMultiline,
   sanitiseText,
 } from '../lib/registrations/normalise.ts'
-import { validateFirstLook, validateFoundingGuest } from '../lib/registrations/validate.ts'
+import {
+  ARRIVAL_OPTIONS,
+  canonicalArrivalWindow,
+  validateFirstLook,
+  validateFoundingGuest,
+} from '../lib/registrations/validate.ts'
 
 // ── Normalisation ─────────────────────────────────────────────────────────────
 
@@ -130,7 +136,7 @@ const validFoundingGuest = {
   phone: '+2348031234567',
   secondName: 'Charles Babbage',
   attendance: true,
-  arrival: 'Afternoon (12:00 noon – 4:00 p.m.)',
+  arrival: 'Afternoon (12:00 noon to 4:00 p.m.)',
   arrivalNotes: 'Arriving from Abuja.',
   conditionsAck: true,
   updates: false,
@@ -153,6 +159,121 @@ test('Founding Guest: an arrival time outside the offered list is refused', () =
   assert.equal(result.ok, false)
   if (result.ok) return
   assert.ok(result.errors.arrival)
+})
+
+// ── Arrival window compatibility ──────────────────────────────────────────────
+//
+// In October 2026 two arrival windows were reworded to remove en dashes. The
+// wording a visitor sees changed; the value stored in arrival_window did not.
+// These tests pin both halves of that contract.
+
+/** The four values arrival_window has always held, and must keep holding. */
+const CANONICAL_WINDOWS = [
+  'Morning (before 12:00 noon)',
+  'Afternoon (12:00 noon \u2013 4:00 p.m.)',
+  'Early evening (4:00 p.m. \u2013 7:00 p.m.)',
+  'Later in the evening (after 7:00 p.m.)',
+]
+
+const LEGACY_AFTERNOON = 'Afternoon (12:00 noon \u2013 4:00 p.m.)'
+const CURRENT_AFTERNOON = 'Afternoon (12:00 noon to 4:00 p.m.)'
+const LEGACY_EVENING = 'Early evening (4:00 p.m. \u2013 7:00 p.m.)'
+const CURRENT_EVENING = 'Early evening (4:00 p.m. to 7:00 p.m.)'
+
+test('arrival windows shown to visitors contain no dashes', () => {
+  for (const option of ARRIVAL_OPTIONS) {
+    assert.ok(!option.includes('\u2013'), `en dash in offered option: ${option}`)
+    assert.ok(!option.includes('\u2014'), `em dash in offered option: ${option}`)
+  }
+})
+
+test('a current submission is accepted and stored in canonical form', () => {
+  const result = validateFoundingGuest({ ...validFoundingGuest, arrival: CURRENT_AFTERNOON })
+  assert.equal(result.ok, true)
+  if (!result.ok) return
+  // The visitor saw "to"; the database keeps the original en dash.
+  assert.equal(result.record.arrivalWindow, LEGACY_AFTERNOON)
+})
+
+test('a legacy submission from a stale page is accepted, not rejected', () => {
+  // The exact failure this guards: a visitor loaded the form before the
+  // rewording and submits afterwards.
+  for (const legacy of [LEGACY_AFTERNOON, LEGACY_EVENING]) {
+    const result = validateFoundingGuest({ ...validFoundingGuest, arrival: legacy })
+    assert.equal(result.ok, true, `legacy wording was refused: ${legacy}`)
+    if (!result.ok) return
+    assert.equal(result.record.arrivalWindow, legacy)
+  }
+})
+
+test('every offered window is accepted by the server', () => {
+  for (const option of ARRIVAL_OPTIONS) {
+    const result = validateFoundingGuest({ ...validFoundingGuest, arrival: option })
+    assert.equal(result.ok, true, `offered option was refused: ${option}`)
+  }
+})
+
+test('historical data consistency: both wordings store byte-identical values', () => {
+  const pairs = [
+    [CURRENT_AFTERNOON, LEGACY_AFTERNOON],
+    [CURRENT_EVENING, LEGACY_EVENING],
+  ]
+  for (const [current, legacy] of pairs) {
+    assert.equal(canonicalArrivalWindow(current), canonicalArrivalWindow(legacy))
+  }
+  // Nothing can introduce a second spelling into the column.
+  const stored = ARRIVAL_OPTIONS.map((o) => canonicalArrivalWindow(o))
+  assert.deepEqual(stored, CANONICAL_WINDOWS)
+  for (const value of stored) {
+    assert.ok(CANONICAL_WINDOWS.includes(value as string), `uncanonical value stored: ${value}`)
+  }
+})
+
+test('normalisation is stable: a canonical value normalises to itself', () => {
+  for (const value of CANONICAL_WINDOWS) {
+    assert.equal(canonicalArrivalWindow(value), value)
+  }
+})
+
+test('invalid arrival windows are refused', () => {
+  const rejected = [
+    'Whenever I like',
+    '',
+    '   ',
+    // An em dash where the legacy value had an en dash: close, but not offered.
+    'Afternoon (12:00 noon \u2014 4:00 p.m.)',
+    // A plain hyphen, likewise never an offered value.
+    'Afternoon (12:00 noon - 4:00 p.m.)',
+    'afternoon (12:00 noon to 4:00 p.m.)',
+    // Inherited property names must not resolve through the lookup.
+    'constructor',
+    'toString',
+    '__proto__',
+  ]
+  for (const arrival of rejected) {
+    assert.equal(canonicalArrivalWindow(arrival), null, `wrongly accepted: ${arrival}`)
+    const result = validateFoundingGuest({ ...validFoundingGuest, arrival })
+    assert.equal(result.ok, false, `wrongly accepted: ${arrival}`)
+    if (result.ok) return
+    assert.ok(result.errors.arrival)
+  }
+})
+
+test('a missing or non-string arrival window is refused', () => {
+  for (const arrival of [undefined, null, 42, {}, []]) {
+    const result = validateFoundingGuest({ ...validFoundingGuest, arrival })
+    assert.equal(result.ok, false, `wrongly accepted: ${String(arrival)}`)
+  }
+})
+
+test('the form offers exactly the windows the server validates', () => {
+  // The form keeps its own copy of the list for client-side validation. If the
+  // two drift apart, a visitor is offered something the server will refuse.
+  const source = readFileSync(new URL('../components/FoundingGuestForm.tsx', import.meta.url), 'utf8')
+  const block = source.match(/const ARRIVAL_OPTIONS = \[([^\]]*)\]/)
+  assert.ok(block, 'could not find ARRIVAL_OPTIONS in FoundingGuestForm.tsx')
+  const offered = (block[1].match(/'[^']*'/g) ?? []).map((quoted) => quoted.slice(1, -1))
+  assert.deepEqual(offered, ARRIVAL_OPTIONS)
 })
 
 test('Founding Guest: attendance and conditions must both be accepted', () => {

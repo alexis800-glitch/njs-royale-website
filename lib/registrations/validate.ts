@@ -10,13 +10,56 @@ export type RegistrationKind = 'first-look' | 'founding-guest'
 
 export const REGISTRATION_KINDS: RegistrationKind[] = ['first-look', 'founding-guest']
 
-/** Arrival windows offered on the Founding Guest form. The server accepts no others. */
+/**
+ * Arrival windows offered on the Founding Guest form, in the wording a visitor
+ * sees. Two of them were reworded in October 2026 to remove en dashes.
+ */
 export const ARRIVAL_OPTIONS = [
   'Morning (before 12:00 noon)',
-  'Afternoon (12:00 noon – 4:00 p.m.)',
-  'Early evening (4:00 p.m. – 7:00 p.m.)',
+  'Afternoon (12:00 noon to 4:00 p.m.)',
+  'Early evening (4:00 p.m. to 7:00 p.m.)',
   'Later in the evening (after 7:00 p.m.)',
 ]
+
+/**
+ * What gets written to the arrival_window column, keyed by every wording the
+ * server accepts.
+ *
+ * Two things are going on here:
+ *
+ * 1. The pre-October-2026 wordings are still accepted. A visitor may be holding
+ *    a page that was served before the rewording; their submission must not be
+ *    rejected because the copy changed underneath them.
+ *
+ * 2. Every accepted wording normalises to the ORIGINAL en-dash value, so rows
+ *    written before and after the rewording are byte-identical and remain
+ *    directly comparable with no migration. The stored value is internal: it is
+ *    only ever inserted by lib/registrations/store.ts and is never rendered
+ *    back to a visitor, so the en dash here is not customer-facing copy.
+ *
+ * The en dashes are written as \u2013 escapes deliberately. A literal dash in
+ * this file would read like an oversight to anyone auditing the public copy for
+ * dashes, and "tidying" it would silently split the column into two spellings.
+ * Do not replace these escapes with the dash-free wording.
+ */
+const ARRIVAL_WINDOW_CANONICAL = new Map<string, string>([
+  ['Morning (before 12:00 noon)', 'Morning (before 12:00 noon)'],
+  ['Afternoon (12:00 noon to 4:00 p.m.)', 'Afternoon (12:00 noon \u2013 4:00 p.m.)'],
+  ['Afternoon (12:00 noon \u2013 4:00 p.m.)', 'Afternoon (12:00 noon \u2013 4:00 p.m.)'],
+  ['Early evening (4:00 p.m. to 7:00 p.m.)', 'Early evening (4:00 p.m. \u2013 7:00 p.m.)'],
+  ['Early evening (4:00 p.m. \u2013 7:00 p.m.)', 'Early evening (4:00 p.m. \u2013 7:00 p.m.)'],
+  ['Later in the evening (after 7:00 p.m.)', 'Later in the evening (after 7:00 p.m.)'],
+])
+
+/**
+ * The canonical arrival_window value for an accepted wording, or null when the
+ * value is not an offered window. Accepts both the current and the legacy
+ * wording; a Map is used so that inherited property names such as
+ * 'constructor' cannot resolve to anything.
+ */
+export function canonicalArrivalWindow(value: string): string | null {
+  return ARRIVAL_WINDOW_CANONICAL.get(value) ?? null
+}
 
 /** Per-field limits. Anything longer is a mistake or an attack, not a name. */
 const LIMITS = {
@@ -160,10 +203,14 @@ export function validateFoundingGuest(input: Record<string, unknown>): Validatio
   const attendance = isTrue(input.attendance)
   if (!attendance) errors.attendance = 'Please confirm attendance from 23 to 25 July 2027.'
 
+  // Stored in its canonical form, which may differ from the wording submitted.
   const arrival = sanitiseText(input.arrival, LIMITS.arrival)
+  let arrivalWindow: string | null = null
   if (!arrival) errors.arrival = 'Select your expected arrival time on 23 July 2027.'
-  else if (ARRIVAL_OPTIONS.indexOf(arrival) === -1)
-    errors.arrival = 'Select an arrival time from the list.'
+  else {
+    arrivalWindow = canonicalArrivalWindow(arrival)
+    if (!arrivalWindow) errors.arrival = 'Select an arrival time from the list.'
+  }
 
   const conditionsAck = isTrue(input.conditionsAck)
   if (!conditionsAck)
@@ -184,7 +231,7 @@ export function validateFoundingGuest(input: Record<string, unknown>): Validatio
       // The Founding Guest stay is for two, confirmed by the attendance tick.
       attending: true,
       partySize: 2,
-      arrivalWindow: arrival,
+      arrivalWindow,
       arrivalNotes: sanitiseMultiline(input.arrivalNotes, LIMITS.notes) || null,
       marketingOptIn: isTrue(input.updates),
       policyAck: false,

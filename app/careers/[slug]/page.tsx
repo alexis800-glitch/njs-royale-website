@@ -37,7 +37,7 @@ export function generateMetadata({ params }: Params): Metadata {
     description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${isJobOpen(jobItem) ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications temporarily closed.'}`,
     alternates: { canonical: `/careers/${jobItem.slug}` },
     openGraph: {
-      title: `${jobItem.title} — Careers at NJS Royale Beach Resort`,
+      title: `${jobItem.title}, Careers at NJS Royale Beach Resort`,
       description: jobItem.summary,
       url: `/careers/${jobItem.slug}`,
     },
@@ -234,7 +234,7 @@ export default function JobDetailPage({ params }: Params) {
             Apply by Email
           </a>
           <p className="mt-3 text-white/45 text-[12px] leading-relaxed font-[family-name:var(--font-inter)]">
-            This opens your email app with the subject “Application – {jobItem.title}” already filled
+            This opens your email app with the subject “Application for {jobItem.title}” already filled
             in. Please attach your CV before sending.
           </p>
         </section> : (

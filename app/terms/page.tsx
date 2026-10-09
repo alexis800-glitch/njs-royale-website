@@ -26,7 +26,7 @@ export default function TermsOfService() {
     <main className="bg-navy min-h-screen">
       {/* Header */}
       <header className="flex items-center justify-between px-6 sm:px-10 py-6 border-b border-white/10">
-        <Link href="/" className="flex items-center gap-3" aria-label="NJS Royale Beach Resort — home">
+        <Link href="/" className="flex items-center gap-3" aria-label="NJS Royale Beach Resort home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/njs-logos/njs-crest-mark.png" alt="NJS Royale crest" className="h-10 w-auto" />
           <span className="flex flex-col leading-none">

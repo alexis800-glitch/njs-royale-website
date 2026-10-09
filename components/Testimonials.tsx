@@ -13,7 +13,7 @@ const pillars = [
   {
     Icon: Umbrella,
     title: 'Opening in Two Phases',
-    body: 'The resort opens on December 12, 2026 — its restaurants and lounges, live entertainment, the pool terrace and the private beach. Guest rooms and accommodation follow on July 23, 2027.',
+    body: 'The resort opens on December 12, 2026, with its restaurants and lounges, live entertainment, the pool terrace and the private beach. Guest rooms and accommodation follow on July 23, 2027.',
   },
   {
     Icon: Users,
@@ -50,7 +50,7 @@ export default function Testimonials() {
             The NJS Royale Experience
           </h2>
           <p className="text-navy/50 text-base font-[family-name:var(--font-inter)] max-w-lg mx-auto">
-            A resort conceived for those who demand more than accommodation — crafted for those who expect an experience.
+            A resort conceived for those who demand more than accommodation, crafted for those who expect an experience.
           </p>
         </div>
 

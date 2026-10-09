@@ -10,7 +10,7 @@ const features = [
   {
     Icon: CalendarCheck,
     title: 'Guest Reservations',
-    desc: 'Room booking, spa appointments, beach activities, indoor golf, kids activities, and restaurant reservations — structured for a unified guest journey.',
+    desc: 'Room booking, spa appointments, beach activities, indoor golf, kids activities, and restaurant reservations, structured for a unified guest journey.',
   },
   {
     Icon: Bot,

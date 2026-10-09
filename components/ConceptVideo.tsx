@@ -96,7 +96,7 @@ export default function ConceptVideo() {
             className="hidden sm:block text-white/60 text-base leading-relaxed max-w-xl font-[family-name:var(--font-inter)]"
           >
             A cinematic view of the second-floor ocean-facing pool terrace as the sun settles over
-            the Atlantic — bringing together the infinity pool, cabanas, pool bar and warm evening
+            the Atlantic, bringing together the infinity pool, cabanas, pool bar and warm evening
             atmosphere of NJS Royale.
           </motion.p>
 

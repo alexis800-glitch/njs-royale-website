@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Careers at NJS Royale Beach Resort',
     description:
-      'Phase One Recruitment Vacancies — roles across restaurant, kitchen, administration and the Phase I Marketing Team. Apply by October 15, 2026.',
+      'Phase One Recruitment Vacancies. Roles across restaurant, kitchen, administration and the Phase I Marketing Team. Apply by October 15, 2026.',
     url: '/careers',
   },
 }

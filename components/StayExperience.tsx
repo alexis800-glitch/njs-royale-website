@@ -21,7 +21,7 @@ export default function StayExperience() {
         <p className="text-navy/60 leading-relaxed font-[family-name:var(--font-inter)]">
           When accommodation opens with Phase Two on July 23, 2027, stays at NJS Royale carry a
           two-night minimum. The resort is designed as a destination, not simply an overnight
-          stay — two nights invite you to settle into the rhythm of the coast: unhurried
+          stay. Two nights invite you to settle into the rhythm of the coast: unhurried
           mornings by the water, long golden afternoons, and evenings that unfold at their own
           pace.
         </p>

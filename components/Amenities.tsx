@@ -8,7 +8,7 @@ const amenities = [
   {
     Icon: Waves,
     title: 'Infinity Pool',
-    desc: 'An ocean-facing infinity pool — a centrepiece of the resort, with a pool bar and uninterrupted Atlantic views.',
+    desc: 'An ocean-facing infinity pool, a centrepiece of the resort, with a pool bar and uninterrupted Atlantic views.',
   },
   {
     Icon: Leaf,
@@ -28,7 +28,7 @@ const amenities = [
   {
     Icon: Sun,
     title: 'Private Beach',
-    desc: 'An exclusive stretch of Atlantic shoreline reserved solely for NJS Royale guests — pristine, private, and breathtaking.',
+    desc: 'An exclusive stretch of Atlantic shoreline reserved solely for NJS Royale guests, pristine, private and breathtaking.',
   },
   {
     Icon: BellRing,
