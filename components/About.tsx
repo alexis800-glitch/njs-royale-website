@@ -91,28 +91,6 @@ export default function About() {
 
         </div>
 
-        {/* Founder's Vision */}
-        <motion.div
-          variants={fadeUp(0.3)}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="mt-10 pt-8 border-t border-gold/20"
-        >
-          <div className="max-w-2xl mx-auto text-center">
-            <div>
-              <p className="text-gold text-[10px] uppercase tracking-[3px] mb-2 font-[family-name:var(--font-inter)]">
-                Founder&apos;s Vision
-              </p>
-              <p className="font-[family-name:var(--font-cormorant)] text-navy text-2xl italic mb-4 leading-snug">
-                Nicole Shuler
-              </p>
-              <p className="text-navy/55 text-base leading-relaxed font-[family-name:var(--font-inter)]">
-                NJS Royale Beach Resort was born from Nicole Shuler&apos;s vision to create a soulful coastal escape where Nigerian heritage meets refined hospitality. Designed as a destination for belonging, beauty, wellness, and refined hospitality, the resort reflects a lifelong commitment to excellence, culture, and heartfelt hospitality.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
       </div>
     </section>
   )
