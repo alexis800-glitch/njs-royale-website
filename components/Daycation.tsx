@@ -75,7 +75,7 @@ export default function PhaseOne() {
             {PHASE_ONE_INCLUDES.map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-3 text-navy/75 text-[15px] font-[family-name:var(--font-inter)]"
+                className="flex items-center gap-3 text-navy/75 text-[15px] uppercase font-[family-name:var(--font-inter)]"
               >
                 <span aria-hidden="true" className="h-1.5 w-1.5 flex-shrink-0 rotate-45 bg-gold" />
                 {item}

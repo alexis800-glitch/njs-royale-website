@@ -14,7 +14,7 @@ export const FOUNDING_GUEST_CANONICAL_URL = 'https://www.njsbeachresort.com/foun
 export const FOUNDING_GUEST_DISPLAY_URL = 'www.njsbeachresort.com/founding-guest'
 export const FOUNDING_GUEST_QR_SRC = '/founding-guest/njs-founding-guest-qr.svg'
 
-// Invitation copy and the stay, as confirmed by Mrs Shuler. Breakfast is confirmed
+// Invitation copy and the stay, as confirmed by NJS Royale. Breakfast is confirmed
 // for the morning after the Grand Opening only.
 //
 // CORRECTED 24 September 2026: this sentence described 23 July 2027 as the
