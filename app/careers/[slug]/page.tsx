@@ -26,10 +26,12 @@ export function generateStaticParams() {
 
 export const dynamicParams = false
 
-type Params = { params: { slug: string } }
+// Next 15 delivers route params as a Promise, so both entry points await it.
+type Params = { params: Promise<{ slug: string }> }
 
-export function generateMetadata({ params }: Params): Metadata {
-  const jobItem = getJob(params.slug)
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { slug } = await params
+  const jobItem = getJob(slug)
   if (!jobItem) return { title: 'Vacancy not found' }
   const dept = getDepartment(jobItem.department)
   return {
@@ -44,8 +46,9 @@ export function generateMetadata({ params }: Params): Metadata {
   }
 }
 
-export default function JobDetailPage({ params }: Params) {
-  const jobItem = getJob(params.slug)
+export default async function JobDetailPage({ params }: Params) {
+  const { slug } = await params
+  const jobItem = getJob(slug)
   if (!jobItem) notFound()
 
   const applicationsOpen = isJobOpen(jobItem)
