@@ -27,6 +27,8 @@ export const CAREERS_LOCATION =
 export const APPLICATION_DEADLINE = 'October 15, 2026'
 /** End of the application window, expressed in Lagos time (WAT, UTC+01:00). */
 export const APPLICATION_DEADLINE_ISO = '2026-10-15T23:59:59+01:00'
+// Explicit Phase One recruitment closure. Reopen only after a newly approved campaign.
+export const APPLICATIONS_CLOSED = true
 export const PHASE_ONE_OPENING = 'December 12, 2026'
 
 export const GENERAL_NOTE =
@@ -599,7 +601,7 @@ const CLOSED_JOB_SLUGS: ReadonlySet<string> = new Set([
 ])
 
 export const isJobOpen = (jobItem: Job): boolean =>
-  !CLOSED_JOB_SLUGS.has(jobItem.slug)
+  !APPLICATIONS_CLOSED && !CLOSED_JOB_SLUGS.has(jobItem.slug)
 
 export const OPEN_CAREERS = CAREERS.filter(isJobOpen)
 export const OPEN_TITLES = OPEN_CAREERS.length

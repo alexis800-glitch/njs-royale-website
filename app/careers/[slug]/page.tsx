@@ -34,7 +34,7 @@ export function generateMetadata({ params }: Params): Metadata {
   const dept = getDepartment(jobItem.department)
   return {
     title: jobItem.title,
-    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${isJobOpen(jobItem) ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications temporarily closed.'}`,
+    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${isJobOpen(jobItem) ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications closed on October 15, 2026.'}`,
     alternates: { canonical: `/careers/${jobItem.slug}` },
     openGraph: {
       title: `${jobItem.title}, Careers at NJS Royale Beach Resort`,
@@ -97,7 +97,7 @@ export default function JobDetailPage({ params }: Params) {
   }
 
   const meta = [
-    { icon: Users, text: applicationsOpen ? positionsLabel + ' available' : 'Applications temporarily closed' },
+    { icon: Users, text: applicationsOpen ? positionsLabel + ' available' : 'Applications closed' },
     { icon: MapPin, text: CAREERS_LOCATION },
     ...(applicationsOpen ? [{ icon: CalendarClock, text: `Apply by ${APPLICATION_DEADLINE}` }] : []),
   ]
@@ -240,10 +240,11 @@ export default function JobDetailPage({ params }: Params) {
         </section> : (
           <section className="mt-12 rounded-xl border border-gold/25 bg-white/[0.03] p-6 sm:p-8" aria-labelledby="applications-closed">
             <h2 id="applications-closed" className="font-[family-name:var(--font-cormorant)] text-white text-2xl sm:text-3xl mb-3">
-              Applications temporarily closed
+              Applications closed
             </h2>
             <p className="text-white/75 text-[15px] leading-relaxed font-[family-name:var(--font-inter)]">
-              We have received sufficient applications for this role and are not accepting further applications at this time. Thank you for your interest in NJS Royale Beach Resort.
+              The application deadline was October 15, 2026. We are no longer accepting
+              applications for this role. Thank you for your interest in NJS Royale Beach Resort.
             </p>
           </section>
         )}
@@ -254,7 +255,7 @@ export default function JobDetailPage({ params }: Params) {
             className="inline-flex min-h-[44px] items-center gap-2 rounded-md text-gold text-[12px] uppercase tracking-[1.5px] transition-colors duration-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy font-[family-name:var(--font-inter)]"
           >
             <ArrowLeft aria-hidden="true" className="h-4 w-4" strokeWidth={1.75} />
-            Back to all vacancies
+            Back to careers
           </Link>
         </div>
       </div>
