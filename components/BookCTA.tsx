@@ -18,12 +18,6 @@ const info = [
     value: 'info@njsbeachresort.com',
     href: 'mailto:info@njsbeachresort.com',
   },
-  {
-    Icon: Mail,
-    label: 'Careers / Recruitment',
-    value: 'careers@njsbeachresort.com',
-    href: 'mailto:careers@njsbeachresort.com',
-  },
 ]
 
 export default function BookCTA() {
