@@ -18,6 +18,14 @@
 //   maps.gstatic.com          map tiles and assets
 //   maps.googleapis.com       map data requests
 //
+// Observed in report-only mode on 27 October 2026: Vercel's preview comment
+// toolbar loads https://vercel.live as a script and frames it, which this policy
+// reports. That is PREVIEW ONLY and was measured, not assumed: production makes
+// zero requests to vercel.live, previews make one. vercel.live is deliberately
+// NOT allowed here, so the production policy stays tight. If this policy is ever
+// enforced, the toolbar will stop working on previews; allow vercel.live for the
+// preview environment only if that matters.
+//
 // `script-src` carries 'unsafe-inline' because Next.js emits inline bootstrap
 // and flight-data scripts (38 of them on the homepage). The nonce alternative
 // requires middleware, which would add an attack surface this site does not
