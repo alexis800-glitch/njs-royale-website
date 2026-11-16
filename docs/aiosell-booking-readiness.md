@@ -4,9 +4,44 @@
 > production change, no deployment, no booking functionality is activated.
 > Prepared 16 November 2026.
 >
+> **NJS position, 16 November 2026.** NJS supports developing an NJS-branded
+> booking experience connected to Aiosell **in principle**, and explicitly
+> states that the API route is **not approved, contractually or technically**,
+> until Aiosell confirms the ten items in §11.0. The recommendation in §5 is a
+> recommendation, not a decision. No implementation is authorised.
+>
+> **The existing `feature/aiosell-phase1` and `feature/aiosell-phase2` branches
+> are to remain untouched** until a separate modernisation and integration plan
+> is approved.
+>
 > **Credentials policy (unchanged):** no usernames, passwords, tokens or API
 > secrets may appear in this repository. They live only in `.env.local`
 > (gitignored) and in Vercel environment variables.
+
+---
+
+## 0.0 Evidence standard
+
+Every substantive claim below carries one of three labels. They are not
+decoration: the difference between them decides how much weight a claim can bear
+in a commercial negotiation.
+
+| Label | Meaning |
+|---|---|
+| **[MEASURED]** | Observed directly on 16 November 2026 by inspecting the artefact named, and reproducible. |
+| **[RECORD]** | Taken from this repository's own commits and documents, written by the earlier integration work. Accurate as a record of what was done and said; **not re-verified in November 2026.** |
+| **[INFERENCE]** | Reasoning from the above, or from general knowledge. **May be wrong. Must be confirmed with Aiosell before it is relied on.** |
+
+Where a label is absent, the statement is descriptive of this repository and can
+be checked by reading the file named.
+
+**The single most important caveat.** Every [MEASURED] finding about Aiosell's
+hosted booking engine comes from **one** property's public page — the sample
+Aiosell themselves shared (`octave-hotel-sarjapur-rd`), which is on their
+default theme. It establishes what their standard engine does. It does **not**
+establish what an NJS-specific or higher-tier configuration might do. That is
+precisely why Question 6 in Section 11 asks them to confirm the limits in
+writing.
 
 ---
 
@@ -130,13 +165,21 @@ hosted page does not.
 
 ### 2.1 The proven result
 
+**[RECORD]** — from the commits and the plan document on
+`feature/aiosell-phase2`. This result was **not reproduced in November 2026**;
+the sandbox credentials are from July 2026 and may no longer be valid
+(Question 14).
+
 Booking `NJS-20260714-FU4VDF` was accepted by Aiosell with **HTTP 200 in one
 attempt**, using endpoint partner path `sample-ota` and payload
 `hotelCode: sandbox-ota`. Final state `paid` / `synced`. No `cmBookingId` was
 returned.
 
-This is the single most important fact in this document: **the hard part is
-already working.** Option B is not a proposal, it is a demonstrated capability.
+This is the single most important fact in this document: **the hard part was
+demonstrated working.** Option C is not a proposal, it was a working capability
+in July 2026 — against the sandbox, on a codebase 88 commits behind `main`, with
+no payment step and single-room bookings only. Treat it as strong evidence of
+feasibility, not as a system ready to switch on.
 
 ### 2.2 Branch health — needs attention
 
@@ -165,29 +208,32 @@ as a partner under a small contract* (the first two are done).
 
 ### Option A — Aiosell's branded / white-label booking engine
 
-**Supported.** Aiosell confirmed (16 July 2026) that the engine can be
-white-labelled to our domain and branding, and quoted *"the payment gateway
-charge will be 5%"*.
+**[RECORD] Supported.** Aiosell confirmed in writing on 16 July 2026 that the
+engine can be white-labelled to our domain and branding, and quoted *"the payment
+gateway charge will be 5%"*. We have never been shown a white-labelled example,
+so what that branding achieves in practice is **unverified**.
 
 Measured limits are in Section 4. The 5% remains unexplained and is Question 1
 below.
 
 ### Option B — Aiosell's embedded booking widget
 
-**No evidence this exists.** Aiosell's public marketing describes white-labelling
-and URL masking, not an embed. No widget or iframe snippet appears in their
+**[INFERENCE] from absence of evidence — not a finding that it does not exist.**
+Aiosell's public marketing describes white-labelling and URL masking, not an
+embed. No widget or iframe snippet appears in their
 published documentation, and none was offered in the July correspondence. The
 hosted page is an Angular single-page application that sets
 `robots: noindex, nofollow` — a shape designed to be navigated to, not embedded.
 
-**Treat as unavailable until Aiosell states otherwise in writing.** It is
-Question 3 below. Note that even if a widget existed, it would inherit the same
+We have not asked them directly, and a widget may simply be undocumented.
+**Treat as unavailable for planning purposes until Aiosell states otherwise in
+writing**, but ask rather than assume. It is Question 5 below. Note that even if a widget existed, it would inherit the same
 styling ceiling measured in Section 4, so it would not solve the brand problem.
 
 ### Option C — Aiosell booking APIs with an NJS-designed frontend
 
-**Supported, permitted, and already built.** This is the OTA / Channel Manager
-model: the NJS website registers as a private sales channel alongside
+**[RECORD] Supported, permitted, and already built against the sandbox.** This
+is the OTA / Channel Manager model: the NJS website registers as a private sales channel alongside
 Booking.com and Expedia.
 
 - Aiosell pushes inventory, rates and restrictions to one endpoint we host; we
@@ -209,9 +255,15 @@ the handover; Section 4 measures how badly.
 
 ## 4. The customization ceiling, measured
 
-Assessed directly against Aiosell's live sample engine
-(`be.aiosell.com/book/octave-hotel-sarjapur-rd`, the example Aiosell themselves
-shared) on 16 November 2026.
+**[MEASURED]** unless marked otherwise. Assessed by fetching Aiosell's live
+sample engine (`be.aiosell.com/book/octave-hotel-sarjapur-rd`, the example
+Aiosell themselves shared) and its stylesheet on 16 November 2026, and reading
+the served HTML and CSS.
+
+**Scope of the measurement:** one property, on Aiosell's default theme. These
+figures describe their standard engine. Whether a different tier, a paid
+white-label add-on, or a bespoke arrangement lifts any of these limits is
+**unknown** and is Question 6.
 
 ### 4.1 Theming surface: three CSS custom properties
 
@@ -250,15 +302,27 @@ different company's software wearing an NJS-coloured button.
 
 ### 4.4 The payment question is serious for a Nigerian property
 
-The hosted engine loads Razorpay and Stripe. Razorpay does not serve Nigeria.
-That leaves Stripe, whose support for Nigerian entities collecting NGN is
-limited — and no Paystack, which is the natural processor for a Lagos resort
-charging naira.
+**[MEASURED]** The sample engine's HTML loads exactly two payment scripts:
+`checkout.razorpay.com/v1/checkout.js` and `js.stripe.com/v3/`. No Paystack
+script is present.
+
+**[INFERENCE] — and this is the inference most likely to be wrong, so do not
+act on it without an answer to Questions 2 and 7.** Razorpay serves India, not
+Nigeria. If the same two processors are all that is available to an NJS
+property, settlement of NGN to a Nigerian bank account would rest on Stripe
+alone, whose support for Nigerian entities is limited. But payment providers are
+very commonly configured per property and per region, so the absence of Paystack
+on an Indian hotel's page is **weak evidence** about what a Nigerian property
+would be offered. It is a question to ask, not a finding to rely on.
 
 This directly compounds the unexplained **5%**. On the published opening rates, a
 two-night Royale Suite (Ocean View) at ₦575,000 is ₦1,150,000 — **₦57,500 in
 fees**. A two-night Presidential Suite is ₦4,000,000 — **₦200,000**. Paystack's
 standard local-card pricing is materially below 5% and capped.
+
+**[RECORD]** The 5% itself is Aiosell's own figure, quoted to us in writing on
+16 July 2026 and recorded in the Open Questions. Its scope has never been
+explained.
 
 **Do not accept the 5% figure until Questions 1 and 2 are answered.**
 
@@ -297,8 +361,16 @@ NJS-designed frontend — and keep Option D as a documented contingency.
 | Operational burden | Aiosell carries it | We carry payments + support |
 | Commercial | 5% (scope unclear) | Partner contract (terms unseen) |
 
-Option C is the only option that satisfies the stated objective. It is also, in
-this repository, the one with a proven HTTP 200.
+Option C is the only option that satisfies the stated objective **on the
+evidence currently available**. It is also, in this repository, the one with a
+recorded HTTP 200.
+
+**This recommendation is conditional, not a decision.** It rests on [MEASURED]
+findings from a single sample property and on [RECORD] correspondence from July
+2026. Questions 1–8 in Section 11 can each change it — in particular, a
+satisfactory answer on NGN settlement plus a genuinely deeper customisation tier
+would make Option A viable again, and an unacceptable partner contract would
+make Option C impossible regardless of its technical merits.
 
 Its honest costs: we take on payment handling, PCI scope via Paystack's hosted
 checkout, refund operations and first-line booking support; and Aiosell requires
@@ -497,6 +569,35 @@ Rules, consistent with the existing implementation:
 
 Ordered by what blocks what. Items 1–8 block any production decision.
 
+Several of these ask Aiosell to confirm or correct something we measured or
+inferred ourselves. That is deliberate: where our evidence is one sample page or
+a chain of reasoning, their written answer is what turns it into fact.
+
+### 11.0 The ten confirmations required before approval
+
+These were set by NJS on 16 November 2026 as the conditions for authorising the
+API route. Each maps to the numbered questions that follow. **None is
+currently satisfied.**
+
+| # | Required confirmation | Questions | Status |
+|---|---|---|---|
+| 1 | Sandbox workflow matches what the guest-facing site needs | 23 | ☐ Not asked |
+| 2 | Production API access, documentation, contractual permission | 3, 8 | ☐ Open since Jul 2026 |
+| 3 | Availability, inventory and rate synchronisation | 11, 13, 10 | ☐ Partly open |
+| 4 | Reservation creation, modification, cancellation | 17, 18, 24 | ☐ Partly open |
+| 5 | Booking confirmation and reconciliation | 19 | ☐ Open — FETCH disabled |
+| 6 | NGN payments and settlement to a Nigerian account | 2 | ☐ Not asked |
+| 7 | Exact charges and the meaning of the 5% | 1 | ☐ Quoted, never explained |
+| 8 | Refunds, failed payments, duplicate-payment prevention | 18, 25 | ☐ Not asked |
+| 9 | Supported level of white-label customisation | 4, 6 | ☐ Measured, unconfirmed |
+| 10 | Whether a database mirror is authorised, and on what terms | 26 | ☐ Not asked |
+
+**Item 10 deserves emphasis.** The mirror is central to the recommended
+architecture, and it has never been put to Aiosell in writing as a question of
+authorisation — only treated as implied by their OTA model. If they decline it,
+or attach retention or security conditions we cannot meet, the architecture
+changes. Ask before building.
+
 ### Commercial — blocks the Option A/C decision
 
 1. **The 5% charge.** Is it payment-gateway processing, Aiosell commission, or
@@ -561,6 +662,37 @@ Ordered by what blocks what. Items 1–8 block any production decision.
 22. **Webhooks to us for reservation status.** Is there a push for bookings made
     on *other* channels that affect our mirror beyond inventory?
 
+### Required by NJS on 16 November 2026 — not previously asked
+
+23. **Sandbox-to-production workflow parity.** *(Blocking.)* The sandbox
+    integration we built and tested in July 2026 covered single-room bookings
+    with no payment step. Does the production workflow differ in any way from
+    what we exercised — in payload, sequence, required fields, or permitted
+    actions? Specifically: are **multi-room** bookings on a single reservation
+    supported, and is the payload shape the same? Our guest-facing site must
+    support a family taking two rooms on one reservation, which the sandbox
+    work never exercised.
+24. **Reservation lifecycle, end to end.** *(Blocking.)* Beyond the `modify`
+    scope question above, please confirm the full supported lifecycle for a
+    booking originating on our website: creation, amendment of dates, rooms,
+    guest names and occupancy, partial cancellation of one room within a
+    multi-room booking, and full cancellation. Which of these are supported via
+    API, and which require the Aiosell dashboard?
+25. **Duplicate-payment prevention.** *(Blocking.)* We understand a duplicate
+    `bookingId` is rejected at your end. Separately: if a guest's card is
+    charged but our push fails, or the guest submits twice and two payments
+    settle, what is the supported path to void or refund the second payment —
+    and does Aiosell play any part in it, or is it entirely ours to handle with
+    the payment processor?
+26. **Is a local mirror authorised?** *(Blocking.)* Your OTA model requires us to
+    receive pushed inventory, rate and restriction data and to serve our booking
+    UI from it. Please confirm **in writing** that storing this data locally is
+    authorised, and state any conditions: permitted retention period, whether
+    data must be purged when the partnership ends, required security controls
+    (encryption at rest, access logging), whether guest personal data from
+    reservations may be retained on our side and for how long, and the required
+    reconciliation frequency to prevent the mirror drifting from your records.
+
 ---
 
 ## 12. Staged implementation plan
@@ -570,8 +702,8 @@ Every stage ends at an approval gate. Nothing proceeds without sign-off.
 | Stage | Work | Exit gate |
 |---|---|---|
 | **0. Current** | This assessment; mockup for review | ☐ **Decision on Option C vs A** |
-| **1. Commercial** | Put Questions 1–3 to Aiosell; review the partner contract | ☐ Fees understood; NGN settlement confirmed |
-| **2. Branch health** | Rebase `feature/aiosell-phase1/2` onto `main`; regenerate the lockfile; re-run sandbox tests on Next 15.5.28 | ☐ Build green; sandbox push reproduced |
+| **1. Confirmations** | Put the ten required confirmations (§11.0) to Aiosell in writing; review the partner contract | ☐ **All ten answered in writing.** Nothing proceeds on a verbal or partial answer |
+| **2. Branch health** | **FROZEN — requires its own approval.** Rebasing `feature/aiosell-phase1/2` onto `main`, regenerating the lockfile and re-running sandbox tests is a separate plan NJS has not yet authorised. The branches stay untouched until then | ☐ Separate modernisation plan approved first |
 | **3. Boundary** | `lib/booking/` with the provider interface, config gates and the **mock adapter only**. `BOOKING_ENABLED = false` | ☐ Flag off in production; mock passes tests |
 | **4. UI** | The five-step journey in NJS styling against the mock adapter. Preview deployment, protected | ☐ Design approved; accessibility and mobile pass |
 | **5. Live data** | Wire the Aiosell adapter. Register the webhook **with Basic Auth enabled in the same change**. Seed the mirror | ☐ Mirror matches Aiosell; no unauthenticated window |
@@ -580,13 +712,16 @@ Every stage ends at an approval gate. Nothing proceeds without sign-off.
 | **8. Soft launch** | Enable for a small invited group; monitor | ☐ Real bookings reconcile correctly |
 | **9. Public** | `BOOKING_ENABLED = true` | ☐ Explicit written approval |
 
-Stages 1 and 2 can run in parallel. **Stage 3 must not begin before the Stage 0
-gate**, because the adapter that gets built depends entirely on that decision.
+**Stage 3 must not begin before the Stage 0 and Stage 1 gates both pass**,
+because the adapter that gets built depends entirely on the integration model,
+and the integration model depends on answers we do not have. Stage 2 is frozen
+independently.
 
 ### Prerequisite dates
 
-Stages 1–7 must complete before **19 December 2026** if advance reservations are
-to open on that date — approximately five weeks from now, of which Stage 1 is
+**[INFERENCE] — an estimate, not a plan with committed resource.**
+Stages 1–7 would need to complete before **19 December 2026** if advance
+reservations are to open on that date — approximately five weeks from now, of which Stage 1 is
 not in our control. If that proves too tight, the honest fallback is to open
 advance reservations by enquiry on 19 December and switch on online booking when
 Stage 9 passes, rather than rushing a payment flow.
