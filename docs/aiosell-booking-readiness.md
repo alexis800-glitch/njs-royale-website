@@ -7,8 +7,11 @@
 > **NJS position, 16 November 2026.** NJS supports developing an NJS-branded
 > booking experience connected to Aiosell **in principle**, and explicitly
 > states that the API route is **not approved, contractually or technically**,
-> until Aiosell confirms the ten items in §11.0. The recommendation in §5 is a
-> recommendation, not a decision. No implementation is authorised.
+> until Aiosell confirms **all ten** items in §11.0 **in writing**. Those ten
+> confirmations are mandatory and are a gate, not a parallel workstream. The
+> recommendation in §5 is a recommendation, not a decision. **No implementation
+> is authorised, no payment processor is selected, and no live booking or
+> payment functionality may be enabled.**
 >
 > **The existing `feature/aiosell-phase1` and `feature/aiosell-phase2` branches
 > are to remain untouched** until a separate modernisation and integration plan
@@ -59,13 +62,33 @@ has been open since **15 July 2026**, recorded as Open Question 15 in
 > connected to the custom website (Aiosell handles payments), or (B) our
 > **custom booking engine connects as an OTA**. *The hotel must choose.*
 
+> **Label warning — two numbering schemes are in play.** Aiosell's own Question
+> 15 calls its two paths (A) and (B). This document evaluates **four** options
+> in Section 3, lettered A to D. They do **not** line up, and conflating them
+> has already caused one error in an earlier draft of this document.
+>
+> | Aiosell's label | This document's label |
+> |---|---|
+> | (A) Aiosell's hosted booking engine | **Option A** (and **Option D**, the handover variant) |
+> | (B) Our own engine connecting as an OTA | **Option C** |
+> | *(not offered by Aiosell)* | **Option B** — an embedded widget, which we have no evidence exists |
+>
+> Throughout this document, **Option C means the NJS-designed frontend using
+> Aiosell's APIs.** Where a letter appears without qualification, it is this
+> document's scheme.
+
 The brief that prompted this document states the objective as a guest
 experiencing **"one coherent luxury hospitality brand."** That objective
 decides Question 15, and this document shows why, with measurements rather than
 opinion.
 
-**Recommendation: Option B.** Option A cannot carry the NJS visual identity.
+**Recommendation: Option C** — the NJS-designed frontend connecting to Aiosell's
+APIs (Aiosell's path (B)). Option A cannot carry the NJS visual identity;
 Section 4 gives the measured reason.
+
+**This is a recommendation for discussion, not an approved route.** NJS has
+stated that the API integration is not approved contractually or technically
+until the ten confirmations in §11.0 are answered in writing by Aiosell.
 
 ---
 
@@ -106,7 +129,7 @@ anywhere); hairline `gold/25`–`gold/50` borders; generous vertical rhythm
 (`py-28`/`py-32`); CTAs as solid gold-on-navy or outlined white, uppercase,
 `0.08em` tracking, `min-h-[44px]`.
 
-**These conventions are the thing at stake in the Option A / Option B decision.**
+**These conventions are the thing at stake in the Option A / Option C decision.**
 
 ### 1.3 Where booking would connect
 
@@ -161,9 +184,9 @@ hosted page does not.
 |---|---|---|
 | `docs/aiosell-integration-plan.md` (on `main`) | Original planning document, 6 July 2026 | Superseded by the branch version |
 | `origin/feature/aiosell-phase1` | Inbound webhook receiver, Drizzle + Neon schema, seed | Implemented, verified 10 July 2026 |
-| `origin/feature/aiosell-phase2` | Outbound reservation push, availability validation, FETCH reconciliation, dev routes, admin debug | **Sandbox push proven 14 July 2026** |
+| `origin/feature/aiosell-phase2` | Outbound reservation push, availability validation, FETCH reconciliation, dev routes, admin debug | One sandbox push accepted, 14 July 2026 |
 
-### 2.1 The proven result
+### 2.1 What the July 2026 sandbox test did and did not establish
 
 **[RECORD]** — from the commits and the plan document on
 `feature/aiosell-phase2`. This result was **not reproduced in November 2026**;
@@ -175,11 +198,21 @@ attempt**, using endpoint partner path `sample-ota` and payload
 `hotelCode: sandbox-ota`. Final state `paid` / `synced`. No `cmBookingId` was
 returned.
 
-This is the single most important fact in this document: **the hard part was
-demonstrated working.** Option C is not a proposal, it was a working capability
-in July 2026 — against the sandbox, on a codebase 88 commits behind `main`, with
-no payment step and single-room bookings only. Treat it as strong evidence of
-feasibility, not as a system ready to switch on.
+**This is not evidence of production booking readiness, and must not be
+presented as such.**
+
+| What it established | What it did **not** establish |
+|---|---|
+| One reservation payload was accepted by the sandbox | That the production endpoint behaves the same way |
+| The push, idempotency key and sync logging work in principle | That **multi-room** bookings work — only single-room was ever exercised |
+| Our inbound webhook receives and mirrors inventory and rates | That a guest can complete a booking — **there is no booking UI and no payment step** |
+| Aiosell's sandbox accepted our identifiers | That we hold production credentials, a partner ID, or a contract |
+| The approach is technically feasible | That modification, cancellation, refunds or reconciliation work — **sandbox checklist items 8 to 18 remain untested** |
+
+It was a single successful call, against a sandbox, on a codebase now 88 commits
+behind `main`, using credentials that may since have expired. Read it as
+**evidence of feasibility** and nothing more. A production-ready booking system
+requires every one of stages 1 to 9 in Section 12.
 
 ### 2.2 Branch health — needs attention
 
@@ -260,10 +293,17 @@ sample engine (`be.aiosell.com/book/octave-hotel-sarjapur-rd`, the example
 Aiosell themselves shared) and its stylesheet on 16 November 2026, and reading
 the served HTML and CSS.
 
-**Scope of the measurement:** one property, on Aiosell's default theme. These
-figures describe their standard engine. Whether a different tier, a paid
-white-label add-on, or a bespoke arrangement lifts any of these limits is
-**unknown** and is Question 6.
+**Scope of the measurement — these findings are PROVISIONAL.** They come from
+**one** property, on Aiosell's default theme, observed from outside. The numbers
+themselves are reliable; what they generalise to is not. They describe Aiosell's
+standard engine as served to one Indian hotel. They do **not** establish what an
+NJS-specific configuration, a paid white-label tier, or a bespoke arrangement
+would permit.
+
+**No commercial or architectural decision should rest on this section alone.**
+Every limitation recorded here stands only until Aiosell confirms or corrects it
+in writing (Questions 4, 5, 6 and 7). If their answers contradict these
+measurements, their answers govern and this section must be revised.
 
 ### 4.1 Theming surface: three CSS custom properties
 
@@ -291,7 +331,7 @@ different company's software wearing an NJS-coloured button.
 
 ### 4.3 Other measured findings
 
-| Finding | Evidence | Consequence |
+| Finding (provisional — one sample property) | Evidence | Consequence |
 |---|---|---|
 | Client-rendered Angular SPA | `<app-root>` + runtime/polyfills/main bundles | No server-side theming hook; content invisible without JS |
 | `noindex, nofollow` | `<meta name="robots">` | The booking funnel contributes nothing to SEO |
@@ -317,8 +357,11 @@ would be offered. It is a question to ask, not a finding to rely on.
 
 This directly compounds the unexplained **5%**. On the published opening rates, a
 two-night Royale Suite (Ocean View) at ₦575,000 is ₦1,150,000 — **₦57,500 in
-fees**. A two-night Presidential Suite is ₦4,000,000 — **₦200,000**. Paystack's
-standard local-card pricing is materially below 5% and capped.
+fees**. A two-night Presidential Suite is ₦4,000,000 — **₦200,000**.
+
+**[INFERENCE]** Nigerian local-card processing is generally available well below
+5% and often capped, which is what makes the 5% worth questioning. We have not
+obtained a quotation from any processor, and no processor has been selected.
 
 **[RECORD]** The 5% itself is Aiosell's own figure, quoted to us in writing on
 16 July 2026 and recorded in the Open Questions. Its scope has never been
@@ -355,9 +398,9 @@ NJS-designed frontend — and keep Option D as a documented contingency.
 | Mobile standard | Zoom disabled | **Current site standard** |
 | SEO | `noindex` | **Indexable** |
 | Analytics | Cross-domain, degraded | **First-party, existing CAPI** |
-| Payments | Razorpay / Stripe, 5% unexplained | **Paystack, NGN native** |
+| Payments | Razorpay / Stripe, 5% unexplained | Processor of our choosing — Paystack *proposed*, not selected |
 | Date gating to 23 Jul 2027 | Depends on Aiosell restrictions | **Enforced by us, absolutely** |
-| Build effort | Low | **Already demonstrated** |
+| Build effort | Low | Feasibility shown in sandbox; the booking UI, payments and the whole lifecycle are unbuilt |
 | Operational burden | Aiosell carries it | We carry payments + support |
 | Commercial | 5% (scope unclear) | Partner contract (terms unseen) |
 
@@ -372,9 +415,19 @@ satisfactory answer on NGN settlement plus a genuinely deeper customisation tier
 would make Option A viable again, and an unacceptable partner contract would
 make Option C impossible regardless of its technical merits.
 
-Its honest costs: we take on payment handling, PCI scope via Paystack's hosted
-checkout, refund operations and first-line booking support; and Aiosell requires
-a partner contract whose terms we have not seen.
+Its honest costs: we take on payment handling and its PCI scope, refund
+operations and first-line booking support; and Aiosell requires a partner
+contract whose terms we have not seen.
+
+> **Paystack is a proposal, not a decision.** Paystack appears throughout this
+> document as the *candidate* processor, because it settles NGN natively to a
+> Nigerian account and is the obvious first one to evaluate for a Lagos
+> property. **No processor has been selected, evaluated commercially, contracted
+> or approved by NJS.** Nothing here authorises opening a merchant account or
+> integrating any payment provider. Processor selection is its own decision,
+> with its own commercial review, and it comes *after* the Option A / Option C
+> decision — because under Option A the processor may not even be ours to
+> choose.
 
 ### 5.1 On "do not build a competing reservation database"
 
@@ -468,7 +521,7 @@ holding state in the URL.
 | 1 Dates & guests | Arrival, departure, adults, children. Calendar opens on 23 July 2027 and refuses anything earlier. | Mirror queried for the month's availability |
 | 2 Rooms | The 11 NJS categories in house styling, with nightly rate, total, and unavailable ones shown as unavailable rather than hidden | Mirror read; stop-sell and minimum-stay applied |
 | 3 Guest details | Name, email, phone, address, special requests | Same validation discipline as registrations |
-| 4 Payment | NJS-styled summary, then Paystack hosted checkout | **Local booking row written *before* any push** |
+| 4 Payment | NJS-styled summary, then a hosted checkout (Paystack proposed, not selected) | **Local booking row written *before* any push** |
 | 5 Confirmation | NJS reference `NJS-YYYYMMDD-XXXXXX`, full stay summary, emailed copy | Push to Aiosell; `synced` on success |
 
 ### 7.1 The states that are usually neglected
@@ -560,8 +613,8 @@ Rules, consistent with the existing implementation:
 | Payment webhooks | Signature-verified before any state change; replays idempotent |
 | Idempotency | The NJS reference is the key end to end. Aiosell rejects duplicates, so retries cannot double-book |
 | PII | Minimum necessary; the admin debug view masks guest names and emails |
-| Payment data | Card details never touch NJS infrastructure — Paystack hosted checkout only |
-| CSP | The report-only CSP must be extended for Paystack **before** the booking routes are enabled |
+| Payment data | Card details must never touch NJS infrastructure — hosted checkout only, whichever processor is eventually chosen |
+| CSP | The report-only CSP must be extended for the chosen processor **before** the booking routes are enabled |
 
 ---
 
@@ -573,11 +626,20 @@ Several of these ask Aiosell to confirm or correct something we measured or
 inferred ourselves. That is deliberate: where our evidence is one sample page or
 a chain of reasoning, their written answer is what turns it into fact.
 
-### 11.0 The ten confirmations required before approval
+### 11.0 The ten confirmations — MANDATORY before any implementation
 
 These were set by NJS on 16 November 2026 as the conditions for authorising the
-API route. Each maps to the numbered questions that follow. **None is
-currently satisfied.**
+API route.
+
+> **All ten must be answered by Aiosell in writing before implementation
+> begins. This is not a checklist to work through in parallel with building —
+> it is a gate. A verbal assurance, a partial answer, or an answer from anyone
+> other than Aiosell does not satisfy it. If any one of the ten is refused or
+> answered unacceptably, the recommended architecture must be revisited before
+> any code is written.**
+
+Each maps to the numbered questions that follow. **None is currently
+satisfied.**
 
 | # | Required confirmation | Questions | Status |
 |---|---|---|---|
@@ -707,7 +769,7 @@ Every stage ends at an approval gate. Nothing proceeds without sign-off.
 | **3. Boundary** | `lib/booking/` with the provider interface, config gates and the **mock adapter only**. `BOOKING_ENABLED = false` | ☐ Flag off in production; mock passes tests |
 | **4. UI** | The five-step journey in NJS styling against the mock adapter. Preview deployment, protected | ☐ Design approved; accessibility and mobile pass |
 | **5. Live data** | Wire the Aiosell adapter. Register the webhook **with Basic Auth enabled in the same change**. Seed the mirror | ☐ Mirror matches Aiosell; no unauthenticated window |
-| **6. Payments** | Paystack hosted checkout, test mode. Extend the CSP | ☐ Test transactions reconcile; CSP clean |
+| **6. Payments** | Select a processor on its own commercial review, then integrate its hosted checkout in **test mode** only. Extend the CSP | ☐ Processor approved by NJS; test transactions reconcile; CSP clean |
 | **7. End-to-end** | Full rehearsal in sandbox: book, modify, cancel, failed push, refund | ☐ Sandbox checklist items 8–18 complete |
 | **8. Soft launch** | Enable for a small invited group; monitor | ☐ Real bookings reconcile correctly |
 | **9. Public** | `BOOKING_ENABLED = true` | ☐ Explicit written approval |
