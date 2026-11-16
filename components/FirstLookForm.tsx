@@ -18,7 +18,7 @@ import {
 import { useRegistrationSubmit } from './registration/useRegistrationSubmit'
 import { FIRST_ESCAPE } from '@/lib/firstLook'
 
-// First Look guest RSVP for the Phase I opening on 12 December 2026.
+// First Look guest RSVP for the Phase I opening on 19 December 2026.
 //
 // The form posts to /api/registrations, which validates everything again and
 // stores the registration in Postgres. The guest is told it succeeded only once
@@ -77,7 +77,7 @@ function validate(v: Values): Errors {
   if (!v.phone.trim()) e.phone = 'Enter your mobile or WhatsApp number.'
   else if (!isPhone(v.phone))
     e.phone = 'Enter a valid mobile or WhatsApp number, including the country code if outside Nigeria.'
-  if (!v.attending) e.attending = 'Tell us whether you will attend on 12 December 2026.'
+  if (!v.attending) e.attending = 'Tell us whether you will attend on 19 December 2026.'
   if (v.attending === 'yes') {
     if (!v.party) e.party = 'Select how many people will attend.'
     if (v.party === '2' && !v.companion.trim()) e.companion = 'Enter your companion’s full name.'
@@ -276,7 +276,7 @@ export default function FirstLookForm() {
 
         {/* Attending */}
         <fieldset aria-describedby={errors.attending ? 'fl-attending-error' : undefined}>
-          <legend className={labelBase}>Will you attend on 12 December 2026?</legend>
+          <legend className={labelBase}>Will you attend on 19 December 2026?</legend>
           <div className="mt-2 flex gap-3">
             {(['yes', 'no'] as const).map((opt, i) => (
               <label

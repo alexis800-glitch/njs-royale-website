@@ -1,7 +1,7 @@
 // The two confirmed opening phases only. No intermediate stages, no third phase.
 // Phase One opens the resort itself, not the pool area alone — see lib/opening.ts.
 const items = [
-  'Phase One · December 12, 2026',
+  'Phase One · December 19, 2026',
   'The Resort Opens',
   'Phase Two · July 23, 2027',
   'Guest Rooms Open',
@@ -61,7 +61,7 @@ export default function AnnouncementRibbon() {
 
       {/* Accessible, non-visual copy (read once by screen readers) */}
       <p className="sr-only">
-        NJS Royale opens December 12, 2026. Come experience the resort before the rooms open:
+        NJS Royale opens December 19, 2026. Come experience the resort before the rooms open:
         Yahweh Heights, Voyage, Royale Horizon, the resort lounges, live entertainment and the
         private beach. Guest rooms and accommodation open with Phase Two on July 23, 2027.
       </p>

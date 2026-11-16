@@ -22,7 +22,7 @@ const inter = Inter({
 const SITE_URL = 'https://www.njsbeachresort.com'
 const SITE_NAME = 'NJS Royale Beach Resort'
 const DESCRIPTION =
-  'A refined beach resort on the Atlantic coast at Ibeju-Lekki, Lagos. NJS Royale opens December 12, 2026. Come experience the resort before the rooms open, with Yahweh Heights, Voyage, Royale Horizon, the resort lounges, live entertainment and the private beach. Guest rooms and accommodation open on July 23, 2027.'
+  'A refined beach resort on the Atlantic coast at Ibeju-Lekki, Lagos. NJS Royale opens December 19, 2026. Come experience the resort before the rooms open, with Yahweh Heights, Voyage, Royale Horizon, the resort lounges, live entertainment and the private beach. Guest rooms and accommodation open on July 23, 2027.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

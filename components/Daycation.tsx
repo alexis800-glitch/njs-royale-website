@@ -54,7 +54,7 @@ export default function PhaseOne() {
         >
           <span className="inline-flex items-center gap-2 border border-gold/50 text-gold text-[11px] font-semibold uppercase tracking-[3px] px-4 py-2 mb-6 font-[family-name:var(--font-inter)]">
             <CalendarDays size={13} strokeWidth={1.6} />
-            Phase One · December 12, 2026
+            Phase One · December 19, 2026
           </span>
           <h2
             className="font-[family-name:var(--font-cormorant)] text-navy leading-tight mb-6"

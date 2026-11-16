@@ -19,7 +19,7 @@ export const FOUNDING_GUEST_QR_SRC = '/founding-guest/njs-founding-guest-qr.svg'
 //
 // CORRECTED 24 September 2026: this sentence described 23 July 2027 as the
 // unveiling of the "complete NJS Royale Beach Resort". That understated Phase One,
-// which opens the resort itself on 12 December 2026 (see lib/opening.ts); 23 July
+// which opens the resort itself on 19 December 2026 (see lib/opening.ts); 23 July
 // 2027 opens the guest rooms and accommodation.
 //
 // ⚠ THE PRINTED FOUNDING GUEST INVITATION STILL CARRIES THE OLD WORDING. The same
