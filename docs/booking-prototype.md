@@ -72,6 +72,30 @@ the type.
   key is a map key for one window and is never logged or stored.
 - **`cache-control: no-store`** on every response.
 
+### Everything stateful here is prototype-only
+
+**None of the state or control below is production-safe. Each needs a durable
+equivalent before a single real reservation is taken.** They are listed so that
+nobody mistakes a working prototype for a working reservation system.
+
+| Control | How it works now | What a real reservation needs |
+| --- | --- | --- |
+| Quote store | `Map` in the memory of one server instance, 30-minute TTL | Durable, shared store, or quotes re-fetched from the provider each time |
+| Draft store | Same | Same, plus the provider holding the inventory |
+| Idempotency keys | `Map` of key → confirmation, per instance, never evicted | Durable store with a retention policy, so a retry minutes or days later is still safe |
+| Rate limiting | Per-instance counters | Shared limiter, or edge rate limiting, so limits are not multiplied by instance count |
+| Reservations | `Map` in the mock adapter | Aiosell as the authoritative store; we keep no reservation database |
+| Payment | Mock, scripted by synthetic email | A contracted processor, server-initiated, with reconciliation |
+
+The failure mode they share: per-instance memory does not survive a cold start
+and is not shared between concurrent instances. In a prototype that is
+acceptable and visible. In production it would mean a rate limit that does not
+limit, an idempotency key that stops being idempotent, and a quote that vanishes
+mid-journey.
+
+**No production persistence has been introduced, and none should be until the
+architecture is approved.**
+
 ### A consequence left visible
 
 Quotes and drafts live in memory on the server instance that issued them, for
@@ -81,6 +105,20 @@ authoritative store, not us. So a journey that spans a cold start gets
 `QUOTE_EXPIRED` on its next call. That is a state the journey already renders,
 and the same state a real engine produces when a held quote lapses, so the
 prototype exercises it rather than hiding it.
+
+## Pricing presentation
+
+Every amount shown to a guest is labelled a **room subtotal**, never a total or
+an amount payable, because the resort has not confirmed the tax and service
+position. `taxesAndFees` is `null` rather than `0`, the figure carries the line
+*"This is the room subtotal, not the final amount payable. Taxes and service
+charges have not yet been confirmed by the resort and will be added."*, and
+`isFinalTotal()` in `lib/booking/types.ts` decides the label so nothing reads
+the field name and guesses.
+
+No tax percentage, service charge, cancellation term or resort policy is
+invented anywhere in this prototype. Where a fact is missing, the UI says "to be
+confirmed".
 
 ## The three gates
 
@@ -119,11 +157,17 @@ change, and it has not been made — changing it was not authorised.
 ## Running it
 
 ```bash
-npm test          # 127 tests, 67 of them booking
+npm test          # 127 unit tests, 67 of them booking
 npm run typecheck
 npm run build
+npm run test:e2e  # 38 browser tests, desktop and mobile
 npm run dev       # then open /booking
 ```
+
+`npm run test:e2e` builds nothing: it starts `next start` with
+`VERCEL_ENV=preview` on port 3210, runs Chromium at 1440x900 and at an iPhone 13
+viewport with touch, and tears the server down. Run `npm run build` first.
+Screenshots land in `e2e/screenshots/`, which is git-ignored.
 
 `/booking?provider=aiosell` runs the same journey against the Aiosell stub, so
 the unconfigured-provider failure state can be seen without changing any code.

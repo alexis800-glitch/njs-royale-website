@@ -88,13 +88,14 @@ function OfferCard({
             </span>
             <span className="font-[family-name:var(--font-inter)] text-white text-[15px] tabular-nums">
               {formatNaira(offer.rate.total)}
-              <span className="text-white/45 text-[12.5px]"> total</span>
+              <span className="text-white/45 text-[12.5px]"> room subtotal</span>
             </span>
           </div>
 
           {offer.cancellationPolicy === null && (
             <p className="mt-2 text-white/40 text-[12.5px] leading-snug font-[family-name:var(--font-inter)]">
-              Cancellation terms and the taxes and service position are to be confirmed by the resort.
+              Room subtotal only. Taxes, service charges and cancellation terms are to be confirmed
+              by the resort.
             </p>
           )}
         </div>

@@ -56,7 +56,15 @@ export interface RateBreakdown {
    * cannot make; null lets the UI say the total is exclusive of taxes.
    */
   taxesAndFees: number | null
-  /** roomSubtotal + (taxesAndFees ?? 0). */
+  /**
+   * roomSubtotal + (taxesAndFees ?? 0).
+   *
+   * NOT necessarily the final payable amount. While `taxesAndFees` is null the
+   * resort has not confirmed the tax and service position, so this equals the
+   * room subtotal and must be LABELLED as a room subtotal — never as a total,
+   * a total payable, or an amount due. Use isFinalTotal() to decide the label
+   * rather than reading this field's name.
+   */
   total: number
   currency: Currency
 }
@@ -204,6 +212,18 @@ export interface BookingError {
    * than a rejected query. The UI shows a retry affordance only for these.
    */
   retryable?: boolean
+}
+
+/**
+ * Whether `rate.total` is the final payable amount.
+ *
+ * False while the tax and service position is unconfirmed, which is the state
+ * of every category today. The UI labels the figure accordingly: a room
+ * subtotal is an honest partial price; a "total" that silently excludes taxes
+ * is a quoted price the resort would have to dishonour.
+ */
+export function isFinalTotal(rate: RateBreakdown): boolean {
+  return rate.taxesAndFees !== null
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: BookingError }

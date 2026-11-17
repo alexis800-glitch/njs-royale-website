@@ -8,7 +8,7 @@
 import { AlertCircle, Check, Info } from 'lucide-react'
 import { formatNaira } from '@/lib/accommodation'
 import { PROTOTYPE_NOTICE } from '@/lib/booking/config'
-import type { BookingError, RateBreakdown, StayQuery } from '@/lib/booking/types'
+import { isFinalTotal, type BookingError, type RateBreakdown, type StayQuery } from '@/lib/booking/types'
 import { formatShortDate, nightsBetween } from '@/lib/booking/dates'
 
 export const eyebrow =
@@ -199,10 +199,16 @@ export function ErrorNotice({
 /**
  * The money.
  *
+ * Two rules, both about not overstating what we know.
+ *
  * `taxesAndFees` is null while the tax and service position is unconfirmed, and
  * this component says so rather than printing a zero. A guest reading "₦0
- * taxes" has been told something false; a guest reading "exclusive of taxes and
- * service, to be confirmed" has been told the truth.
+ * taxes" has been told something false.
+ *
+ * And while it is null the figure is labelled ROOM SUBTOTAL, not Total. A
+ * number labelled "Total" is a price a guest will hold us to; a number labelled
+ * "Room subtotal", with taxes marked as still to be confirmed, is an honest
+ * partial price. No percentage, charge or policy is invented to fill the gap.
  */
 export function RateTable({ rate }: { rate: RateBreakdown }) {
   const perNight = `${formatNaira(rate.nightlyRate)} × ${rate.nights} ${
@@ -224,14 +230,17 @@ export function RateTable({ rate }: { rate: RateBreakdown }) {
         </div>
       </dl>
       <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-white/10 pt-4">
-        <span className="text-white text-[13px] uppercase tracking-[2px]">Total</span>
+        <span className="text-white text-[13px] uppercase tracking-[2px]">
+          {isFinalTotal(rate) ? 'Total payable' : 'Room subtotal'}
+        </span>
         <span className="font-[family-name:var(--font-cormorant)] text-gold text-[26px] tabular-nums">
           {formatNaira(rate.total)}
         </span>
       </div>
-      {rate.taxesAndFees === null && (
+      {!isFinalTotal(rate) && (
         <p className="mt-2 text-white/45 text-[12.5px] leading-snug">
-          Exclusive of taxes and service charge, which the resort has not yet confirmed.
+          This is the room subtotal, not the final amount payable. Taxes and service charges have
+          not yet been confirmed by the resort and will be added.
         </p>
       )}
     </div>
