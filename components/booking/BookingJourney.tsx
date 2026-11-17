@@ -3,21 +3,26 @@
 // The booking journey.
 //
 // This component owns the journey's state and nothing else. It never knows
-// which provider it is talking to: it holds a BookingProvider and calls the six
-// interface methods. Swapping the mock for a real adapter changes the factory
-// call on one line here and nothing else in this file — which is the whole
-// claim the integration foundation is making, so it is worth stating where it
-// can be checked.
+// which provider it is talking to, and since the server-side boundary went in
+// it never holds one either: it holds a BookingClient, which can do nothing
+// but POST to /api/booking. No adapter, no credential and no provider factory
+// reaches this bundle.
 //
-// Guest details live in this component's state and nowhere else. Nothing is
-// posted, stored or persisted: there is no route behind this, by design, and no
-// reservation database. Closing the tab discards everything.
+// Note what the client cannot express. It sends a quote REFERENCE to hold and
+// a draft REFERENCE to confirm, never the quote or draft themselves, so the
+// rate charged is the one the server calculated. And it sends a payment
+// INTENT, never a payment outcome, so it cannot assert that money arrived.
+// Both are properties of the types in lib/booking/client.ts rather than checks
+// that could be forgotten.
+//
+// Guest details pass through this component's state on their way to the
+// server, which validates them again and holds them against the draft. Nothing
+// is written to a database: there isn't one.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createMockPaymentProvider } from '@/lib/booking/mock/payment'
-import { resolveProvider } from '@/lib/booking'
-import { addDays, earliestSelectableArrival } from '@/lib/booking'
-import type { ProviderId } from '@/lib/booking/config'
+import { createBookingClient } from '@/lib/booking/client'
+import { addDays } from '@/lib/booking/dates'
+import { earliestSelectableArrival, type ProviderId } from '@/lib/booking/config'
 import type {
   BookingDraft,
   BookingError,
@@ -43,18 +48,19 @@ const STEPS: StepDefinition[] = [
 
 type Phase = 'stay' | 'rooms' | 'guest' | 'review' | 'confirmed'
 
-/** The scripted outcome, expressed as the email marker the mock reads. */
-function emailFor(outcome: TestOutcome, real: string): string {
-  switch (outcome) {
-    case 'declined':
-      return 'decline@example.test'
-    case 'abandoned':
-      return 'abandon@example.test'
-    case 'processor-outage':
-      return 'outage@example.test'
-    case 'authorised':
-      return real
+/**
+ * An idempotency key for one booking attempt.
+ *
+ * Generated once per draft and reused on every retry, so a double-tap or a
+ * replayed request returns the first reservation rather than creating a second.
+ * crypto.randomUUID is available in every browser this site supports; the
+ * fallback covers an insecure context, where it is undefined.
+ */
+function newIdempotencyKey(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
   }
+  return `k-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`
 }
 
 export default function BookingJourney({
@@ -65,7 +71,7 @@ export default function BookingJourney({
   /** Fixed on the server, so client and server agree on the earliest arrival. */
   today: string
 }) {
-  const provider = useMemo(() => resolveProvider(providerId), [providerId])
+  const client = useMemo(() => createBookingClient({ providerId }), [providerId])
 
   const initialQuery = useMemo<StayQuery>(() => {
     const arrival = earliestSelectableArrival(today)
@@ -83,6 +89,8 @@ export default function BookingJourney({
   const [outcome, setOutcome] = useState<TestOutcome>('authorised')
   const [error, setError] = useState<BookingError | null>(null)
   const [busy, setBusy] = useState(false)
+  /** Fixed per draft, so retrying confirm cannot double-book. */
+  const idempotencyKey = useRef<string>('')
 
   // The last thing we tried, so a retryable error can retry it.
   const retryRef = useRef<(() => void) | null>(null)
@@ -109,7 +117,7 @@ export default function BookingJourney({
     async (next: StayQuery) => {
       setBusy(true)
       setError(null)
-      const result = await provider.search(next)
+      const result = await client.search(next)
       setBusy(false)
       if (!result.ok) {
         setError(result.error)
@@ -121,14 +129,14 @@ export default function BookingJourney({
       setSelectedId(result.value[0]?.categoryId ?? null)
       setPhase('rooms')
     },
-    [provider],
+    [client],
   )
 
   const requestQuote = useCallback(
     async (categoryId: string) => {
       setBusy(true)
       setError(null)
-      const result = await provider.quote({ categoryId, query })
+      const result = await client.quote({ categoryId, query })
       setBusy(false)
       if (!result.ok) {
         setError(result.error)
@@ -138,7 +146,7 @@ export default function BookingJourney({
       setQuote(result.value)
       setPhase('guest')
     },
-    [provider, query],
+    [client, query],
   )
 
   const hold = useCallback(
@@ -146,7 +154,8 @@ export default function BookingJourney({
       if (!quote) return
       setBusy(true)
       setError(null)
-      const result = await provider.hold(quote, details)
+      // A reference, not the quote: the server reads the rate from its own copy.
+      const result = await client.hold(quote.quoteRef, details)
       setBusy(false)
       if (!result.ok) {
         setError(result.error)
@@ -155,32 +164,24 @@ export default function BookingJourney({
       }
       setGuest(details)
       setDraft(result.value)
+      idempotencyKey.current = newIdempotencyKey()
       setPhase('review')
     },
-    [provider, quote],
+    [client, quote],
   )
 
   const confirm = useCallback(async () => {
-    if (!draft || !guest || !quote) return
+    if (!draft) return
     setBusy(true)
     setError(null)
 
-    const payments = createMockPaymentProvider({ guestEmail: emailFor(outcome, guest.email) })
-    const paid = await payments.pay({
-      amount: quote.rate.total,
-      currency: 'NGN',
-      reference: draft.draftRef,
-      description: `${quote.offer.name} — ${quote.rate.nights} nights`,
+    // Payment happens on the server. This sends an intent — which outcome to
+    // simulate — and never an outcome. The same key on every retry.
+    const result = await client.confirm(draft.draftRef, {
+      idempotencyKey: idempotencyKey.current || newIdempotencyKey(),
+      simulate: outcome,
     })
 
-    if (!paid.ok) {
-      setBusy(false)
-      setError(paid.error)
-      retryRef.current = () => void confirm()
-      return
-    }
-
-    const result = await provider.confirm(draft, paid.value)
     setBusy(false)
     if (!result.ok) {
       setError(result.error)
@@ -189,7 +190,7 @@ export default function BookingJourney({
     }
     setConfirmation(result.value)
     setPhase('confirmed')
-  }, [draft, guest, quote, outcome, provider])
+  }, [draft, outcome, client])
 
   const startAgain = () => {
     setPhase('stay')
@@ -203,6 +204,7 @@ export default function BookingJourney({
     setOutcome('authorised')
     setError(null)
     retryRef.current = null
+    idempotencyKey.current = ''
   }
 
   const stepIndex = STEPS.findIndex((s) => s.id === phase)

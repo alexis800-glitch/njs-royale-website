@@ -17,8 +17,70 @@ Branch: `feat/booking-prototype`. Nothing here is enabled on the public website.
 | Payment boundary | `lib/booking/payment.ts` | Interface only, by design |
 | Mock adapter | `lib/booking/mock/` | Complete, 19 tests |
 | Aiosell adapter | `lib/booking/aiosell/provider.ts` | Stub that refuses every call |
+| **Server boundary** | `lib/booking/server.ts`, `lib/booking/service.ts`, `app/api/booking/route.ts` | Complete, 18 tests |
+| **Client-safe interface** | `lib/booking/client.ts` | Complete |
 | Guest journey | `components/booking/` | Four steps plus confirmation |
 | Gated route | `app/booking/page.tsx` | 404 on production |
+
+## The server-side boundary
+
+The journey holds a `BookingClient`, which can do one thing: POST to
+`/api/booking`. No adapter, no provider factory and no credential reaches the
+browser bundle — verified by grepping the built client chunks for adapter
+internals (`decline@example.test`, the reference alphabet, the availability
+function, the blocked-function list): **zero hits**, while the server bundle
+has them. The booking page's client JavaScript fell from 14.5 kB to 12 kB when
+the boundary went in.
+
+`lib/booking/server.ts` holds everything that must not leave the server: the
+provider instance, the authoritative copy of every quote and draft, and the
+decision about whether a payment succeeded. It throws if it is ever imported
+into a browser bundle.
+
+### Two things a client cannot say
+
+The client-safe interface is deliberately **not** the same shape as
+`BookingProvider`, and the difference is the security property:
+
+```
+BookingProvider.confirm(draft: BookingDraft, payment: PaymentOutcome)
+BookingClient.confirm(draftRef: string, intent: ConfirmIntent)
+```
+
+- **It cannot set the rate.** `hold` takes a quote *reference*; the server reads
+  the rate from its own stored copy. Tested: a `hold` carrying a forged quote at
+  ₦1 still holds the Presidential Suite at ₦6,000,000.
+- **It cannot assert that payment succeeded.** `confirm` takes an *intent*, not
+  an outcome; the server runs the payment itself. Tested: a `confirm` posting
+  `payment: {status: 'authorised'}` alongside a declined simulation still fails
+  with `PAYMENT_FAILED`.
+
+Neither is forbidden by a check that could be forgotten. Both are absent from
+the type.
+
+### The rest of the boundary
+
+- **Server-side validation.** Every payload is revalidated before a provider
+  sees it. The arrival rule is enforced here regardless of what the browser did.
+- **Reconciliation.** `confirm` requires an idempotency key, generated once per
+  draft and reused on retry, so a double-tap or a replayed request returns the
+  first reservation instead of creating a second.
+- **Error sanitisation.** Exceptions are caught at the edge and reported as a
+  typed code with one guest-readable sentence. No stack, hostname or connection
+  string can reach a response.
+- **Rate limiting.** 60 requests per minute per caller, in memory. The caller
+  key is a map key for one window and is never logged or stored.
+- **`cache-control: no-store`** on every response.
+
+### A consequence left visible
+
+Quotes and drafts live in memory on the server instance that issued them, for
+30 minutes. That is not a database, deliberately — the brief forbids a
+reservation database, and under the recommended architecture Aiosell is the
+authoritative store, not us. So a journey that spans a cold start gets
+`QUOTE_EXPIRED` on its next call. That is a state the journey already renders,
+and the same state a real engine produces when a held quote lapses, so the
+prototype exercises it rather than hiding it.
 
 ## The three gates
 
@@ -57,7 +119,7 @@ change, and it has not been made — changing it was not authorised.
 ## Running it
 
 ```bash
-npm test          # 109 tests, 49 of them booking
+npm test          # 127 tests, 67 of them booking
 npm run typecheck
 npm run build
 npm run dev       # then open /booking
@@ -124,9 +186,33 @@ tests assert on. In full, with the underlying commercial questions in
 - No dependency added. The whole prototype is built on what the project already
   had.
 
+## Verified end to end over HTTP
+
+The real route, served from a production build with `VERCEL_ENV=preview`, driven
+with curl:
+
+| Step | Result |
+| --- | --- |
+| `search` | 9 categories, cheapest ₦750,000 for 3 nights |
+| `quote` | ₦750,000, `taxesAndFees: null` |
+| `hold` with a forged ₦1 rate in the body | ₦750,000 held — forgery ignored |
+| `confirm` declined, with a forged authorised payment | `PAYMENT_FAILED` |
+| `confirm` authorised | `NJS-20261117-CSWP6S`, `providerReference: null` |
+| `confirm` again, same idempotency key | same reference, no second booking |
+| arrival `2027-07-22` | `INVALID_QUERY`, "Guest rooms open on 23 July 2027" |
+| `provider: aiosell` | `PROVIDER_NOT_CONFIGURED` |
+| `GET /api/booking` | 405 |
+| malformed JSON | 400 |
+| every response | `cache-control: no-store` |
+
+And with `VERCEL_ENV=production`: `POST /api/booking` → **404 with an empty
+body**, `GET /booking` → **404**, while `/`, `/first-look` and
+`/api/registrations` are unaffected.
+
 ## Not yet verified
 
-The interactive journey has been typechecked, built, and its logic covered by
-unit tests, and the server-rendered first step has been inspected. Nobody has
-clicked through all four steps in a browser. That is what the preview deployment
-is for.
+**Nobody has clicked through the journey in a browser.** The logic is unit
+tested, the HTTP path is verified end to end, and the server-rendered first step
+has been inspected — but no real pointer has touched a radio button, and no
+phone has rendered step 2. Mobile layout in particular is asserted only by the
+Tailwind breakpoints in the markup.
