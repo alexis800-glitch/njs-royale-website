@@ -50,7 +50,7 @@ export default function BookCTA() {
           className="text-white/40 leading-relaxed max-w-xl mx-auto font-[family-name:var(--font-inter)]"
           style={{ marginBottom: '3rem' }}
         >
-          NJS Royale opens December 12, 2026. Come experience the resort before the rooms
+          NJS Royale opens December 19, 2026. Come experience the resort before the rooms
           open, with Yahweh Heights, Voyage and Royale Horizon, the resort lounges, live
           entertainment and the private beach. Guest rooms and accommodation open with Phase
           Two on July 23, 2027. Our online enquiry service is coming soon; for now, we would

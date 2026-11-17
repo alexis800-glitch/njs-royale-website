@@ -13,7 +13,7 @@ const pillars = [
   {
     Icon: Umbrella,
     title: 'Opening in Two Phases',
-    body: 'The resort opens on December 12, 2026, with its restaurants and lounges, live entertainment, the pool terrace and the private beach. Guest rooms and accommodation follow on July 23, 2027.',
+    body: 'The resort opens on December 19, 2026, with its restaurants and lounges, live entertainment, the pool terrace and the private beach. Guest rooms and accommodation follow on July 23, 2027.',
   },
   {
     Icon: Users,

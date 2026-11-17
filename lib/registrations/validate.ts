@@ -124,7 +124,7 @@ function isTrue(value: unknown): boolean {
   return value === true
 }
 
-/** First Look guest RSVP for the Phase I opening on 12 December 2026. */
+/** First Look guest RSVP for the Phase I opening on 19 December 2026. */
 export function validateFirstLook(input: Record<string, unknown>): ValidationResult {
   const errors: FieldErrors = {}
 
@@ -139,7 +139,7 @@ export function validateFirstLook(input: Record<string, unknown>): ValidationRes
 
   const attendingRaw = input.attending
   if (attendingRaw !== 'yes' && attendingRaw !== 'no')
-    errors.attending = 'Tell us whether you will attend on 12 December 2026.'
+    errors.attending = 'Tell us whether you will attend on 19 December 2026.'
   const attending = attendingRaw === 'yes' ? true : attendingRaw === 'no' ? false : null
 
   // Party size and companion only mean anything when the guest is attending.

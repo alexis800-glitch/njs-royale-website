@@ -29,7 +29,7 @@ export const APPLICATION_DEADLINE = 'October 15, 2026'
 export const APPLICATION_DEADLINE_ISO = '2026-10-15T23:59:59+01:00'
 // Explicit Phase One recruitment closure. Reopen only after a newly approved campaign.
 export const APPLICATIONS_CLOSED = true
-export const PHASE_ONE_OPENING = 'December 12, 2026'
+export const PHASE_ONE_OPENING = 'December 19, 2026'
 
 export const GENERAL_NOTE =
   'Successful candidates will be expected to demonstrate professionalism, excellent ' +
@@ -54,7 +54,7 @@ export const DEPARTMENTS: readonly Department[] = [
     id: 'marketing',
     name: 'Marketing',
     blurb:
-      'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 12, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
+      'The NJS Royale Phase I Marketing Team will manage the NJS Royale brand across Phase I, Phase II and the resort\u2019s continued development. The team will support the December 19, 2026 launch while building strong, consistent campaigns for the resort\u2019s future phases.',
   },
   {
     id: 'restaurant-front-of-house',
@@ -525,10 +525,10 @@ export const CAREERS: readonly Job[] = [
     positions: 2,
     employmentType: null,
     summary:
-      'Owns the NJS Royale campaign programme: brand and commercial strategy, the December 12, 2026 launch, and the budgets, agencies and partnerships behind them.',
+      'Owns the NJS Royale campaign programme: brand and commercial strategy, the December 19, 2026 launch, and the budgets, agencies and partnerships behind them.',
     responsibilities: [
       'Develop the overall NJS Royale brand and commercial marketing strategy.',
-      'Plan and execute the December 12, 2026 launch campaign.',
+      'Plan and execute the December 19, 2026 launch campaign.',
       'Manage how Yahweh Heights, Voyage, Royale Horizon and Royale Pulse sit beneath the NJS Royale master brand.',
       'Oversee the marketing budget.',
       'Manage agencies and external partners.',
@@ -554,7 +554,7 @@ export const CAREERS: readonly Job[] = [
     responsibilities: [
       'Produce photography and video across the resort, its venues and its events.',
       'Edit video and stills to a consistent, premium standard.',
-      'Cover the December 12, 2026 launch and the resort events that follow.',
+      'Cover the December 19, 2026 launch and the resort events that follow.',
       'Create content for social media and publish it across the resort\u2019s channels.',
       'Manage the content calendar.',
       'Maintain brand consistency across Yahweh Heights, Voyage, Royale Horizon and Royale Pulse beneath the NJS Royale master brand.',
@@ -580,7 +580,7 @@ export const CAREERS: readonly Job[] = [
       'Develop guest communications that reflect the NJS Royale brand.',
       'Convert enquiries into confirmed reservations.',
       'Run email, SMS and WhatsApp campaigns where appropriate.',
-      'Support the December 12, 2026 launch campaign through direct guest communication.',
+      'Support the December 19, 2026 launch campaign through direct guest communication.',
       'Produce weekly CRM and reservations marketing performance reports.',
       'Coordinate with Reservations, Operations, Food & Beverage and Events.',
     ],

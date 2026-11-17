@@ -17,14 +17,14 @@ export const FIRST_LOOK_QR_SRC = '/first-look/njs-first-look-qr.svg'
 export type JourneyStage = 'first-look' | 'phase-one' | 'grand-opening'
 export const JOURNEY: { id: JourneyStage; label: string; date: string; dateLong: string }[] = [
   { id: 'first-look', label: 'First Look', date: '23 Oct 2026', dateLong: '23 October 2026' },
-  { id: 'phase-one', label: 'Phase I', date: '12 Dec 2026', dateLong: '12 December 2026' },
+  { id: 'phase-one', label: 'Phase I', date: '19 Dec 2026', dateLong: '19 December 2026' },
   { id: 'grand-opening', label: 'Grand Opening', date: '23 Jul 2027', dateLong: '23 July 2027' },
 ]
 
 export const FIRST_ESCAPE = {
   label: 'Phase I Opening',
-  date: '12 December 2026',
-  dateShort: '12 December',
+  date: '19 December 2026',
+  dateShort: '19 December',
   hours: '11:00 a.m. until midnight',
   intro:
     'Return to experience NJS Royale in a whole new way as we officially open our Phase I Daycation experience.',

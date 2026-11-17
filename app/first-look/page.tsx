@@ -19,7 +19,7 @@ import {
 export const metadata: Metadata = {
   title: 'The First Escape, First Look Guest Registration',
   description:
-    'NJS Royale, The First Escape. You saw it first. Now watch the journey unfold: First Look, Phase I Opening on 12 December 2026, and the Grand Opening on 23 July 2027.',
+    'NJS Royale, The First Escape. You saw it first. Now watch the journey unfold: First Look, Phase I Opening on 19 December 2026, and the Grand Opening on 23 July 2027.',
   alternates: { canonical: '/first-look' },
   robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
   openGraph: {

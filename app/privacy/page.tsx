@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
           <p>
             On the <span className="text-white/80">First Look guest</span> page: your invitation or
             reference code; your full name; your email address; your mobile or WhatsApp number; whether
-            you will attend on 12 December 2026; how many people will attend (one or two); your
+            you will attend on 19 December 2026; how many people will attend (one or two); your
             companion&rsquo;s full name if you are bringing one; and whether you have asked to hear about
             the Grand Opening.
           </p>
