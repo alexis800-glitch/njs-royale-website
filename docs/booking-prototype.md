@@ -37,6 +37,23 @@ Branch: `feat/booking-prototype`. Nothing here is enabled on the public website.
 No payment processor is selected, referenced or implemented. `NO_PAYMENT_PROVIDER`
 is the default and refuses everything.
 
+## The preview is not access-protected
+
+Checked on 17 November 2026: this Vercel project has `passwordProtection`,
+`ssoProtection` and `trustedIps` all **disabled**, so any preview deployment URL
+is reachable by anyone who holds it. The brief asked for a protected staging
+preview, and it is not protected.
+
+The prototype is therefore safe by its content rather than by its access
+control — synthetic availability, no payment path, no reservation created, no
+guest data posted anywhere, `noindex, nofollow`, and absent from the sitemap.
+That is adequate for this prototype and would not be adequate for anything
+handling real guest or payment data.
+
+**Recommended before wider circulation:** enable Vercel Authentication for
+preview deployments. That is a project settings change rather than a code
+change, and it has not been made — changing it was not authorised.
+
 ## Running it
 
 ```bash

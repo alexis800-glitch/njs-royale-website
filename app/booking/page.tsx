@@ -22,8 +22,14 @@ import { formatLongDate, todayIso } from '@/lib/booking/dates'
 //     calls notFound() there. The public website has no booking page, and no
 //     environment variable can give it one. This is the same mechanism that
 //     keeps the invitation proofs off production.
-//  2. Preview deployments sit behind Vercel's own deployment protection, so the
-//     journey is reachable by the team and not by the public.
+//  2. Preview deployments are where this journey lives. NOTE: as of 17 November
+//     2026 this Vercel project has NO deployment protection — passwordProtection,
+//     ssoProtection and trustedIps are all disabled — so a preview URL is
+//     reachable by anyone who has it. The journey is therefore safe by its
+//     content rather than by its access control: synthetic data only, no
+//     payment, no reservation, no guest data posted anywhere. Enabling Vercel
+//     Authentication for preview deployments is recommended and is a project
+//     settings change, not a code change.
 //  3. noindex, nofollow, so nothing here can be indexed even if a preview URL
 //     were shared.
 //
