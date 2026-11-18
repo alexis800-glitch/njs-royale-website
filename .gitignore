@@ -34,3 +34,8 @@ hero-source-masters/
 
 # AI-generated concept video — not NJS footage, never deploy (media review, Nov 2026)
 /public/videos/WhatsApp Video 2026-10-07 at 14.19.15.mp4
+
+# Playwright — browser test output, never committed
+/test-results/
+/playwright-report/
+/e2e/screenshots/
