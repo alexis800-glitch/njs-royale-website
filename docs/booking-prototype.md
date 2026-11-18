@@ -86,6 +86,8 @@ nobody mistakes a working prototype for a working reservation system.
 | Rate limiting | Per-instance counters | Shared limiter, or edge rate limiting, so limits are not multiplied by instance count |
 | Reservations | `Map` in the mock adapter | Aiosell as the authoritative store; we keep no reservation database |
 | Payment | Mock, scripted by synthetic email | A contracted processor, server-initiated, with reconciliation |
+| Card guarantees | Synthetic token, no card collected, every processor-supplied field null | Tokenization, verification, a recorded mandate and re-verification before arrival |
+| Rate-limit caller key | `x-forwarded-for`, which Vercel sets and overwrites — but which is client-settable on any other host, and absent locally so all callers share one bucket | A shared limiter keyed on something the client cannot choose |
 
 The failure mode they share: per-instance memory does not survive a cold start
 and is not shared between concurrent instances. In a prototype that is
@@ -105,6 +107,99 @@ authoritative store, not us. So a journey that spans a cold start gets
 `QUOTE_EXPIRED` on its next call. That is a state the journey already renders,
 and the same state a real engine produces when a held quote lapses, so the
 prototype exercises it rather than hiding it.
+
+## The two payment experiences
+
+NJS will offer **Pay Now** and **Pay Later — card guaranteed**. Both are built
+against mocks. No processor is selected: not Paystack, not Flutterwave, not a
+bank gateway, and nothing in this repository names one as chosen.
+
+### What a card guarantee actually is
+
+**It is not a held sum of money.** An authorisation reserves funds for days —
+commonly 7, sometimes up to about 30 — then lapses. Guest rooms open on
+23 July 2027; a reservation taken when advance bookings open on 19 December
+2026 sits roughly seven months before arrival. No authorisation survives that,
+and a design assuming one would fail silently: the hold would lapse, nobody
+would be told, and the first anyone learned of it would be a declined no-show
+charge months later.
+
+A workable guarantee is three separate things, kept separate in the types
+because they expire on different clocks:
+
+| Part | What it is | How long it lasts |
+| --- | --- | --- |
+| **Token** | The processor stores the card, returns a reference | Indefinite; a *network* token also survives reissue |
+| **Verification** | Zero-amount or voided low-value auth proving the card was live | Days. Says nothing about arrival |
+| **Mandate** | Recorded consent to charge later, plus the initial transaction id a later charge must quote | Until revoked |
+
+So a later charge is an **attempt**, not a certainty — a merchant-initiated,
+unscheduled card-on-file transaction that can decline. The guarantee is a
+commitment by the guest plus a means of trying to collect. `fundsHeld` is typed
+as the literal `false` so it cannot quietly become true, and the journey tells
+the guest the real number of days to arrival and says the card will need
+checking again closer to the date.
+
+### Card data
+
+No type in the subsystem has a field for a card number, a guest-entered expiry
+or a security code, and no component renders one. Collection belongs in the
+processor's hosted fields or iframe so raw card data never touches an NJS
+server, log or repository — which is also what keeps PCI DSS scope at its
+lightest. `CardReference` holds only a token, a brand and the last four digits.
+
+Two tests enforce this: one scans every file in the booking subsystem for a
+property declaration named `cardNumber`, `pan`, `cvv`, `cvc`, `securityCode` or
+`cardholderName`, and one asserts no component uses a `cc-number`, `cc-csc` or
+`cc-exp` autocomplete token.
+
+### What the eventual processor must support
+
+The evaluation sheet is `PaymentCapabilities` in `lib/booking/payment.ts`, so it
+cannot drift from what the journey assumes. **Every flag is false for every
+provider here today** — false means "not demonstrated", never "not needed".
+
+| Capability | Why it is needed |
+| --- | --- |
+| `hostedCardFields` | Keeps raw card data off NJS servers and PCI scope light |
+| `tokenization` | Without a stored token there is no Pay Later at all |
+| `networkTokens` | A card reissued between booking and arrival still works |
+| `accountUpdater` | Expiry and reissue changes reach us before arrival |
+| `accountVerification` | Zero-amount or voided auth to prove the card is live |
+| `threeDSecure` | Where the issuer requires it |
+| `storedCredentialMandates` | Scheme rules require recorded consent plus the initial transaction id |
+| `merchantInitiatedCharges` | The no-show or cancellation charge itself |
+| `reverification` | Re-checking the card closer to arrival, since the booking-time check lapses |
+| `refunds` | Reversing a charge taken in error |
+| `idempotent` | One charge per reference, under retry |
+| `ngnSettlement` | Settlement to a Nigerian bank account |
+
+### What NJS must decide
+
+`lib/booking/policy.ts` holds the shape with **every field null**:
+free-cancellation deadline, no-show charge, whether Pay Now takes the full stay
+or a deposit, the deposit amount, and the version of the written terms a guest
+accepts. The UI renders each null as "to be confirmed" and a test asserts the
+summaries contain no digits, so no deadline or charge can be invented by
+accident.
+
+### What depends on Aiosell
+
+The commercial fork, and the reason none of this can be finished yet:
+
+- **Who is merchant of record** — NJS, or Aiosell. This decides whose processor
+  takes the card and who holds the token.
+- **Whether Aiosell supports a guaranteed-but-unpaid reservation state** at all,
+  and how it is represented.
+- **Whether Aiosell accepts a reservation carrying our token reference**, or
+  insists on collecting the card itself.
+- **Who charges a no-show or late cancellation**, and through which system.
+- **How a guarantee is reconciled** — the same open question as confirmation.
+- **What the reported 5% covers**, and whether it applies to a guarantee that is
+  never charged.
+
+No technical request has been sent to Aiosell, per instruction, while Mrs.
+Shuler's commercial discussion is in progress.
 
 ## Pricing presentation
 
@@ -157,10 +252,10 @@ change, and it has not been made — changing it was not authorised.
 ## Running it
 
 ```bash
-npm test          # 127 unit tests, 67 of them booking
+npm test          # 143 unit tests, 83 of them booking
 npm run typecheck
 npm run build
-npm run test:e2e  # 38 browser tests, desktop and mobile
+npm run test:e2e  # 52 browser tests, desktop and mobile
 npm run dev       # then open /booking
 ```
 

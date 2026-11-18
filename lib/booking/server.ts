@@ -24,7 +24,7 @@ import { BOOKING_PROVIDER, type ProviderId } from './config.ts'
 import { createMockProvider } from './mock/provider.ts'
 import { createAiosellProvider } from './aiosell/provider.ts'
 import { createMockPaymentProvider } from './mock/payment.ts'
-import { NO_PAYMENT_PROVIDER, type PaymentOutcome } from './payment.ts'
+import { NO_PAYMENT_PROVIDER, type PaymentOption, type PaymentOutcome } from './payment.ts'
 import type { BookingProvider } from './provider.ts'
 import {
   fail,
@@ -180,6 +180,11 @@ export function readDraft(draftRef: string): StoredDraft | undefined {
 export interface ConfirmRequest {
   draftRef: string
   /**
+   * Pay now, or reserve against a card guarantee. Chosen by the guest, carried
+   * here as a label; what it causes is decided entirely on this side.
+   */
+  paymentOption: PaymentOption
+  /**
    * Supplied by the client so that a retried request does not create a second
    * reservation. The client generates it once per draft and reuses it on every
    * attempt, which is what makes the retry safe.
@@ -230,13 +235,28 @@ export async function confirmDraft(request: ConfirmRequest): Promise<Result<Conf
       ? NO_PAYMENT_PROVIDER
       : createMockPaymentProvider({ guestEmail: scriptedEmail ?? draft.guest.email })
 
-  const paid = await payments.pay({
-    // From the server's draft, never from the request.
-    amount: draft.quote.rate.total,
-    currency: draft.quote.rate.currency,
-    reference: draft.draftRef,
-    description: `${draft.quote.offer.name} — ${draft.quote.rate.nights} nights`,
-  })
+  const description = `${draft.quote.offer.name} — ${draft.quote.rate.nights} nights`
+
+  // The branch that matters. Pay Now charges the amount from the server's own
+  // draft; a card guarantee charges nothing at all and carries no amount into
+  // the request, so there is no path by which a guarantee could take money.
+  const paid =
+    request.paymentOption === 'card-guarantee'
+      ? await payments.guarantee({
+          reference: draft.draftRef,
+          currency: draft.quote.rate.currency,
+          description,
+          // The arrival date goes with the request so that the gap between
+          // booking and arrival is visible to whatever handles it.
+          arrival: draft.selection.query.arrival,
+        })
+      : await payments.pay({
+          // From the server's draft, never from the request.
+          amount: draft.quote.rate.total,
+          currency: draft.quote.rate.currency,
+          reference: draft.draftRef,
+          description,
+        })
 
   if (!paid.ok) return fail<Confirmation>(paid.error.code, paid.error.message, {
     retryable: paid.error.retryable,

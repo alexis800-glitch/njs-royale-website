@@ -13,10 +13,12 @@
 // rest of the journey and is labelled as a test control, because a control that
 // looks like a payment choice is worse than no control at all.
 
-import { Loader2 } from 'lucide-react'
+import { Loader2, ShieldCheck } from 'lucide-react'
 import { choiceBase, radioBase } from '@/components/registration/fields'
 import type { GuestDetails, Quote } from '@/lib/booking/types'
-import { formatLongDate } from '@/lib/booking/dates'
+import type { PaymentOption } from '@/lib/booking/payment'
+import { formatLongDate, nightsBetween, todayIso } from '@/lib/booking/dates'
+import { UNCONFIRMED_POLICY, cancellationSummary, noShowSummary, payNowSummary } from '@/lib/booking/policy'
 import { eyebrow, displayHeading, body, card, primaryButton, secondaryButton, RateTable } from './ui'
 
 /** The scripted payment outcomes the mock processor understands. */
@@ -40,20 +42,70 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   )
 }
 
+/**
+ * What a card guarantee means, said plainly.
+ *
+ * The hard part is the gap. A card check made at booking does not stay valid
+ * until a stay that may be most of a year away, and no authorisation holds
+ * money for that long. Rather than quote a window nobody has confirmed, this
+ * states the real number of days to arrival — which is a fact — and says the
+ * card would need checking again closer to the date, by a process still to be
+ * agreed. Nothing here invents a deadline, a charge or a policy.
+ */
+function GuaranteeExplainer({ arrival }: { arrival: string }) {
+  const daysToArrival = nightsBetween(todayIso(), arrival)
+
+  return (
+    <div className="mt-4 rounded-md border border-gold/30 bg-gold/[0.05] p-4">
+      <p className="flex items-center gap-2 text-gold text-[11px] uppercase tracking-[2.5px] font-semibold font-[family-name:var(--font-inter)]">
+        <ShieldCheck aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+        What a card guarantee means
+      </p>
+      <ul className="mt-3 space-y-2 text-white/75 text-[13.5px] leading-relaxed font-[family-name:var(--font-inter)]">
+        <li>
+          <strong className="text-white">Nothing is charged today</strong>, and no money is held on
+          your card.
+        </li>
+        {daysToArrival > 0 && (
+          <li>
+            Your arrival is <strong className="text-white">{daysToArrival} days</strong> away. A card
+            check made today does not stay valid that long, so your card would need checking again
+            closer to your stay. That process is to be confirmed.
+          </li>
+        )}
+        <li>{cancellationSummary(UNCONFIRMED_POLICY)}</li>
+        <li>{noShowSummary(UNCONFIRMED_POLICY)}</li>
+        <li>
+          Card details would be entered on the payment provider&rsquo;s own secure form. NJS never
+          receives or stores your card number or security code.
+        </li>
+      </ul>
+      <p className="mt-3 border-t border-gold/20 pt-3 text-white/50 text-[12.5px] leading-relaxed font-[family-name:var(--font-inter)]">
+        In this prototype no card form is shown and no card is collected, because no payment
+        provider is connected.
+      </p>
+    </div>
+  )
+}
+
 export default function StepReview({
   quote,
   guest,
   outcome,
+  paymentOption,
   submitting,
   onOutcomeChange,
+  onPaymentOptionChange,
   onConfirm,
   onBack,
 }: {
   quote: Quote
   guest: GuestDetails
   outcome: TestOutcome
+  paymentOption: PaymentOption
   submitting: boolean
   onOutcomeChange: (outcome: TestOutcome) => void
+  onPaymentOptionChange: (option: PaymentOption) => void
   onConfirm: () => void
   onBack: () => void
 }) {
@@ -117,6 +169,69 @@ export default function StepReview({
           </dl>
         </section>
 
+        <section className={card} aria-labelledby="review-payment">
+          <h3
+            id="review-payment"
+            className="text-white/50 text-[13px] uppercase tracking-[1.5px] font-[family-name:var(--font-inter)]"
+          >
+            How would you like to secure this reservation?
+          </h3>
+
+          <fieldset className="mt-4">
+            <legend className="sr-only">Payment option</legend>
+            <div className="space-y-3">
+              <label
+                className={`${choiceBase} !min-h-[auto] items-start py-4 ${
+                  paymentOption === 'pay-now'
+                    ? 'border-gold bg-gold/[0.07]'
+                    : 'border-white/20 hover:border-white/35'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment-option"
+                  value="pay-now"
+                  checked={paymentOption === 'pay-now'}
+                  onChange={() => onPaymentOptionChange('pay-now')}
+                  className={`${radioBase} mt-0.5`}
+                />
+                <span className="min-w-0">
+                  <span className="block text-white text-[15px]">Pay now</span>
+                  <span className="mt-1 block text-white/55 text-[13px] leading-relaxed">
+                    Pay the required amount at the time of booking.{' '}
+                    {payNowSummary(UNCONFIRMED_POLICY)}
+                  </span>
+                </span>
+              </label>
+
+              <label
+                className={`${choiceBase} !min-h-[auto] items-start py-4 ${
+                  paymentOption === 'card-guarantee'
+                    ? 'border-gold bg-gold/[0.07]'
+                    : 'border-white/20 hover:border-white/35'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment-option"
+                  value="card-guarantee"
+                  checked={paymentOption === 'card-guarantee'}
+                  onChange={() => onPaymentOptionChange('card-guarantee')}
+                  className={`${radioBase} mt-0.5`}
+                />
+                <span className="min-w-0">
+                  <span className="block text-white text-[15px]">Pay later, card guaranteed</span>
+                  <span className="mt-1 block text-white/55 text-[13px] leading-relaxed">
+                    Reserve now with a card. Nothing is charged today.
+                  </span>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          {paymentOption === 'card-guarantee' && <GuaranteeExplainer arrival={query.arrival} />}
+        </section>
+
         <section
           className="rounded-md border border-dashed border-white/25 p-5"
           aria-labelledby="review-outcome"
@@ -129,7 +244,7 @@ export default function StepReview({
           </h3>
           <p className="mt-2 text-white/45 text-[12.5px] leading-relaxed font-[family-name:var(--font-inter)]">
             No processor is connected and no money moves. Choose a result to see how the journey
-            handles it.
+            handles it, under whichever option is selected above.
           </p>
           <fieldset className="mt-4">
             <legend className="sr-only">Simulated payment result</legend>

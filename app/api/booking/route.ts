@@ -29,7 +29,25 @@ function json(body: unknown, status: number): Response {
   })
 }
 
-/** A coarse, non-identifying key for the rate limiter. Never logged or stored. */
+/**
+ * A coarse, non-identifying key for the rate limiter. Never logged or stored.
+ *
+ * PROTOTYPE-ONLY, and weak in two ways worth writing down rather than
+ * discovering later:
+ *
+ *   1. It trusts `x-forwarded-for`. Vercel sets that header itself and
+ *      overwrites anything a client sends, so on Vercel it is sound. On any
+ *      other host it is client-settable, and a caller could rotate it to get a
+ *      fresh bucket every request — so the limiter is only as good as the
+ *      platform in front of it.
+ *   2. Locally the header is absent and every caller becomes 'unknown', so all
+ *      traffic shares one bucket. That is how the browser test suite first
+ *      exhausted the limit: hundreds of legitimate requests from one apparent
+ *      caller.
+ *
+ * A real deployment wants a shared limiter keyed on something the client
+ * cannot choose.
+ */
 function callerKey(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for') ?? ''
   return forwarded.split(',')[0]?.trim() || 'unknown'

@@ -20,6 +20,7 @@
 
 import type { Tier } from '../accommodation.ts'
 import type { IsoDate } from './dates.ts'
+import type { CardGuarantee, PaymentOption, PaymentStatus } from './payment.ts'
 
 export type { IsoDate }
 
@@ -143,10 +144,25 @@ export interface BookingDraft {
 
 export type BookingStatus = 'confirmed' | 'pending' | 'cancelled'
 
+/** How a confirmed reservation was secured. */
+export interface ConfirmationPayment {
+  option: PaymentOption
+  status: PaymentStatus
+  /** Whole naira actually charged. Zero for a card guarantee, always. */
+  amountPaid: number
+  /** Present only where the reservation rests on a card guarantee. */
+  guarantee: CardGuarantee | null
+}
+
 export interface Confirmation {
   /** The reference a guest quotes to the resort. */
   reference: string
   status: BookingStatus
+  /**
+   * Whether money changed hands or a card was merely recorded. A confirmation
+   * that cannot say which is a confirmation nobody can reconcile.
+   */
+  payment: ConfirmationPayment
   selection: Selection
   rate: RateBreakdown
   guest: GuestDetails

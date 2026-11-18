@@ -14,10 +14,69 @@
 // real outcome the live journey will have to handle. Hiding it in the prototype
 // would mean discovering it in production.
 
-import { Check } from 'lucide-react'
+import { Check, CreditCard, ShieldCheck } from 'lucide-react'
+import { formatNaira } from '@/lib/accommodation'
 import type { Confirmation } from '@/lib/booking/types'
 import { formatLongDate } from '@/lib/booking/dates'
+import { UNCONFIRMED_POLICY, cancellationSummary, noShowSummary } from '@/lib/booking/policy'
 import { eyebrow, displayHeading, card, primaryButton, RateTable } from './ui'
+
+/**
+ * How the reservation was secured.
+ *
+ * A guarantee and a payment are different states and are shown differently. The
+ * one thing both must never do is imply money is set aside: a guarantee holds
+ * nothing, and this says so in the first line rather than in a footnote.
+ */
+function HowItWasSecured({ payment }: { payment: Confirmation['payment'] }) {
+  if (payment.option === 'card-guarantee') {
+    const card = payment.guarantee?.card
+    return (
+      <section className="rounded-md border border-gold/30 bg-gold/[0.05] p-5" aria-labelledby="secured-by">
+        <h3
+          id="secured-by"
+          className="flex items-center gap-2 text-gold text-[11px] uppercase tracking-[2.5px] font-semibold font-[family-name:var(--font-inter)]"
+        >
+          <ShieldCheck aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+          Secured by card guarantee
+        </h3>
+        <p className="mt-3 text-white text-[14.5px] leading-relaxed font-[family-name:var(--font-inter)]">
+          Nothing has been charged, and no money is held on the card.
+        </p>
+        {card && (
+          <p className="mt-2 flex items-center gap-2 text-white/65 text-[13.5px] font-[family-name:var(--font-inter)]">
+            <CreditCard aria-hidden="true" className="h-4 w-4 text-gold/70" strokeWidth={1.75} />
+            {card.brand ? card.brand.toUpperCase() : 'Card'} ending {card.last4 ?? '••••'} — a
+            fictional test card, held only as a token
+          </p>
+        )}
+        <ul className="mt-4 space-y-1.5 border-t border-gold/20 pt-3 text-white/55 text-[12.5px] leading-relaxed font-[family-name:var(--font-inter)]">
+          <li>{cancellationSummary(UNCONFIRMED_POLICY)}</li>
+          <li>{noShowSummary(UNCONFIRMED_POLICY)}</li>
+          <li>
+            The card would need checking again closer to arrival; that process is to be confirmed.
+          </li>
+        </ul>
+      </section>
+    )
+  }
+
+  return (
+    <section className="rounded-md border border-white/10 bg-white/[0.03] p-5" aria-labelledby="secured-by">
+      <h3
+        id="secured-by"
+        className="flex items-center gap-2 text-white/50 text-[13px] uppercase tracking-[1.5px] font-[family-name:var(--font-inter)]"
+      >
+        <CreditCard aria-hidden="true" className="h-4 w-4 text-gold/70" strokeWidth={1.75} />
+        Paid at booking
+      </h3>
+      <p className="mt-3 text-white text-[14.5px] font-[family-name:var(--font-inter)]">
+        {formatNaira(payment.amountPaid)}{' '}
+        <span className="text-white/50 text-[13px]">— simulated; no money moved</span>
+      </p>
+    </section>
+  )
+}
 
 export default function Confirmed({
   confirmation,
@@ -54,6 +113,8 @@ export default function Confirmed({
       </p>
 
       <div className="mt-6 space-y-5">
+        <HowItWasSecured payment={confirmation.payment} />
+
         <section className={card} aria-labelledby="confirmed-ref">
           <h3
             id="confirmed-ref"

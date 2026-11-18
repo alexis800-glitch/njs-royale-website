@@ -18,6 +18,21 @@ const GUEST = {
 }
 
 /**
+ * Choose a radio and wait until it really is chosen.
+ *
+ * `check()` returns once the DOM says checked, but these are React-controlled
+ * inputs: asserting the checked state is what guarantees the component has
+ * committed it, so the next click cannot act on the previous choice. Without
+ * this the declined-payment test fails roughly one run in ten, and a flaky
+ * test is worse than no test.
+ */
+async function choose(page: Page, name: string | RegExp) {
+  const radio = page.getByRole('radio', { name })
+  await radio.check()
+  await expect(radio).toBeChecked()
+}
+
+/**
  * The journey's own error notice.
  *
  * Next.js renders an empty <div role="alert" id="__next-route-announcer__"> on
@@ -182,6 +197,13 @@ test('a guest can go from dates to a simulated confirmation', async ({ page }) =
 
 async function toReview(page: Page) {
   await fillStay(page)
+  // Assert we actually reached the room list. Without this, a failed search
+  // surfaces 60 seconds later as "waiting for getByRole('radio')", which says
+  // nothing about why.
+  await expect(
+    page.getByRole('heading', { name: 'Choose your room' }),
+    'search should have reached the room list',
+  ).toBeVisible()
   await page.getByRole('radio').first().check()
   await page.getByRole('button', { name: 'Continue' }).click()
   await fillGuest(page)
@@ -192,7 +214,7 @@ test('a declined payment makes no reservation and says the guest was not charged
   page,
 }) => {
   await toReview(page)
-  await page.getByRole('radio', { name: 'Declined' }).check()
+  await choose(page, 'Declined')
   await page.getByRole('button', { name: 'Confirm booking' }).click()
 
   const alert = errorAlert(page)
@@ -204,14 +226,14 @@ test('a declined payment makes no reservation and says the guest was not charged
 
 test('an abandoned payment leaves the booking unconfirmed', async ({ page }) => {
   await toReview(page)
-  await page.getByRole('radio', { name: 'Abandoned' }).check()
+  await choose(page, 'Abandoned')
   await page.getByRole('button', { name: 'Confirm booking' }).click()
   await expect(errorAlert(page)).toContainText(/has not been confirmed/i)
 })
 
 test('an unreachable processor offers a retry', async ({ page }) => {
   await toReview(page)
-  await page.getByRole('radio', { name: 'Processor unreachable' }).check()
+  await choose(page, 'Processor unreachable')
   await page.getByRole('button', { name: 'Confirm booking' }).click()
   const alert = errorAlert(page)
   await expect(alert).toContainText(/not been charged/i)
@@ -220,13 +242,115 @@ test('an unreachable processor offers a retry', async ({ page }) => {
 
 test('a successful payment after a declined one still confirms once', async ({ page }) => {
   await toReview(page)
-  await page.getByRole('radio', { name: 'Declined' }).check()
+  await choose(page, 'Declined')
   await page.getByRole('button', { name: 'Confirm booking' }).click()
   await expect(errorAlert(page)).toBeVisible()
 
-  await page.getByRole('radio', { name: 'Authorised' }).check()
+  await choose(page, 'Authorised')
   await page.getByRole('button', { name: 'Confirm booking' }).click()
   await expect(page.getByText(/^NJS-\d{8}-[A-Z2-9]{6}$/)).toBeVisible()
+})
+
+// ---------------------------------------------------------------------------
+// The two payment experiences
+// ---------------------------------------------------------------------------
+
+test('both payment options are offered, with Pay Now selected first', async ({ page }) => {
+  await toReview(page)
+  const payNow = page.getByRole('radio', { name: /Pay now/i })
+  const guarantee = page.getByRole('radio', { name: /Pay later, card guaranteed/i })
+  await expect(payNow).toBeVisible()
+  await expect(guarantee).toBeVisible()
+  // Pay Now is the default: it is the option that cannot leave a reservation
+  // resting on a card nobody has verified.
+  await expect(payNow).toBeChecked()
+  await expect(guarantee).not.toBeChecked()
+  // Whether the full stay or a deposit is payable is not stated as fact.
+  await expect(page.getByText(/is to be confirmed by the resort/i).first()).toBeVisible()
+  await shot(page, '10-payment-options')
+})
+
+test('choosing a card guarantee explains what it is, and what it is not', async ({ page }) => {
+  await toReview(page)
+  await choose(page, /Pay later, card guaranteed/i)
+
+  await expect(page.getByText(/What a card guarantee means/i)).toBeVisible()
+  await expect(page.getByText('Nothing is charged today', { exact: true })).toBeVisible()
+  await expect(page.getByText(/no money is held on your card/i)).toBeVisible()
+  // The gap to arrival is stated as a real number of days, and the lapse named.
+  await expect(page.getByText(/days.* away/i)).toBeVisible()
+  await expect(page.getByText(/does not stay valid that long/i)).toBeVisible()
+  await expect(page.getByText(/Cancellation terms are to be confirmed/i)).toBeVisible()
+  await expect(page.getByText(/No-show charges are to be confirmed/i)).toBeVisible()
+  await expect(page.getByText(/never receives or stores your card number/i)).toBeVisible()
+  await shot(page, '11-card-guarantee-explained')
+})
+
+test('no card form is ever shown, because none may exist', async ({ page }) => {
+  await toReview(page)
+  await choose(page, /Pay later, card guaranteed/i)
+  await expect(page.getByText(/no card form is shown and no card is collected/i)).toBeVisible()
+
+  // And structurally: nothing on the page collects card data.
+  const cardInputs = await page.evaluate(() => {
+    const fields = Array.from(document.querySelectorAll('input, select, textarea'))
+    return fields
+      .filter((el) => {
+        const node = el as HTMLInputElement
+        const hay = `${node.name} ${node.id} ${node.autocomplete} ${node.placeholder}`.toLowerCase()
+        return /card.?number|cardnum|cvv|cvc|security.?code|cc-/.test(hay)
+      })
+      .map((el) => (el as HTMLElement).outerHTML.slice(0, 80))
+  })
+  expect(cardInputs).toEqual([])
+})
+
+test('a card guarantee confirms without charging anything', async ({ page }) => {
+  await toReview(page)
+  await choose(page, /Pay later, card guaranteed/i)
+  await page.getByRole('button', { name: 'Confirm booking' }).click()
+
+  await expect(page.getByRole('heading', { name: /Secured by card guarantee/i })).toBeVisible()
+  await expect(page.getByText(/Nothing has been charged/i)).toBeVisible()
+  await expect(page.getByText(/no money is held on the card/i)).toBeVisible()
+  await expect(page.getByText(/fictional test card/i)).toBeVisible()
+  await expect(page.getByText(/checking again closer to arrival/i)).toBeVisible()
+  // And it is still clearly a prototype confirmation.
+  await expect(page.getByText(/No reservation has been created/i)).toBeVisible()
+  await shot(page, '12-guaranteed-confirmation')
+})
+
+test('Pay Now confirms as paid, and the two outcomes read differently', async ({ page }) => {
+  await toReview(page)
+  await page.getByRole('button', { name: 'Confirm booking' }).click()
+  await expect(page.getByRole('heading', { name: /Paid at booking/i })).toBeVisible()
+  await expect(page.getByText(/simulated; no money moved/i)).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Secured by card guarantee/i })).toBeHidden()
+  await shot(page, '13-paid-confirmation')
+})
+
+test('a card that will not verify leaves no reservation', async ({ page }) => {
+  await toReview(page)
+  await choose(page, /Pay later, card guaranteed/i)
+  await choose(page, 'Declined')
+  await page.getByRole('button', { name: 'Confirm booking' }).click()
+
+  await expect(errorAlert(page)).toContainText(/not been charged/i)
+  await expect(page.getByRole('heading', { name: /Secured by card guarantee/i })).toBeHidden()
+  await expect(page.getByRole('heading', { name: /how a confirmation would read/i })).toBeHidden()
+})
+
+test('switching from a declined payment to a guarantee starts a fresh attempt', async ({ page }) => {
+  await toReview(page)
+  await choose(page, 'Declined')
+  await page.getByRole('button', { name: 'Confirm booking' }).click()
+  await expect(errorAlert(page)).toBeVisible()
+
+  // Change how the reservation is secured, and succeed.
+  await choose(page, /Pay later, card guaranteed/i)
+  await choose(page, 'Authorised')
+  await page.getByRole('button', { name: 'Confirm booking' }).click()
+  await expect(page.getByRole('heading', { name: /Secured by card guarantee/i })).toBeVisible()
 })
 
 // ---------------------------------------------------------------------------

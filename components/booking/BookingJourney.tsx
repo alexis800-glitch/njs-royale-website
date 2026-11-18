@@ -23,6 +23,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createBookingClient } from '@/lib/booking/client'
 import { addDays } from '@/lib/booking/dates'
 import { earliestSelectableArrival, type ProviderId } from '@/lib/booking/config'
+import type { PaymentOption } from '@/lib/booking/payment'
 import type {
   BookingDraft,
   BookingError,
@@ -87,6 +88,20 @@ export default function BookingJourney({
   const [guest, setGuest] = useState<GuestDetails | null>(null)
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [outcome, setOutcome] = useState<TestOutcome>('authorised')
+  const [paymentOption, setPaymentOption] = useState<PaymentOption>('pay-now')
+
+  /**
+   * Changing how the reservation is secured starts a fresh attempt.
+   *
+   * Without this, switching from a declined Pay Now to a card guarantee would
+   * reuse the idempotency key, and the server would hand back the first
+   * attempt's result rather than acting on the new choice.
+   */
+  const changePaymentOption = (option: PaymentOption) => {
+    setPaymentOption(option)
+    idempotencyKey.current = newIdempotencyKey()
+    setError(null)
+  }
   const [error, setError] = useState<BookingError | null>(null)
   const [busy, setBusy] = useState(false)
   /** Fixed per draft, so retrying confirm cannot double-book. */
@@ -174,10 +189,13 @@ export default function BookingJourney({
     if (!draft) return
     setBusy(true)
     setError(null)
+    // A retry of the SAME attempt reuses the key; changing the option or the
+    // simulated outcome is a different attempt, so the caller resets it.
 
     // Payment happens on the server. This sends an intent — which outcome to
     // simulate — and never an outcome. The same key on every retry.
     const result = await client.confirm(draft.draftRef, {
+      paymentOption,
       idempotencyKey: idempotencyKey.current || newIdempotencyKey(),
       simulate: outcome,
     })
@@ -190,7 +208,7 @@ export default function BookingJourney({
     }
     setConfirmation(result.value)
     setPhase('confirmed')
-  }, [draft, outcome, client])
+  }, [draft, outcome, paymentOption, client])
 
   const startAgain = () => {
     setPhase('stay')
@@ -202,6 +220,7 @@ export default function BookingJourney({
     setGuest(null)
     setConfirmation(null)
     setOutcome('authorised')
+    setPaymentOption('pay-now')
     setError(null)
     retryRef.current = null
     idempotencyKey.current = ''
@@ -277,8 +296,10 @@ export default function BookingJourney({
             quote={quote}
             guest={guest}
             outcome={outcome}
+            paymentOption={paymentOption}
             submitting={busy}
             onOutcomeChange={setOutcome}
+            onPaymentOptionChange={changePaymentOption}
             onConfirm={() => void confirm()}
             onBack={() => {
               setError(null)

@@ -363,7 +363,11 @@ test('the client sends references and intents, never rates or payment outcomes',
     phoneDisplay: '0803 123 4567',
     specialRequests: null,
   })
-  await client.confirm('D-123', { idempotencyKey: 'k-12345678', simulate: 'declined' })
+  await client.confirm('D-123', {
+    paymentOption: 'card-guarantee',
+    idempotencyKey: 'k-12345678',
+    simulate: 'declined',
+  })
 
   const [hold, confirm] = sent
   assert.equal(hold.quoteRef, 'Q-123')

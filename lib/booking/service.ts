@@ -17,13 +17,26 @@ import { BOOKING_ENABLED } from './config.ts'
 import type { ProviderId } from './config.ts'
 import { validateGuestDetails, validateStayQuery } from './validate.ts'
 import { confirmDraft, holdQuote, serverProvider, storeQuote } from './server.ts'
+import { PAYMENT_OPTIONS, type PaymentOption } from './payment.ts'
 import { fail, type Result } from './types.ts'
 
 export type BookingOp = 'search' | 'quote' | 'hold' | 'confirm' | 'lookup' | 'cancel'
 
 const OPS: BookingOp[] = ['search', 'quote', 'hold', 'confirm', 'lookup', 'cancel']
 
-export const RATE_LIMIT_MAX = 60
+/**
+ * Requests per caller per window.
+ *
+ * Configurable because an automated browser run is one legitimate caller
+ * making hundreds of requests, and locally every caller collapses to the same
+ * bucket (see callerKey in the route). Production leaves it at the default.
+ */
+function configuredMax(): number {
+  const raw = Number(process.env.BOOKING_RATE_LIMIT_MAX)
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 60
+}
+
+export const RATE_LIMIT_MAX = configuredMax()
 export const RATE_LIMIT_WINDOW_MS = 60_000
 
 interface Bucket {
@@ -141,6 +154,15 @@ export async function handleBookingRequest(body: unknown): Promise<Result<unknow
       )
         return fail('INVALID_QUERY', 'Unrecognised request.', { retryable: false })
 
+      // Validated against the allowlist rather than cast. An unrecognised
+      // option becomes Pay Now, which is the option that cannot leave a
+      // reservation resting on a card nobody verified.
+      const requested = input.paymentOption
+      const paymentOption: PaymentOption =
+        typeof requested === 'string' && (PAYMENT_OPTIONS as string[]).includes(requested)
+          ? (requested as PaymentOption)
+          : 'pay-now'
+
       const simulate = input.simulate
       const allowed = ['authorised', 'declined', 'abandoned', 'processor-outage'] as const
       type Simulated = (typeof allowed)[number]
@@ -149,7 +171,7 @@ export async function handleBookingRequest(body: unknown): Promise<Result<unknow
           ? (simulate as Simulated)
           : 'authorised'
 
-      return confirmDraft({ draftRef, idempotencyKey, simulate: chosen })
+      return confirmDraft({ draftRef, paymentOption, idempotencyKey, simulate: chosen })
     }
 
     case 'lookup':

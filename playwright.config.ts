@@ -57,7 +57,14 @@ export default defineConfig({
   webServer: {
     command: `npx next start -p ${PORT}`,
     url: `${BASE_URL}/booking`,
-    env: { VERCEL_ENV: 'preview' },
+    env: {
+      VERCEL_ENV: 'preview',
+      // The whole suite looks like one caller to the rate limiter, because
+      // next start sets no x-forwarded-for. Without this the run exhausts the
+      // 60-per-minute default partway through and a test fails for a reason
+      // that has nothing to do with what it is testing.
+      BOOKING_RATE_LIMIT_MAX: '100000',
+    },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     stdout: 'ignore',

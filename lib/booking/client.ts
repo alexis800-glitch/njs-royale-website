@@ -35,6 +35,16 @@ import type {
 
 export interface ConfirmIntent {
   /**
+   * Pay now, or reserve against a card guarantee.
+   *
+   * A label, not an instruction about money: the server decides what it causes,
+   * reads the amount from its own draft, and runs the processor itself. Note
+   * that no card data appears here or anywhere else the browser can reach — a
+   * real processor collects cards in its own hosted fields, so raw card numbers
+   * and security codes never touch an NJS server.
+   */
+  paymentOption: 'pay-now' | 'card-guarantee'
+  /**
    * Generated once per draft and reused on every retry, so that a double-tap
    * or a network replay returns the first reservation instead of creating a
    * second one.
@@ -122,6 +132,7 @@ export function createBookingClient(options: BookingClientOptions = {}): Booking
       post<Confirmation>({
         op: 'confirm',
         draftRef,
+        paymentOption: intent.paymentOption,
         idempotencyKey: intent.idempotencyKey,
         simulate: intent.simulate,
       }),

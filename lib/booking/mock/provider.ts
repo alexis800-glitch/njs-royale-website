@@ -210,6 +210,12 @@ export function createMockProvider(options: MockProviderOptions = {}): BookingPr
       const confirmation: Confirmation = {
         reference: reference(now(), random),
         status: 'confirmed',
+        payment: {
+          option: payment.option,
+          status: payment.status,
+          amountPaid: payment.status === 'authorised' ? payment.amount : 0,
+          guarantee: payment.guarantee,
+        },
         selection: draft.selection,
         rate: draft.quote.rate,
         guest: draft.guest,
