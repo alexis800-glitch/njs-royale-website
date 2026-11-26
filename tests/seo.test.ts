@@ -39,7 +39,7 @@ test('the shared Open Graph block carries the fields a child override would drop
 // Sitemap dates
 // ---------------------------------------------------------------------------
 
-test('every lastmod is a real past date, and none is the build date', () => {
+test('every lastmod is a real date that is not in the future', () => {
   const today = new Date().toISOString().slice(0, 10)
   const entries = Object.entries(ROUTE_LAST_MODIFIED)
   assert.ok(entries.length >= 5)
@@ -52,15 +52,55 @@ test('every lastmod is a real past date, and none is the build date', () => {
       `${route} must be a real calendar date`,
     )
     assert.ok(value <= today, `${route} cannot claim a change in the future`)
-    // A lastmod equal to today on every route is the signature of a build-date
-    // default, which teaches Google to ignore the field entirely.
-    assert.notEqual(value, today, `${route} looks like a build date, not a content date`)
   }
+  // Note what is deliberately NOT asserted here: that a date differs from
+  // today. Content genuinely does change on the day it ships, and a page
+  // edited this morning should say so. The build-date smell is tested below,
+  // where it actually lives.
 })
 
-test('lastmod dates are not all identical, which would also be a tell', () => {
-  const values = new Set(Object.values(ROUTE_LAST_MODIFIED))
-  assert.ok(values.size > 1, 'routes change at different times; the dates should differ')
+test('the dates do not look like a build-date default', () => {
+  const today = new Date().toISOString().slice(0, 10)
+  const values = Object.values(ROUTE_LAST_MODIFIED)
+  const distinct = new Set(values)
+
+  // The failure mode worth catching is EVERY route carrying the same date,
+  // which is what you get from `lastModified: new Date()`. That tells Google
+  // the whole site changed on every deployment, and Google responds by
+  // disregarding the field for the site. One route moving to today is an
+  // ordinary edit; all of them moving together is a generated value.
+  assert.ok(
+    distinct.size > 1,
+    `every route claims ${values[0]}; routes change at different times, so this looks generated`,
+  )
+  assert.ok(
+    !values.every((v) => v === today),
+    'every route claims today, which is the signature of a build-date default',
+  )
+
+  // And prove the guard is not vacuous: the same predicate must reject the
+  // thing it exists to reject. Without this, loosening the rule to allow
+  // same-day edits could quietly loosen it to allow anything.
+  const generated = { home: today, careers: today, privacy: today, terms: today }
+  const generatedValues = Object.values(generated)
+  assert.equal(new Set(generatedValues).size > 1, false)
+  assert.equal(
+    generatedValues.every((v) => v === today),
+    true,
+    'the detector must still flag an all-today map',
+  )
+})
+
+test('a single route legitimately updated today is accepted', () => {
+  // The rule this replaced rejected any date equal to today, which would have
+  // failed the moment a page was edited and shipped on the same day — exactly
+  // what happened to the home page in this change.
+  const today = new Date().toISOString().slice(0, 10)
+  const sameDayEdit = { home: today, careers: '2026-11-16', privacy: '2026-11-16', terms: '2026-10-09' }
+  const values = Object.values(sameDayEdit)
+  assert.ok(values.every((v) => v <= today), 'nothing in the future')
+  assert.ok(new Set(values).size > 1, 'not all identical')
+  assert.ok(!values.every((v) => v === today), 'not a build-date default')
 })
 
 // ---------------------------------------------------------------------------

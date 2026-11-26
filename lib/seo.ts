@@ -53,9 +53,27 @@ export const SITE_OPEN_GRAPH = {
  * is a lie to a crawler; an absent one is merely a missed hint.
  */
 export const ROUTE_LAST_MODIFIED = {
-  /** Phase One date correction across the home page and its components. */
-  home: '2026-11-16',
-  /** Same correction reached the careers index and the careers data. */
+  /**
+   * The home page's own title, meta description, Open Graph and Twitter
+   * descriptions and the Resort schema description were all rewritten in this
+   * change — the snippet Google shows for this URL is different afterwards —
+   * so the date moves with it. It previously read 2026-11-16, the Phase One
+   * date correction, which stopped being the last change the moment this
+   * branch touched the same text.
+   *
+   * If this sits in review for more than a few days, bump it to the day it
+   * merges: the content changes for a crawler when it deploys, not when it was
+   * written.
+   */
+  home: '2026-11-26',
+  /**
+   * Unchanged at the Phase One date correction. This branch adds og:image,
+   * og:type, og:site_name and og:locale to /careers, but those are share-card
+   * metadata: nothing a search result renders, and nothing in the page body,
+   * moved. lastmod means the last SIGNIFICANT content change, and inflating it
+   * for a social tag is the same bad habit as setting it to the build date,
+   * just smaller.
+   */
   careers: '2026-11-16',
   /** The job data file; applies to any job detail page still listed. */
   careerDetail: '2026-11-16',
