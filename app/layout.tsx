@@ -5,6 +5,7 @@ import ConsentProvider from '@/components/consent/ConsentProvider'
 import ConsentBanner from '@/components/consent/ConsentBanner'
 import MetaPixel from '@/components/meta/MetaPixel'
 import { MAP_LINK_URL, RESORT_COORDINATES } from '@/lib/location'
+import { OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -19,15 +20,29 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-const SITE_URL = 'https://www.njsbeachresort.com'
-const SITE_NAME = 'NJS Royale Beach Resort'
+// The home page description is reused four times over — the meta description,
+// the Open Graph description, the Twitter description and the Resort schema —
+// so it is written once here and every surface stays in step.
+//
+// It is FRONT-LOADED rather than shortened. Google truncates a snippet at
+// roughly 155 characters, and the previous wording spent its opening clause on
+// "A refined beach resort on the Atlantic coast" before reaching the brand
+// name, so the visible snippet stopped mid-sentence without ever saying when
+// the resort opens. The brand, the location and the 19 December 2026 date now
+// all fall inside the first 125 characters; the venues and the 23 July 2027
+// date follow for the surfaces that show the whole string. Nothing was cut to
+// hit a character count, and both approved dates are unchanged.
 const DESCRIPTION =
-  'A refined beach resort on the Atlantic coast at Ibeju-Lekki, Lagos. NJS Royale opens December 19, 2026. Come experience the resort before the rooms open, with Yahweh Heights, Voyage, Royale Horizon, the resort lounges, live entertainment and the private beach. Guest rooms and accommodation open on July 23, 2027.'
+  'NJS Royale Beach Resort is a refined oceanfront resort on the Atlantic coast at Ibeju-Lekki, Lagos, opening December 19, 2026. Come experience the resort before the rooms open, with Yahweh Heights, Voyage, Royale Horizon, the resort lounges, live entertainment and the private beach. Guest rooms and accommodation open on July 23, 2027.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'NJS Royale Beach Resort, an Oceanfront Resort in Ibeju-Lekki, Lagos',
+    // 58 characters, so it survives intact in a result; the previous 67-character
+    // version was cut at "Ibeju-Lek…". Every term it carried is still here —
+    // the brand, oceanfront, Ibeju-Lekki and Lagos — with only the connecting
+    // words removed.
+    default: 'NJS Royale Beach Resort | Oceanfront in Ibeju-Lekki, Lagos',
     template: '%s | NJS Royale Beach Resort',
   },
   description: DESCRIPTION,
@@ -48,14 +63,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: SITE_URL,
     locale: 'en_NG',
-    images: [
-      {
-        url: '/og.png',
-        width: 1200,
-        height: 630,
-        alt: 'NJS Royale Beach Resort, an oceanfront resort in Ibeju-Lekki, Lagos',
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

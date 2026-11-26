@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { ArrowRight, Briefcase, LayoutGrid, Users } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { SITE_OPEN_GRAPH } from '@/lib/seo'
 import {
   APPLICATION_DEADLINE,
   DEPARTMENTS,
@@ -18,10 +19,14 @@ export const metadata: Metadata = {
   description:
     'Phase One recruitment at NJS Royale Beach Resort closed on October 15, 2026. Previous job descriptions are available for reference.',
   alternates: { canonical: '/careers' },
+  // Spread first: Next replaces the root's openGraph wholesale when a child
+  // declares one, so without this the page loses og:image, og:type,
+  // og:site_name and og:locale. It is the reason careers links shared to
+  // WhatsApp and LinkedIn previewed with no image.
   openGraph: {
+    ...SITE_OPEN_GRAPH,
     title: 'Careers at NJS Royale Beach Resort',
-    description:
-      'Phase One recruitment applications closed on October 15, 2026.',
+    description: 'Phase One recruitment applications closed on October 15, 2026.',
     url: '/careers',
   },
 }
