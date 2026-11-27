@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, CalendarClock, Mail, MapPin, Users } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { SITE_OPEN_GRAPH } from '@/lib/seo'
 import {
   APPLICATION_DEADLINE,
   APPLICATION_DEADLINE_ISO,
@@ -34,11 +35,22 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const jobItem = getJob(slug)
   if (!jobItem) return { title: 'Vacancy not found' }
   const dept = getDepartment(jobItem.department)
+  const open = isJobOpen(jobItem)
   return {
     title: jobItem.title,
-    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${isJobOpen(jobItem) ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications closed on October 15, 2026.'}`,
+    description: `${jobItem.title}${jobItem.employmentType ? ` (${jobItem.employmentType})` : ''} at NJS Royale Beach Resort, ${dept.name}. ${jobItem.summary} ${open ? `Apply by ${APPLICATION_DEADLINE}.` : 'Applications closed on October 15, 2026.'}`,
     alternates: { canonical: `/careers/${jobItem.slug}` },
+    // A closed vacancy stays online — the careers page calls these "previous
+    // job descriptions" and people still follow old links to them — but it
+    // should not sit in the index as a current opening. `follow` stays true on
+    // purpose: the page still links back to /careers and the rest of the site,
+    // and nofollow would strand it.
+    //
+    // Driven by isJobOpen, so reopening recruitment re-indexes these pages
+    // without anyone remembering to edit this file.
+    ...(open ? {} : { robots: { index: false, follow: true } }),
     openGraph: {
+      ...SITE_OPEN_GRAPH,
       title: `${jobItem.title}, Careers at NJS Royale Beach Resort`,
       description: jobItem.summary,
       url: `/careers/${jobItem.slug}`,
